@@ -1,17 +1,19 @@
+package testPackage;
+
 import java.net.DatagramPacket;
 
 
-public class test {
+public class testAlex {
 
 	/**
 	 * @param args
 	 */
 	
-	static int complementByteToInt(byte b) {
+	public static int complementByteToInt(byte b) {
 	    return b >= 0 ? b : b + 256;
 	}
 	
-	static byte[] convertIntToByte(int i) {
+	public static byte[] convertIntToByte(int i) {
 		byte[] buffer = new byte[4];
 		buffer[0] = (byte) ( (i & 0x000000ff) );
 		buffer[1] = (byte) ( (i & 0x0000ff00) >> 8);
@@ -21,7 +23,17 @@ public class test {
 		return buffer;
 	}
 	
-	static int convertByteToInt(byte [] buffer) {
+	public static byte intTo255(int i) {
+		byte b;
+		
+		if ( i > 255) return new Byte("-128");
+		
+		b = (byte) ( (i & 0x000000ff) );
+		
+		return b;
+	}
+	
+	public static int convertByteToInt(byte [] buffer) {
 		
 		int integer;
 		
