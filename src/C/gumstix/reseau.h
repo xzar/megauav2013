@@ -12,4 +12,4 @@ void open_reseau();
 
 void attente_reseau(char*,int);
 void close_reseau();
-void envoi_message(string, char*, int);
+void envoi_message(char*, char*, int);

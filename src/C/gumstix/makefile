@@ -4,7 +4,7 @@ CC=gcc
 
 ifeq ($(DEBUG),yes)
 	CFLAGS=-W -Wall -g 
-	LDFLAGS=-lcurses -lncurses
+	LDFLAGS=-lcurses -lncurses -lm
 else
 	CFLAGS=
 	LDFLAGS=
@@ -29,10 +29,10 @@ $(MAIN).o:
 
 .PHONY: clean mrproper
 
-clean:
+clean: mrproper
 	rm $(FOLDER)*.o
 
-mrproper: clean
+mrproper: 
 	rm $(FOLDER)$(EXEC)
 
 execute:

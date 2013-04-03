@@ -82,4 +82,3 @@ printf("entrer SendOutData fc_com.c\n");
 	serial_write(file, tx_buffer, pt+3)
 	; //whole frame length is pt+3
 }									  //#,adr,cmd,data ; crc1,crc2,\r
-

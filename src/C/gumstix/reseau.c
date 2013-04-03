@@ -24,7 +24,7 @@ void close_reseau()
 	close (sock) ; 
 }
 
-void envoi_message(string adresse, char* buf, int lenght)
+void envoi_message(char* adresse, char* buf, int lenght)
 {
 	recv_addr.sin_addr.s_addr = inet_addr (adresse) ;
 	recv_addr.sin_port = htons (5000) ;
