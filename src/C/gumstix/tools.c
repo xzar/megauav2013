@@ -1,5 +1,7 @@
 #include "tools.h"
 #include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 int complementInt(byte b) {
 	return b >= 0 ? b : b + 256;
@@ -52,43 +54,61 @@ long convertByteToLong(byte * buffer, int index, int size) {
 	return l;
 }
 
-byte* concatBytes(byte* tab1, byte* tab2) {
-	int length_tab1 = sizeof(tab1)/sizeof(byte);
-	int length_tab2 = sizeof(tab2)/sizeof(byte);
-	
-	byte* ret = (byte)malloc(length_tab1+length_tab2);
-	
-	int i = 0;
-	
-	while (i < length_tab1) {
-		ret[i] =  tab1[i]; 
-		i++;
-	}
-	
+/*
+ * concatenate tab2 in tab1
+ * tab2 is not free
+ * new size of tab1 is size1+size2
+ * return 0 if error
+ */
+int concatBytes(byte* tab1, int size1, byte* tab2, int size2)
+{
+    tab1 = realloc(tab1, size1 + size2);
+
+    int i = size1;
 	int j = 0;
-	while (i < length_tab1+length_tab2) {
-		ret[i] =  tab1[j];
+    
+	while (i < size1 + size2)
+    {
+		tab1[i] =  tab2[j];
 		i++;
 		j++;
 	}
-	
-	return ret;
+    
+	return 1;
 }
 
-byte* cutBytes (byte* tab, int index) {
+/*
+ * Keep the right part of tab, started at index
+ * the left part is free
+ * new size of tab is size - index
+ * return -1 if error
+ *
+ * a lire et corriger le realloc
+ * http://ilay.org/yann/articles/mem/mem1.html
+ */
+int cutBytes (byte* tab, int* size, int index)
+{
 	
 	int i;
-	int length = sizeof(tab)/sizeof(byte);
-	int remain_length = length-index;
+	int remain_length = (*size)-index;
 	
 	if (remain_length == 0) {
 		return -1;
 	}
 	
-	byte* remain = (byte)malloc(length-index);
-	
 	for (i = 0; i < remain_length; i++) {
-		remain[i] = tab[index+i];
+		tab[i] = tab[index+i];
 	}
-	return remain;
+
+    for (i = 0; i < remain_length; i++) {
+		printf("remain:%c\n", tab[i]);
+	}
+
+    tab = realloc(tab, remain_length);
+    
+    printf("addr in fct:%d\n", tab);
+    
+    *size = remain_length;
+    
+	return 1;
 }
