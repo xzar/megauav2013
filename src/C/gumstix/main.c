@@ -6,59 +6,68 @@
 
 int main(){
 
+	/*
+	 * TEST ALEX
+	 * 
+	 * 
     printf ("char : %d octets\n", sizeof(char));  
     printf ("int : %d octets\n", sizeof(int));  
     printf ("long : %d octets\n", sizeof(long));  
     printf ("double: %d octets\n", sizeof(double));
 
-    int tab[20];
+    int i=0,j=0;
     
-    int i=0, j=0;
-    byte * toto;
+    byte toto[2048];
     int size_toto = 10;
-    byte *tata;
-    int size_tata=5;
+    byte tata[2048];
+    int size_tata = 5;
     
-    printf("debug\n");
-    
-    toto = malloc( size_toto );
-    tata = malloc( size_tata * sizeof(byte) );
-
-    printf("addr toto 1:%d\n", toto);
-    
-    printf("debug\n");
-    
-    for (i = 0; i < size_toto; i++)
+    for( i = 0; i < size_toto;i++ ) 
     {
-        toto[i]='a';
-        //printf("toto%c\n", toto[i]);
-    }
-
-    for (i = 0; i < size_tata; i++)
+		toto[i]='a';
+	}
+	
+	for( i = 0; i < size_tata;i++ ) 
     {
-        tata[i]='b';
-        //printf("%c\n", tata[i]);
-    }
-    
-    printf("debug\n");
-
-    
-    concatBytes(toto, size_toto, tata, size_tata);
-    printf("addr toto2:%d\n", toto);
-    size_toto += size_tata;
-
-    cutBytes(toto, &size_toto, 10);
-    
-    for (i = 0; i < size_toto; i++)
+		tata[i]='b';
+	}
+	
+	concatBytes(toto, size_toto, tata, size_tata);
+	size_toto+=size_tata;
+	
+	for( i = 0; i < size_toto;i++ ) 
     {
-        printf("%d:%c\n", i,toto[i]);
-    }
-    printf("addr toto3:%d\n", toto);
-
-    free(toto);
-    free(tata);
+		printf("%c\n", toto[i]);
+	}
+	
+	cutBytes (toto, size_toto, 6);
+	size_toto-=6;
+	
+	printf("debug\n");
+	
+	for( i = 0; i < size_toto;i++ ) 
+    {
+		printf("%c\n", toto[i]);
+	}
+	
+	int tt = 123456789;
+	byte tab[4];
+	
+	int test = convertIntToByte(tt, tab, 4);
+	
+	if (test = -1) printf("error\n");
+	
+	tt = convertByteToInt(tab, 0, 4);
+	
+	printf("%d\n", tt);
 
     exit(0);
+    * 
+    * FIN TEST ALEX
+    * 
+    */
+    
+    
     /*
 	int file;
 	char* buf_reseau = (char *) malloc(20*sizeof(char));
