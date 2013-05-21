@@ -1,6 +1,7 @@
 //#include "pilotage.h"
 //#include <curses.h>
 #include "tools.h"
+#include "muav_com.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -66,6 +67,19 @@ int main(){
     * FIN TEST ALEX
     * 
     */
+    
+    MuavCom mc1, mc2;
+    initMuavCom(&mc1);
+    initMuavCom(&mc2);
+    setHeader(&mc1, 5,5,1,6546654,0);
+    //printMC(mc1);
+    
+    MCEncode(&mc1);
+    //printMC(mc2);
+    
+    mc2.mc_data = mc1.mc_data;
+    
+    
     
     
     /*

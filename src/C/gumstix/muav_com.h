@@ -1,7 +1,9 @@
 #include "tools.h"
 
 
-#define size 1024
+#define SIZE 4096
+#define EMERGENCY_PORT 1337
+#define SEND_PORT 1338
 
 typedef enum
 {
@@ -19,17 +21,34 @@ typedef struct muavcom
 {
 	int mc_fid;
 	int mc_did;
-	int mc_request;
+	RequestType mc_request;
 	long mc_timestamp;
 	int mc_error;
-	byte mc_data[size];
-	byte mc_remainingData[size];
+	int mc_dataSize;
+	byte mc_data[SIZE];
+	int mc_remainSize;
+	byte mc_remainingData[SIZE];
+	int mc_headerSize;
 } MuavCom;
 
-MuavCom mc;
+/*
+ * Set mc with 0;
+ */ 
+void initMuavCom( MuavCom *mc );
 
-void initRequest(RequestType);
-void requestEncode();
-void requestDecode();
-void sendData();
-void *receiveData(void*data);
+/*
+ * Set the request's header.
+ * fid : the fleet id.
+ * did : the drone id
+ * rt : the type of this request.
+ * timestamp : the request date.
+ * error : the error code.
+ */ 
+void setHeader( MuavCom *mc, int fid, int did, RequestType rt, long timestamp, int error );
+
+/*
+ * display data of muavcom.
+ */ 
+void printMC(MuavCom mc);
+
+void MCEncode( MuavCom *mc );

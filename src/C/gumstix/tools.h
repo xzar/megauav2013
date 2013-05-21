@@ -45,6 +45,7 @@ long convertByteToLong(byte* buffer, int index, int size) ;
  * tab2 is not free
  * new size of tab1 is size1+size2
  * don't forget to update it.
+ * index : where to start concat.
  * return 0 if error
  */
 int concatBytes(byte* tab1, int size1, byte* tab2, int size2);
