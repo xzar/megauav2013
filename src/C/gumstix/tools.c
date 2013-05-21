@@ -36,7 +36,7 @@ byte intTo255(int i) {
 int convertIntToByte(int i, byte * buffer, int size)
 {
 	
-	if (size > sizeof(int))
+	if ((unsigned int)size > sizeof(int))
 	{
 		return -1;
 	}
@@ -73,10 +73,21 @@ int convertByteToInt(byte * buffer, int index, int size)
  */ 
 int convertLongToByte(long l, byte *buffer, int size)
 {
-	if (size > sizeof(long))
+	if ((unsigned int)size > sizeof(long))
 	{
 		return -1;
 	}
+	
+	/*
+	buffer[0] = (byte) ( (l & 0x000000ff) );
+	buffer[1] = (byte) ( (l & 0x0000ff00) >> 8);
+	buffer[2] = (byte) ( (l & 0x00ff0000) >> 16);
+	buffer[3] = (byte) ( (l & 0xff000000) >> 24);
+	buffer[4] = (byte) ( (l & 0x000000ff) >> 32);
+	buffer[5] = (byte) ( (l & 0x0000ff00) >> 40);
+	buffer[6] = (byte) ( (l & 0x00ff0000) >> 48);
+	buffer[7] = (byte) ( (l & 0xff000000) >> 56);
+	*/
 	
 	buffer[0] = (byte) ( (l >> 0) & 0xff );
 	buffer[1] = (byte) ( (l >> 8) & 0xff );
@@ -86,6 +97,18 @@ int convertLongToByte(long l, byte *buffer, int size)
 	buffer[5] = (byte) ( (l >> 40) & 0xff );
 	buffer[6] = (byte) ( (l >> 48) & 0xff );
 	buffer[7] = (byte) ( (l >> 56) & 0xff );
+	
+	
+	/*
+	buffer[7] = (byte) ( (l >> 0) & 0xff );
+	buffer[6] = (byte) ( (l >> 8) & 0xff );
+	buffer[5] = (byte) ( (l >> 16) & 0xff );
+	buffer[4] = (byte) ( (l >> 24) & 0xff );
+	buffer[3] = (byte) ( (l >> 32) & 0xff );
+	buffer[2] = (byte) ( (l >> 40) & 0xff );
+	buffer[1] = (byte) ( (l >> 48) & 0xff );
+	buffer[0] = (byte) ( (l >> 56) & 0xff );
+	*/
 	
 	return 1;
 }

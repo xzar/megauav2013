@@ -68,17 +68,38 @@ int main(){
     * 
     */
     
+    /*
+     * TEST MUAVCOM
+     *
+    
+    long toto = 9999999999999999;
+    printf("\n%ld\n", toto);
+    printf("\nsize long:%d\n", sizeof(long));
     MuavCom mc1, mc2;
     initMuavCom(&mc1);
     initMuavCom(&mc2);
-    setHeader(&mc1, 5,5,1,6546654,0);
-    //printMC(mc1);
+    setHeader(&mc1, 11111111,22222222,1,toto,88888888);
+    printMC(mc1);
+    char* buf;
+    receive(socket, buf, sizeof(),)
+    //memcpy(&mc2, &mc1, SIZE);
     
     MCEncode(&mc1);
     //printMC(mc2);
+    mc1.mc_data[mc1.mc_headerSize] = "\0";
     
-    mc2.mc_data = mc1.mc_data;
+    //memcpy(&mc2, mc1.mc_data, mc1.mc_headerSize);
     
+    //mc2 = (MuavCom)mc1.mc_data;
+    
+    //memcpy(mc2.mc_data, mc1.mc_data, SIZE);
+    //MCDecode(&mc2);
+    
+    printMC(mc2);
+    
+    *
+    * FIN TEST MUAV COM
+    */
     
     
     
@@ -130,4 +151,6 @@ int main(){
 	close(file);
 	free(buf_reseau);
     */
+    
+    return 1;
 }  

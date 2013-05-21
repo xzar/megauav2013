@@ -51,4 +51,12 @@ void setHeader( MuavCom *mc, int fid, int did, RequestType rt, long timestamp, i
  */ 
 void printMC(MuavCom mc);
 
+/*
+ * convert byte* data in header info
+ */ 
+void MCDecode( MuavCom *mc );
+
+/*
+ * convert header info in byte*
+ */ 
 void MCEncode( MuavCom *mc );
