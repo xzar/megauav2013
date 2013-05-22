@@ -2,7 +2,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "reseau.h"
+#include "var.h"
+
 int serial_open(int* , char* );
 
 int serial_write(int , char* , int );

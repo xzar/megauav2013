@@ -1,8 +1,4 @@
 #include "tools.h"
-#include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-
 
 /*
  * complement to 2 for int
@@ -78,17 +74,6 @@ int convertLongToByte(long l, byte *buffer, int size)
 		return -1;
 	}
 	
-	/*
-	buffer[0] = (byte) ( (l & 0x000000ff) );
-	buffer[1] = (byte) ( (l & 0x0000ff00) >> 8);
-	buffer[2] = (byte) ( (l & 0x00ff0000) >> 16);
-	buffer[3] = (byte) ( (l & 0xff000000) >> 24);
-	buffer[4] = (byte) ( (l & 0x000000ff) >> 32);
-	buffer[5] = (byte) ( (l & 0x0000ff00) >> 40);
-	buffer[6] = (byte) ( (l & 0x00ff0000) >> 48);
-	buffer[7] = (byte) ( (l & 0xff000000) >> 56);
-	*/
-	
 	buffer[0] = (byte) ( (l >> 0) & 0xff );
 	buffer[1] = (byte) ( (l >> 8) & 0xff );
 	buffer[2] = (byte) ( (l >> 16) & 0xff );
@@ -97,7 +82,6 @@ int convertLongToByte(long l, byte *buffer, int size)
 	buffer[5] = (byte) ( (l >> 40) & 0xff );
 	buffer[6] = (byte) ( (l >> 48) & 0xff );
 	buffer[7] = (byte) ( (l >> 56) & 0xff );
-	
 	
 	/*
 	buffer[7] = (byte) ( (l >> 0) & 0xff );
@@ -108,6 +92,17 @@ int convertLongToByte(long l, byte *buffer, int size)
 	buffer[2] = (byte) ( (l >> 40) & 0xff );
 	buffer[1] = (byte) ( (l >> 48) & 0xff );
 	buffer[0] = (byte) ( (l >> 56) & 0xff );
+	*/
+	
+	/*
+	buffer[0] = (byte) ( (l & 0x000000ff) );
+	buffer[1] = (byte) ( (l & 0x0000ff00) >> 8);
+	buffer[2] = (byte) ( (l & 0x00ff0000) >> 16);
+	buffer[3] = (byte) ( (l & 0xff000000) >> 24);
+	buffer[4] = (byte) ( (l & 0x000000ff) >> 32);
+	buffer[5] = (byte) ( (l & 0x0000ff00) >> 40);
+	buffer[6] = (byte) ( (l & 0x00ff0000) >> 48);
+	buffer[7] = (byte) ( (l & 0xff000000) >> 56);
 	*/
 	
 	return 1;

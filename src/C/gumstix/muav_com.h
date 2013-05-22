@@ -1,7 +1,7 @@
 #include "tools.h"
+#include <stdio.h>
 
-
-#define SIZE 4096
+#define BUFFER_SIZE 4096
 #define EMERGENCY_PORT 1337
 #define SEND_PORT 1338
 
@@ -24,15 +24,15 @@ typedef struct muavcom
 	RequestType mc_request;
 	long mc_timestamp;
 	int mc_error;
-	int mc_dataSize;
-	byte mc_data[SIZE];
+	byte mc_data[BUFFER_SIZE];
+	byte mc_remainingData[BUFFER_SIZE];
 	int mc_remainSize;
-	byte mc_remainingData[SIZE];
+	int mc_dataSize;
 	int mc_headerSize;
 } MuavCom;
 
 /*
- * Set mc with 0;
+ * Set mc with 0.
  */ 
 void initMuavCom( MuavCom *mc );
 

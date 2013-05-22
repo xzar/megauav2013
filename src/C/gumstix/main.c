@@ -1,9 +1,10 @@
-//#include "pilotage.h"
 //#include <curses.h>
-#include "tools.h"
-#include "muav_com.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <pthread.h>
+
+#include "pilotage.h"
+#include "network.h"
 
 int main(){
 
@@ -101,6 +102,26 @@ int main(){
     * FIN TEST MUAV COM
     */
     
+    /*
+     * TEST thread
+     */
+    
+    //initNetFifo(globalNetFifo);
+    
+    initNetFifo(&globalNetFifo);
+    
+    Network net_info;
+    net_info.nt_ip = gethostbyname("localhost");
+    net_info.nt_port = 5000;
+    
+	pthread_t networt_thread_receiver;
+	pthread_create(&networt_thread_receiver, NULL, th_receiver, &net_info);
+	
+	pthread_join(networt_thread_receiver, NULL);
+	
+     /* 
+     * FIN TEST THREAD 
+     */
     
     
     /*

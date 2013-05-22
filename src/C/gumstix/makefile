@@ -4,7 +4,7 @@ CC=gcc
 
 ifeq ($(DEBUG),yes)
 	CFLAGS=-W -Wall -g 
-	LDFLAGS=-lcurses -lncurses -lm
+	LDFLAGS=-lcurses -lncurses -lm -lpthread
 else
 	CFLAGS=
 	LDFLAGS=

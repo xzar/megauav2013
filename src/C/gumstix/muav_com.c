@@ -1,6 +1,8 @@
 #include "muav_com.h"
-#include <stdio.h>
 
+/*
+ * Set mc with 0.
+ */ 
 void initMuavCom( MuavCom *mc )
 {
 	mc->mc_fid=0;
@@ -13,7 +15,7 @@ void initMuavCom( MuavCom *mc )
 	mc->mc_remainSize=0;
 	
 	int i;
-	for (i = 0; i < SIZE; i++) 
+	for (i = 0; i < BUFFER_SIZE; i++) 
 	{
 		mc->mc_data[i] = 0;
 		mc->mc_remainingData[i] = 0;
@@ -22,6 +24,14 @@ void initMuavCom( MuavCom *mc )
 	mc->mc_headerSize = ( sizeof(int) * 4 ) + sizeof(long);
 }
 
+/*
+ * Set the request's header.
+ * fid : the fleet id.
+ * did : the drone id
+ * rt : the type of this request.
+ * timestamp : the request date.
+ * error : the error code.
+ */ 
 void setHeader( MuavCom *mc, int fid, int did, RequestType rt, long timestamp, int error )
 {
 	mc->mc_fid=fid;
@@ -100,16 +110,8 @@ void MCDecode( MuavCom *mc )
 }
 
 /*
-void sendData()
-{
-	
-}
-
-void *receiveData(void*data)
-{
-	
-}
-*/
+ * display data of muavcom.
+ */ 
 void printMC(MuavCom mc)
 {
 	printf("\n");
