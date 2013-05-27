@@ -43,17 +43,33 @@ void* th_receiver(void* data)
 	recv_addr.sin_addr.s_addr = INADDR_ANY ;
 	recv_addr.sin_port = htons (nt.nt_port) ;
 	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
+	
 	//
-	/*
+	
+	MuavCom mc;
+	
+	printf("port : %d\n", nt.nt_port);
+	
 	while (1)
 	{
-		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, &exp_len);
-		//TODO MUTEK
+		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
+		//TODO MUTEX
+		
+		printf("received: %s", buf);
+		
+		int i;
+		for (i = 0; i < BUFFER_SIZE; i++) {
+			mc.mc_data[i] = buf[i];
+		}
+		
+		MCDecode(&mc);
+		
+		printMC(mc);
 		
 		addNetFifo(&globalNetFifo, buf); 
 		
 	} 
-	*/
+	
 	close(sock);
 }
 

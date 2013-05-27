@@ -2,46 +2,44 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-typedef char byte;
-
 /*
  * complement to 2 for int
  */
-int complementInt(byte b) ;
+int complementInt(char b) ;
 
 /*
  * complement to 2 for long
  */
-long complementLong(byte b) ;
+long complementLong(char b) ;
 
 /*
- * return the low byte of int
+ * return the low char of int
  */
-byte intTo255(int i) ;
+char intTo255(int i) ;
 
 /*
- * fill buffer with the int bytes
+ * fill buffer with the int chars
  * return -1 if size is greater than sizeof(int)
  */ 
-int convertIntToByte(int i, byte * buffer, int size);
+int convertIntTochar(int i, char * buffer, int size);
 
 /*
  * convert a part of table in int
  * return the int represented by the buffer
  */
-int convertByteToInt(byte * buffer, int index, int size);
+int convertcharToInt(char * buffer, int index, int size);
 
 /*
- * fill buffer with the long bytes
+ * fill buffer with the long chars
  * return -1 if size is greater than sizeof(long)
  */ 
-int convertLongToByte(long l, byte *buffer, int size) ;
+int convertLongTochar(long l, char *buffer, int size) ;
 
 /*
  * convert a part of table in long
  * return the long represented by the buffer
  */
-long convertByteToLong(byte* buffer, int index, int size) ;
+long convertcharToLong(char* buffer, int index, int size) ;
 
 /*
  * concatenate tab2 in tab1
@@ -51,7 +49,7 @@ long convertByteToLong(byte* buffer, int index, int size) ;
  * index : where to start concat.
  * return 0 if error
  */
-int concatBytes(byte* tab1, int size1, byte* tab2, int size2);
+int concatchars(char* tab1, int size1, char* tab2, int size2);
 
 /*
  * Keep the right part of tab, started at index
@@ -60,4 +58,4 @@ int concatBytes(byte* tab1, int size1, byte* tab2, int size2);
  * don't forget to update it.
  * return -1 if error
  */
-int cutBytes (byte* tab, int size, int index);
+int cutchars (char* tab, int size, int index);

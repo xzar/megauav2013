@@ -43,49 +43,49 @@ void setHeader( MuavCom *mc, int fid, int did, RequestType rt, long timestamp, i
 }
 
 /*
- * convert header info in byte*
+ * convert header info in char*
  */ 
 void MCEncode( MuavCom *mc )
 {
 	int intSize = sizeof(int);
 	int longSize = sizeof(long);
 	
-	byte fid[intSize];
-	byte did[intSize];
-	byte rt[intSize];
-	byte timestamp[longSize];
-	byte error[intSize];
+	char fid[intSize];
+	char did[intSize];
+	char rt[intSize];
+	char timestamp[longSize];
+	char error[intSize];
 	
 	//int debug;
 	
-	convertIntToByte(mc->mc_fid, fid, intSize);
-	convertIntToByte(mc->mc_did, did, intSize);
-	convertIntToByte(mc->mc_request, rt, intSize);
+	convertIntTochar(mc->mc_fid, fid, intSize);
+	convertIntTochar(mc->mc_did, did, intSize);
+	convertIntTochar(mc->mc_request, rt, intSize);
 	//printf("\nDEBUG: %d\n", sizeof(mc->mc_request));
-	convertLongToByte(mc->mc_timestamp, timestamp, intSize);
+	convertLongTochar(mc->mc_timestamp, timestamp, intSize);
 	//printf("\nDEBUG: %d\n", sizeof(mc->mc_timestamp));
-	convertIntToByte(mc->mc_error, error, intSize);
+	convertIntTochar(mc->mc_error, error, intSize);
 	
 	//printf("\nDEBUG:%d\n", debug);
 	
-	concatBytes(mc->mc_data, mc->mc_dataSize, fid, intSize);
+	concatchars(mc->mc_data, mc->mc_dataSize, fid, intSize);
 	mc->mc_dataSize+=intSize;
 	
-	concatBytes(mc->mc_data, mc->mc_dataSize, did, intSize);
+	concatchars(mc->mc_data, mc->mc_dataSize, did, intSize);
 	mc->mc_dataSize+=intSize;
 	
-	concatBytes(mc->mc_data, mc->mc_dataSize, rt, intSize);
+	concatchars(mc->mc_data, mc->mc_dataSize, rt, intSize);
 	mc->mc_dataSize+=intSize;
 	
-	concatBytes(mc->mc_data, mc->mc_dataSize, timestamp, intSize);
+	concatchars(mc->mc_data, mc->mc_dataSize, timestamp, intSize);
 	mc->mc_dataSize+=intSize;
 	
-	concatBytes(mc->mc_data, mc->mc_dataSize, error, intSize);
+	concatchars(mc->mc_data, mc->mc_dataSize, error, intSize);
 	mc->mc_dataSize+=intSize;
 }
 
 /*
- * convert byte* data in header info
+ * convert char* data in header info
  */ 
 void MCDecode( MuavCom *mc )
 {
@@ -93,19 +93,19 @@ void MCDecode( MuavCom *mc )
 	int longSize = sizeof(long);
 	int index = 0;
 	
-	mc->mc_fid=convertByteToInt(mc->mc_data, index, intSize);
+	mc->mc_fid=convertcharToInt(mc->mc_data, index, intSize);
 	index+=intSize;
 	
-	mc->mc_did=convertByteToInt(mc->mc_data, index, intSize);
+	mc->mc_did=convertcharToInt(mc->mc_data, index, intSize);
 	index+=intSize;
 	
-	mc->mc_request=convertByteToInt(mc->mc_data, index, intSize);
+	mc->mc_request=convertcharToInt(mc->mc_data, index, intSize);
 	index+=intSize;
 	
-	mc->mc_timestamp=convertByteToLong(mc->mc_data, index, longSize);
+	mc->mc_timestamp=convertcharToLong(mc->mc_data, index, longSize);
 	index+=longSize;
 	
-	mc->mc_error=convertByteToInt(mc->mc_data, index, intSize);
+	mc->mc_error=convertcharToInt(mc->mc_data, index, intSize);
 	
 }
 

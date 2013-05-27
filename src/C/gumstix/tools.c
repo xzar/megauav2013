@@ -3,33 +3,33 @@
 /*
  * complement to 2 for int
  */
-int complementInt(byte b) {
+int complementInt(char b) {
 	return b >= 0 ? b : b + 256;
 }
 
 /*
  * complement to 2 for long
  */
-long complementLong(byte b) {
+long complementLong(char b) {
 	return b >= 0 ? b : b + 256;
 }
 
 /*
- * return the low byte of int
+ * return the low char of int
  */
-byte intTo255(int i) {
-	byte b;
+char intTo255(int i) {
+	char b;
 	
-	b = (byte) ( (i & 0x000000ff) );
+	b = (char) ( (i & 0x000000ff) );
 	
 	return b;
 }
 
 /*
- * fill buffer with the int bytes
+ * fill buffer with the int chars
  * return -1 if size is greater than sizeof(int)
  */ 
-int convertIntToByte(int i, byte * buffer, int size)
+int convertIntTochar(int i, char * buffer, int size)
 {
 	
 	if ((unsigned int)size > sizeof(int))
@@ -37,10 +37,10 @@ int convertIntToByte(int i, byte * buffer, int size)
 		return -1;
 	}
 	
-	buffer[0] = (byte) ( (i & 0x000000ff) );
-	buffer[1] = (byte) ( (i & 0x0000ff00) >> 8);
-	buffer[2] = (byte) ( (i & 0x00ff0000) >> 16);
-	buffer[3] = (byte) ( (i & 0xff000000) >> 24);
+	buffer[0] = (char) ( (i & 0x000000ff) );
+	buffer[1] = (char) ( (i & 0x0000ff00) >> 8);
+	buffer[2] = (char) ( (i & 0x00ff0000) >> 16);
+	buffer[3] = (char) ( (i & 0xff000000) >> 24);
 	
 	return 1;
 }
@@ -49,7 +49,7 @@ int convertIntToByte(int i, byte * buffer, int size)
  * convert a part of table in int
  * return the int represented by the buffer
  */
-int convertByteToInt(byte * buffer, int index, int size)
+int convertcharToInt(char * buffer, int index, int size)
 {
 	
 	int integer = 0;
@@ -64,45 +64,45 @@ int convertByteToInt(byte * buffer, int index, int size)
 }
 
 /*
- * fill buffer with the long bytes
+ * fill buffer with the long chars
  * return -1 if size is greater than sizeof(long)
  */ 
-int convertLongToByte(long l, byte *buffer, int size)
+int convertLongTochar(long l, char *buffer, int size)
 {
 	if ((unsigned int)size > sizeof(long))
 	{
 		return -1;
 	}
 	
-	buffer[0] = (byte) ( (l >> 0) & 0xff );
-	buffer[1] = (byte) ( (l >> 8) & 0xff );
-	buffer[2] = (byte) ( (l >> 16) & 0xff );
-	buffer[3] = (byte) ( (l >> 24) & 0xff );
-	buffer[4] = (byte) ( (l >> 32) & 0xff );
-	buffer[5] = (byte) ( (l >> 40) & 0xff );
-	buffer[6] = (byte) ( (l >> 48) & 0xff );
-	buffer[7] = (byte) ( (l >> 56) & 0xff );
+	buffer[0] = (char) ( (l >> 0) & 0xff );
+	buffer[1] = (char) ( (l >> 8) & 0xff );
+	buffer[2] = (char) ( (l >> 16) & 0xff );
+	buffer[3] = (char) ( (l >> 24) & 0xff );
+	buffer[4] = (char) ( (l >> 32) & 0xff );
+	buffer[5] = (char) ( (l >> 40) & 0xff );
+	buffer[6] = (char) ( (l >> 48) & 0xff );
+	buffer[7] = (char) ( (l >> 56) & 0xff );
 	
 	/*
-	buffer[7] = (byte) ( (l >> 0) & 0xff );
-	buffer[6] = (byte) ( (l >> 8) & 0xff );
-	buffer[5] = (byte) ( (l >> 16) & 0xff );
-	buffer[4] = (byte) ( (l >> 24) & 0xff );
-	buffer[3] = (byte) ( (l >> 32) & 0xff );
-	buffer[2] = (byte) ( (l >> 40) & 0xff );
-	buffer[1] = (byte) ( (l >> 48) & 0xff );
-	buffer[0] = (byte) ( (l >> 56) & 0xff );
+	buffer[7] = (char) ( (l >> 0) & 0xff );
+	buffer[6] = (char) ( (l >> 8) & 0xff );
+	buffer[5] = (char) ( (l >> 16) & 0xff );
+	buffer[4] = (char) ( (l >> 24) & 0xff );
+	buffer[3] = (char) ( (l >> 32) & 0xff );
+	buffer[2] = (char) ( (l >> 40) & 0xff );
+	buffer[1] = (char) ( (l >> 48) & 0xff );
+	buffer[0] = (char) ( (l >> 56) & 0xff );
 	*/
 	
 	/*
-	buffer[0] = (byte) ( (l & 0x000000ff) );
-	buffer[1] = (byte) ( (l & 0x0000ff00) >> 8);
-	buffer[2] = (byte) ( (l & 0x00ff0000) >> 16);
-	buffer[3] = (byte) ( (l & 0xff000000) >> 24);
-	buffer[4] = (byte) ( (l & 0x000000ff) >> 32);
-	buffer[5] = (byte) ( (l & 0x0000ff00) >> 40);
-	buffer[6] = (byte) ( (l & 0x00ff0000) >> 48);
-	buffer[7] = (byte) ( (l & 0xff000000) >> 56);
+	buffer[0] = (char) ( (l & 0x000000ff) );
+	buffer[1] = (char) ( (l & 0x0000ff00) >> 8);
+	buffer[2] = (char) ( (l & 0x00ff0000) >> 16);
+	buffer[3] = (char) ( (l & 0xff000000) >> 24);
+	buffer[4] = (char) ( (l & 0x000000ff) >> 32);
+	buffer[5] = (char) ( (l & 0x0000ff00) >> 40);
+	buffer[6] = (char) ( (l & 0x00ff0000) >> 48);
+	buffer[7] = (char) ( (l & 0xff000000) >> 56);
 	*/
 	
 	return 1;
@@ -112,7 +112,7 @@ int convertLongToByte(long l, byte *buffer, int size)
  * convert a part of table in long
  * return the long represented by the buffer
  */
-long convertByteToLong(byte * buffer, int index, int size) {
+long convertcharToLong(char * buffer, int index, int size) {
 	
 	long l = 0;
 	int j=0;
@@ -131,7 +131,7 @@ long convertByteToLong(byte * buffer, int index, int size) {
  * don't forget to update it.
  * return 0 if error
  */
-int concatBytes(byte* tab1, int size1, byte* tab2, int size2)
+int concatchars(char* tab1, int size1, char* tab2, int size2)
 {
     int i = size1;
 	int j = 0;
@@ -153,7 +153,7 @@ int concatBytes(byte* tab1, int size1, byte* tab2, int size2)
  * don't forget to update it.
  * return -1 if error
  */
-int cutBytes (byte* tab, int size, int index)
+int cutchars (char* tab, int size, int index)
 {
 	int i;
 	int remain_length = size-index;
