@@ -6,7 +6,7 @@
 #include "pilotage.h"
 #include "network.h"
 
-int main(){
+int main() {
 
 	/*
 	 * TEST ALEX
@@ -108,16 +108,35 @@ int main(){
     
     //initNetFifo(globalNetFifo);
     
+    
+    /*
+     * 
+     * test reseau
     initNetFifo(&globalNetFifo);
     
     Network net_info;
     net_info.nt_ip = gethostbyname("localhost");
     net_info.nt_port = 5000;
     
-	pthread_t networt_thread_receiver;
-	pthread_create(&networt_thread_receiver, NULL, th_receiver, &net_info);
+	//pthread_t networt_thread_receiver;
+	//pthread_create(&networt_thread_receiver, NULL, th_receiver, &net_info);
 	
-	pthread_join(networt_thread_receiver, NULL);
+	//pthread_join(networt_thread_receiver, NULL);
+	
+	MuavCom mc;
+	initMuavCom(&mc);
+	setHeader(&mc, 11111111,22222222,1,555555,88888888);
+	
+	MCEncode(&mc);
+	
+	//printf("too\n");
+	
+	sendData(mc, 5000, "127.0.0.1");
+	*
+	* FIN TEST TEST RESAU
+	*/
+	
+	//while(1);
 	
      /* 
      * FIN TEST THREAD 
@@ -172,6 +191,14 @@ int main(){
 	close(file);
 	free(buf_reseau);
     */
+    
+    /*
+     * 
+     * 
+     * REAL AND LAST MAIN !!!!!!!
+     * 
+     * 
+     */ 
     
     return 1;
 }  

@@ -22,6 +22,8 @@ int sendData(MuavCom mc, int port, const char *ip)
 	dest.sin_port = htons(port);
 	dest.sin_addr = *(struct in_addr*)serv->h_addr;
 	
+	printMC(mc);
+	
 	sendto(sock, mc.mc_data, mc.mc_dataSize, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
 	
 	close(sock);
