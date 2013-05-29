@@ -1,3 +1,6 @@
+#ifndef _H_NET_FIFO_
+#define _H_NET_FIFO_
+
 #include <stdlib.h>
 #define MAX_SIZE 100
 
@@ -11,11 +14,6 @@ typedef struct netfifo
 	int nf_size;
 	void *nf_fifo[MAX_SIZE];
 } NetFifo;
-
-/*
- * GLOBAL NetFifo
- */
-//NetFifo globalNetFifo;
 
 
 /*
@@ -54,3 +52,4 @@ int clearNetFifo(NetFifo * nf);
  * 0 else.
  */
 int isFullNetFifo(NetFifo * nf);
+#endif

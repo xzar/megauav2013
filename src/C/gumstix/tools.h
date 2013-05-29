@@ -1,3 +1,6 @@
+#ifndef _H_TOOLS_
+#define _H_TOOLS_
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -59,3 +62,4 @@ int concatchars(char* tab1, int size1, char* tab2, int size2);
  * return -1 if error
  */
 int cutchars (char* tab, int size, int index);
+#endif

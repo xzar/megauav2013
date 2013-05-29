@@ -1,3 +1,6 @@
+#ifndef _H_MUAV_COM_
+#define _H_MUAV_COM_
+
 #include "tools.h"
 #include <stdio.h>
 
@@ -9,12 +12,11 @@ typedef enum
 {
 	PILOTE_REQ_MANUAL=1,
 	R_PILOTE_REQ_MANUAL=2,
-	REQUEST_INFO=3,
-	R_REQUEST_INFO=4,
+	SEND_INFO=3,
+	R_SEND_INFO=4,
 	EMERGENCY=5,
 	MISSION=6,
-	PILOTE_MANUAL=7,
-	R_PILOTE_MANUAL=8
+	PILOTE_MANUAL=7
 } RequestType;
 
 typedef struct muavcom 
@@ -60,3 +62,5 @@ void MCDecode( MuavCom *mc );
  * convert header info in char*
  */ 
 void MCEncode( MuavCom *mc );
+
+#endif

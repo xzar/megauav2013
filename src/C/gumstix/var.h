@@ -1,3 +1,6 @@
+#ifndef _H_VAR_
+#define _H_VAR_
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -25,3 +28,5 @@ struct str_ExternControl
 	unsigned char Frame;	//value, which is send back by the fc for confirmation
 	unsigned char Config;	//if set to 1 the ExternControl is set active
 };
+
+#endif
