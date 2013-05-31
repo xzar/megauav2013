@@ -77,9 +77,9 @@ int main(int argc, char *argv[]) {
 	net_send.nt_ip = gethostbyname(ip_tower);
 	net_send.nt_port = port_send;
 	
-	sem_init(&sem_auto, NULL, 0);
-	sem_init(&sem_manual, NULL, 0);
-	sem_init(&sem_sync, NULL, 0);
+	sem_init(&mutex_fifo, NULL, 1);
+	sem_init(&mutex_status, NULL, 1);
+	sem_init(&sem_off, NULL, 0);
 	
 	status = MODE_OFF;
 	
@@ -95,18 +95,50 @@ int main(int argc, char *argv[]) {
 	
 	//pthread_create(&thread_self_ruling,NULL,self_ruling,NULL);
 	//pthread_create(&thread_manual_ruling,NULL,manual_ruling,NULL);
+
+    /*
+     * END THREAD
+	 */
 	
 	//TODO Send coucou
-	
-	pthread_join(thread_network_receiver, NULL);
+
+    while(1)
+    {
+        sem_wait(&mutex_status);
+
+        switch(status)
+        {
+            case MODE_MANUAL:
+                sem_post(&mutex_status);
+                /*
+                 * CODE MODE MANUAL
+                 */
+                break;
+            case MODE_AUTO:
+                sem_post(&mutex_status);
+                /*
+                 * CODE MODE WITH IA
+                 */
+                break;
+            case MODE_OFF:
+                sem_post(&mutex_status);
+                sem_wait(&sem_off);
+                break;
+        }
+    }
+
+    /*
+     * END
+     */
+
+    
+	//pthread_join(thread_network_receiver, NULL);
 	//pthread_join(thread_network_sender, NULL);
 	
 	//pthread_join(thread_self_ruling, NULL);
 	//pthread_join(thread_manual_ruling, NULL);
 	 
-	 /*
-	  * END THREAD
-	  */
+	 
 	
 	
 

@@ -5,9 +5,9 @@
  */
 NetFifo globalNetFifo;
 
-sem_t sem_manual;
-sem_t sem_auto;
-sem_t sem_sync;
+sem_t mutex_fifo;
+sem_t mutex_status;
+sem_t sem_off;
 
 int status;
 
@@ -56,7 +56,7 @@ void* th_receiver(void* data)
 	
 	MuavCom mc;
 	
-	printf("port : %d\n", nt.nt_port);
+	printf("wait port : %d\n", nt.nt_port);
 	
 	while (1)
 	{
@@ -65,7 +65,8 @@ void* th_receiver(void* data)
 		
 		printf("received: %s", buf);
 		printf("packet size %d\n", exp_len);
-		
+
+        
 		int i;
 		for (i = 0; i < BUFFER_SIZE; i++) {
 			mc.mc_data[i] = buf[i];
@@ -144,7 +145,7 @@ void *th_sendInfo(void *data)
 
 /*
  * thread, auto mode
- */
+ *
 void *self_ruling(void *data)
 {
 	while (1)
@@ -160,7 +161,7 @@ void *self_ruling(void *data)
 
 /*
  * thread, manual mode
- */
+ *
 void *manual_ruling(void *data)
 {
 	while (1)
@@ -177,7 +178,7 @@ void *manual_ruling(void *data)
 
 /*
  * Sync manual and auto mode
- */
+ *
  void * sync_mode(void *data)
  {
 	 while (1)
@@ -196,3 +197,4 @@ void *manual_ruling(void *data)
 		 }
 	 }
  }
+*/

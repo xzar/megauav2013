@@ -21,9 +21,9 @@
  */
 extern NetFifo globalNetFifo;
 
-extern sem_t sem_manual;
-extern sem_t sem_auto;
-extern sem_t sem_sync;
+extern sem_t mutex_fifo;
+extern sem_t mutex_status;
+extern sem_t sem_off;
 
 extern int status;
 
@@ -56,11 +56,12 @@ void *th_sendInfo(void *data);
 
 /*
  * thread, auto mode
- */
+ *
 void *self_ruling(void *data);
 
 /*
  * thread, manual mode
- */
+ *
 void *manual_ruling(void *data);
+*/
 #endif
