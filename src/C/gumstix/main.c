@@ -5,6 +5,8 @@
 
 #include "pilotage.h"
 #include "network.h"
+#include "serial_util.h"
+
 
 int main(int argc, char *argv[]) {
 	
@@ -16,6 +18,7 @@ int main(int argc, char *argv[]) {
 	
 	//listen the control tower in this port
 	int port_listen;
+
 	
 	/*
 	 * ARG MANAGMENT
@@ -63,6 +66,13 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "port %d is not allowed\n", port_listen);
 	}
 	
+	if(serial_open(&file_mkusb, argv[4])==-1)
+	{
+		printf("Can't open serial port !\n");
+		return -1;
+	}
+
+
 	ip_tower = argv[1];
 	
 	/*
@@ -77,7 +87,6 @@ int main(int argc, char *argv[]) {
 	
 	net_info.nt_ip = ip_tower;
 	net_info.nt_port = port_send;
-	net_info.nameFile = argv[4];
 	
 	sem_init(&mutex_fifo, NULL, 1);
 	sem_init(&mutex_status, NULL, 1);
@@ -103,7 +112,7 @@ int main(int argc, char *argv[]) {
 	 */
 	
 	//TODO Send coucou
-
+	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
     while(1)
     {
         sem_wait(&mutex_status);
@@ -112,9 +121,12 @@ int main(int argc, char *argv[]) {
         {
             case MODE_MANUAL:
                 sem_post(&mutex_status);
-                /*
-                 * CODE MODE MANUAL
-                 */
+				//attente reseau
+              /*  set_Nick( (signed char) buf_reseau[0] );
+				set_Roll( (signed char) buf_reseau[1] );
+				set_Yaw( (signed char) buf_reseau[2] ); 
+				set_Gas( (unsigned char) buf_reseau[3] ); */
+				envoi_pilotage(file_mkusb);
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);

@@ -1,5 +1,5 @@
 #include "serial_util.h"
-
+int file_mkusb;
 //#define DEBUG2
 int serial_open(int* file, char* nameFile)
 {

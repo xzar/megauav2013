@@ -7,6 +7,8 @@
 
 #include "var.h"
 
+extern int file_mkusb;
+
 int serial_open(int* , char* );
 
 int serial_write(int , char* , int );
