@@ -112,6 +112,7 @@ void MCDecode( MuavCom *mc )
 	index+=4;
 	
 	mc->mc_error=convertcharToInt(mc->mc_data, index, 4);
+	//index+=4;
 	
 }
 
@@ -144,4 +145,15 @@ void InfoEncode(MuavCom *mc, int *info, int size)
 		concatchars(mc->mc_data, mc->mc_dataSize, tmp, 4);
 		mc->mc_dataSize+=4;
 	}
+}
+
+/*
+ * put the received value in the int*;
+ */
+void ManualDecode(MuavCom* mc, int* nick, int* roll, int* yaw, int* gas)
+{
+	*nick = convertcharToInt(mc->mc_data, HEADER_SIZE, 4);
+	*roll = convertcharToInt(mc->mc_data, HEADER_SIZE+4, 4);
+	*yaw = convertcharToInt(mc->mc_data, HEADER_SIZE+8, 4);
+	*gas = convertcharToInt(mc->mc_data, HEADER_SIZE+12, 4);
 }

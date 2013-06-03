@@ -2,6 +2,7 @@
 #define _H_NET_FIFO_
 
 #include <stdlib.h>
+#include "var.h"
 #define MAX_SIZE 100
 
 /*
@@ -52,4 +53,10 @@ int clearNetFifo(NetFifo * nf);
  * 0 else.
  */
 int isFullNetFifo(NetFifo * nf);
+
+/*
+ * return 1 if fifo is empty,
+ * 0 else.
+ */
+int isEmptyNetFifo(NetFifo * nf);
 #endif

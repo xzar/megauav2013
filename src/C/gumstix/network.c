@@ -62,24 +62,21 @@ void* th_receiver(void* data)
 	
 	while (1)
 	{
+		
 		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		//TODO MUTEX
 		
 		printf("received: %s", buf);
 		printf("packet size %d\n", exp_len);
-
-        
-		int i;
-		for (i = 0; i < BUFFER_SIZE; i++) {
-			mc.mc_data[i] = buf[i];
-		}
+		
+		memcpy(mc.mc_data, buf, BUFFER_SIZE);
 		
 		MCDecode(&mc);
 		
 		printMC(mc);
-		
+		sem_wait(&mutex_fifo);
 		addNetFifo(&globalNetFifo, buf); 
-		
+		sem_post(&mutex_fifo);
 		//close(sock);
 		
 	} 

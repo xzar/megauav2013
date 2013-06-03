@@ -2,11 +2,12 @@
 #define _H_MUAV_COM_
 
 #include "tools.h"
+#include "var.h"
 #include <stdio.h>
 
-#define BUFFER_SIZE 1024
 #define EMERGENCY_PORT 1337
 #define SEND_PORT 1338
+#define HEADER_SIZE 24
 
 typedef enum
 {
@@ -73,5 +74,10 @@ void MCEncode( MuavCom *mc );
  * Encode the quadri info.
  */
 void InfoEncode(MuavCom *mc, int *info, int size);
+
+/*
+ * put the received value in the int*;
+ */
+void ManualDecode(MuavCom*,int*, int*, int*, int*);
 
 #endif

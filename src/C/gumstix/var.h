@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#define TEST 2
+#define BUFFER_SIZE 1024
 //#define DEBUG1
 //#define DEBUG2
 

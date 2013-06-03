@@ -1,14 +1,6 @@
 #include "net_fifo.h"
 
 /*
- * PLEASE NO DYN ALLOC, THX.
- */
- 
-/*
- * SUPRISE : sans porté sur un tableau statique, est qu'il est free ?
- */
-
-/*
  * PRIVATE function, don't declare it in .h
  * return the next index in fifo.
  */
@@ -59,7 +51,11 @@ int addNetFifo(NetFifo * nf, void * data)
 {
 	if ( isFullNetFifo(nf) ) return -1;
 	
-	nf->nf_fifo[nf->nf_index_end] = data;
+	nf->nf_fifo[nf->nf_index_end] = malloc(BUFFER_SIZE);
+	
+	memset(nf->nf_fifo[nf->nf_index_end], 0, BUFFER_SIZE);
+	memcpy(nf->nf_fifo[nf->nf_index_end], data, BUFFER_SIZE);
+	
 	nf->nf_index_end = getNextEndIndex(nf);
 	
 	return 1;
@@ -70,22 +66,10 @@ int addNetFifo(NetFifo * nf, void * data)
  */
 int removeNetFifo(NetFifo * nf)
 {
+	free(nf->nf_fifo[nf->nf_index_start]);
 	nf->nf_fifo[nf->nf_index_start] = NULL;
 	nf->nf_index_start = getNextStartIndex(nf);
 	return 1;
-}
-
-/*
- * return the first pointer of the fifo
- * and delete it.
- */
-void * pullNetFifo(NetFifo * nf)
-{
-	void * ret = nf->nf_fifo[nf->nf_index_start];
-	
-	removeNetFifo(nf);
-	
-	return ret;
 }
 
 /*
@@ -101,6 +85,10 @@ void * firstNetFifo(NetFifo * nf)
  */
 int clearNetFifo(NetFifo * nf)
 {
+	while (!isEmptyNetFifo(nf))
+	{
+		removeNetFifo(nf);
+	}
 	return initNetFifo(nf);
 }
 
@@ -112,4 +100,13 @@ int isFullNetFifo(NetFifo * nf)
 {
 	if ( getNextEndIndex(nf) == nf->nf_index_start ) return 0;
 	return 1;
+}
+
+/*
+ * return 1 if fifo is empty,
+ * 0 else.
+ */
+int isEmptyNetFifo(NetFifo * nf)
+{
+	
 }

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <pthread.h>
+#include <string.h>
 
 #include "pilotage.h"
 #include "network.h"
@@ -92,6 +93,8 @@ int main(int argc, char *argv[]) {
 	sem_init(&mutex_status, NULL, 1);
 	sem_init(&sem_off, NULL, 0);
 	
+	initNetFifo(&globalNetFifo);
+	
 	status = MODE_OFF;
 	
 	/*
@@ -112,6 +115,7 @@ int main(int argc, char *argv[]) {
 	 */
 	
 	//TODO Send coucou
+	
 	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
     while(1)
     {
@@ -121,12 +125,37 @@ int main(int argc, char *argv[]) {
         {
             case MODE_MANUAL:
                 sem_post(&mutex_status);
-				//attente reseau
-              /*  set_Nick( (signed char) buf_reseau[0] );
-				set_Roll( (signed char) buf_reseau[1] );
-				set_Yaw( (signed char) buf_reseau[2] ); 
-				set_Gas( (unsigned char) buf_reseau[3] ); */
-				envoi_pilotage(file_mkusb);
+				
+				int nick, roll, yaw, gas;
+				MuavCom mc;
+				
+				sem_wait(&mutex_fifo);
+				
+				if ( ! isEmptyNetFifo(&globalNetFifo) )
+				{
+					memset(mc.mc_data, 0, BUFFER_SIZE);
+					
+					memcpy(mc.mc_data, firstNetFifo(&globalNetFifo), BUFFER_SIZE);
+					removeNetFifo(&globalNetFifo);
+					
+					sem_post(&mutex_fifo);
+					
+					MCDecode(&mc);
+					
+					if (mc.mc_request == PILOTE_MANUAL)
+					{
+						ManualDecode(&mc, &nick, &roll, &yaw, &gas);
+						
+						set_Nick( (signed char) nick );
+						set_Roll( (signed char) roll );
+						set_Yaw( (signed char) yaw ); 
+						set_Gas( (unsigned char) gas );
+						envoi_pilotage(file_mkusb);
+					}
+				} else {
+					sem_post(&mutex_fifo);
+				}
+				
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);
