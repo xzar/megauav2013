@@ -23,13 +23,15 @@ int sendData(MuavCom mc, int port, const char *ip)
 	struct hostent* serv = NULL;
 	
 	serv = gethostbyname(ip);
-	
+
 	dest.sin_family = AF_INET;
+
 	dest.sin_port = htons(port);
+
 	dest.sin_addr = *(struct in_addr*)serv->h_addr;
 	
 	printMC(mc);
-	
+		
 	sendto(sock, mc.mc_data, mc.mc_dataSize, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
 	
 	close(sock);
@@ -95,8 +97,8 @@ void *th_sendInfo(void *data)
 	int sock;
 	struct sockaddr_in recv_addr, exp_addr ;
 
-	int n, exp_len,offset,cpt ;
-	char buf[BUFFER_SIZE];
+	int n, exp_len,offset,cpt = 0 ;
+	int buf[BUFFER_SIZE];
 	int parameters[1], file;
 	int i=0;
 	int*  AnalogData   = (int*)  malloc( ANALOG_SIZE   * sizeof(int)  );
@@ -115,17 +117,16 @@ void *th_sendInfo(void *data)
 		printf("Can't open serial port !\n");
 		return -1;
 	}
-	initMuavCom(&mc);
+	
 
 	while (1)
 	{
-		/*
-		 * TODO ENVOI INFO
-		 */
+		initMuavCom(&mc);
+		
 
 		// Resets reading offset
 		offset = 0;
-
+		
 		if( cpt == 0 )
 		{
 			// Sets auto send interval (x * 10 => ms)
@@ -134,21 +135,22 @@ void *th_sendInfo(void *data)
 			// Requests debug packet from FC
 			SendOutData('d', 'b', parameters, 1, file);
 
-			cpt = 200;
+			cpt = 50;
 		}
-
+		cpt --;
 		// Reads the first packet from the FC
 		offset += read(file, &rx_buffer+offset, TAILLE_BUFER-offset);
-	
+		
 		// Checks if it's a debug packet
 		if(rx_buffer[0] == '#' && rx_buffer[2] == 'D')
 		{
+			
 			// Reads to the end
 			while( rx_buffer[offset-1] != '\r' )
 			{
 				offset += read(file, &rx_buffer[offset], TAILLE_BUFER-offset);
 			}
-			
+		
 			// Decodes the packet
 			Decode64(buf, rx_buffer, offset,3,offset);
 			
@@ -156,15 +158,23 @@ void *th_sendInfo(void *data)
 			for (i = 0; i < ANALOG_SIZE; i++)
         	{
         		AnalogData[i] = Data2Int(buf, (i * 2) + 2);
+				
         	}
+			
+			printf("%d %d %d %d \n",AnalogData[0],AnalogData[1],AnalogData[30],AnalogData[31]);
+			setHeader( &mc, 0, 0,SEND_INFO, 0 );
+			
+			InfoEncode(&mc, AnalogData, ANALOG_SIZE);
+			
+			sendData(mc, nt.nt_port, nt.nt_ip);
+			//n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
+		
+			//MCDecode(&mc);
+			
 		}
-		setHeader( &mc, 0, 0,SEND_INFO, 0 );
-		InfoEncode(&mc, AnalogData, ANALOG_SIZE);
-		sendData(mc, nt.nt_port, nt.nt_ip);
 		
-		//n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		
-		//MCDecode(&mc);
+		
 		
 		/*
 		 * TODO traiter erreur de la requete si besoin

@@ -21,14 +21,14 @@ int main(int argc, char *argv[]) {
 	 * ARG MANAGMENT
 	 */
 	 
-	if (argc != 4)
+	if (argc != 5)
 	{
 		fprintf(stderr, "Invalid number of argument : %d\n", argc);
 		exit(0);
 	}
 	
 	gethostbyname(argv[1]);
-	
+	ip_tower = argv[1];
 	switch(h_errno)
 	{
 		case HOST_NOT_FOUND:
@@ -72,12 +72,12 @@ int main(int argc, char *argv[]) {
 	Network net_listen;
 	Network_info net_info;
 	
-	net_listen.nt_ip = gethostbyname(ip_tower);
+	net_listen.nt_ip = ip_tower;
 	net_listen.nt_port = port_listen;
 	
-	net_info.nt_ip = gethostbyname(ip_tower);
+	net_info.nt_ip = ip_tower;
 	net_info.nt_port = port_send;
-	net_info.nameFile = "/dev/ttyS0";
+	net_info.nameFile = argv[4];
 	
 	sem_init(&mutex_fifo, NULL, 1);
 	sem_init(&mutex_status, NULL, 1);

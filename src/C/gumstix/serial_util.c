@@ -21,22 +21,17 @@ printf("entrer open serial_util.c\n");
 	{
 		
 		printf ("error read, %d\n", *file);
-	
-		//sleep(1);
 		return -1;
 	}
 	tcgetattr (*file, &tops);
 	cfmakeraw(&tops); 
-	printf("toto \n");
 	tops.c_cflag &= ~(IXON|IXOFF);
     tops.c_cflag &= ~(CSIZE | PARENB);
     tops.c_cflag |= CS8; 
-	printf("toto 1\n");
 	cfsetispeed (&tops, baudRate);
 	cfsetospeed (&tops, baudRate);
-		printf("toto 2\n");
 	tcsetattr (*file, TCSANOW, &tops); 	
-		printf("toto 3\n");
+	
 	return 1;
 	
 	
