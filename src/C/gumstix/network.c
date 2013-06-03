@@ -112,11 +112,7 @@ void *th_sendInfo(void *data)
 	
 	MuavCom mc;
 	
-	if(serial_open(&file, nt.nameFile)==-1)
-	{
-		printf("Can't open serial port !\n");
-		return -1;
-	}
+	
 	
 
 	while (1)
@@ -133,13 +129,13 @@ void *th_sendInfo(void *data)
 			parameters[0] = 20;
 
 			// Requests debug packet from FC
-			SendOutData('d', 'b', parameters, 1, file);
+			SendOutData('d', 'b', parameters, 1, file_mkusb);
 
 			cpt = 50;
 		}
 		cpt --;
 		// Reads the first packet from the FC
-		offset += read(file, &rx_buffer+offset, TAILLE_BUFER-offset);
+		offset += read(file_mkusb, &rx_buffer+offset, TAILLE_BUFER-offset);
 		
 		// Checks if it's a debug packet
 		if(rx_buffer[0] == '#' && rx_buffer[2] == 'D')
@@ -148,7 +144,7 @@ void *th_sendInfo(void *data)
 			// Reads to the end
 			while( rx_buffer[offset-1] != '\r' )
 			{
-				offset += read(file, &rx_buffer[offset], TAILLE_BUFER-offset);
+				offset += read(file_mkusb, &rx_buffer[offset], TAILLE_BUFER-offset);
 			}
 		
 			// Decodes the packet
