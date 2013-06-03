@@ -8,7 +8,8 @@ void initMuavCom( MuavCom *mc )
 	mc->mc_fid=0;
 	mc->mc_did=0;
 	mc->mc_request=0;
-	mc->mc_timestamp=0;
+	mc->mc_sec=0;
+	mc->mc_usec=0;
 	mc->mc_error=0;
 	
 	mc->mc_dataSize=0;
@@ -25,20 +26,26 @@ void initMuavCom( MuavCom *mc )
 }
 
 /*
- * Set the request's header.
+ * Set the request's header. the date is set here.
+ * 
  * fid : the fleet id.
  * did : the drone id
  * rt : the type of this request.
- * timestamp : the request date.
  * error : the error code.
  */ 
-void setHeader( MuavCom *mc, int fid, int did, RequestType rt, long timestamp, int error )
+void setHeader( MuavCom *mc, int fid, int did, RequestType rt, int error )
 {
+	struct timeval tv;
+	
 	mc->mc_fid=fid;
 	mc->mc_did=did;
 	mc->mc_request=rt;
-	mc->mc_timestamp=timestamp;
 	mc->mc_error=error;
+	
+	gettimeofday(&tv, NULL);
+	
+	mc->mc_sec=tv.tv_sec;
+	mc->mc_usec=tv.tv_usec;
 	
 }
 
@@ -53,20 +60,16 @@ void MCEncode( MuavCom *mc )
 	char fid[intSize];
 	char did[intSize];
 	char rt[intSize];
-	char timestamp[longSize];
+	char sec[intSize];
+	char usec[intSize];
 	char error[intSize];
-	
-	//int debug;
 	
 	convertIntTochar(mc->mc_fid, fid, intSize);
 	convertIntTochar(mc->mc_did, did, intSize);
 	convertIntTochar(mc->mc_request, rt, intSize);
-	//printf("\nDEBUG: %d\n", sizeof(mc->mc_request));
-	convertLongTochar(mc->mc_timestamp, timestamp, intSize);
-	//printf("\nDEBUG: %d\n", sizeof(mc->mc_timestamp));
+	convertLongTochar(mc->mc_sec, sec, intSize);
+	convertLongTochar(mc->mc_usec, usec, intSize);
 	convertIntTochar(mc->mc_error, error, intSize);
-	
-	//printf("\nDEBUG:%d\n", debug);
 	
 	concatchars(mc->mc_data, mc->mc_dataSize, fid, intSize);
 	mc->mc_dataSize+=intSize;
@@ -77,7 +80,10 @@ void MCEncode( MuavCom *mc )
 	concatchars(mc->mc_data, mc->mc_dataSize, rt, intSize);
 	mc->mc_dataSize+=intSize;
 	
-	concatchars(mc->mc_data, mc->mc_dataSize, timestamp, intSize);
+	concatchars(mc->mc_data, mc->mc_dataSize, sec, intSize);
+	mc->mc_dataSize+=intSize;
+	
+	concatchars(mc->mc_data, mc->mc_dataSize, usec, intSize);
 	mc->mc_dataSize+=intSize;
 	
 	concatchars(mc->mc_data, mc->mc_dataSize, error, intSize);
@@ -89,23 +95,21 @@ void MCEncode( MuavCom *mc )
  */ 
 void MCDecode( MuavCom *mc )
 {
-	int intSize = sizeof(int);
-	int longSize = sizeof(long);
 	int index = 0;
 	
-	mc->mc_fid=convertcharToInt(mc->mc_data, index, intSize);
+	mc->mc_fid=convertcharToInt(mc->mc_data, index, 4);
 	index+=intSize;
 	
-	mc->mc_did=convertcharToInt(mc->mc_data, index, intSize);
+	mc->mc_did=convertcharToInt(mc->mc_data, index, 4);
 	index+=intSize;
 	
-	mc->mc_request=convertcharToInt(mc->mc_data, index, intSize);
+	mc->mc_request=convertcharToInt(mc->mc_data, index, 4);
 	index+=intSize;
 	
-	mc->mc_timestamp=convertcharToLong(mc->mc_data, index, longSize);
-	index+=longSize;
+	mc->mc_timestamp=convertcharToLong(mc->mc_data, index, 4);
+	index+=4;
 	
-	mc->mc_error=convertcharToInt(mc->mc_data, index, intSize);
+	mc->mc_error=convertcharToInt(mc->mc_data, index, 4);
 	
 }
 

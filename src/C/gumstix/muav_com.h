@@ -24,7 +24,8 @@ typedef struct muavcom
 	int mc_fid;
 	int mc_did;
 	RequestType mc_request;
-	long mc_timestamp;
+	int mc_sec;
+	int usec_sec;
 	int mc_error;
 	char mc_data[BUFFER_SIZE];
 	char mc_remainingData[BUFFER_SIZE];
@@ -38,12 +39,17 @@ typedef struct muavcom
  */ 
 void initMuavCom( MuavCom *mc );
 
+#include <sys/time.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+
 /*
- * Set the request's header.
+ * Set the request's header. the date is set here.
+ * 
  * fid : the fleet id.
  * did : the drone id
  * rt : the type of this request.
- * timestamp : the request date.
  * error : the error code.
  */ 
 void setHeader( MuavCom *mc, int fid, int did, RequestType rt, long timestamp, int error );
