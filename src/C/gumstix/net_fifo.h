@@ -40,6 +40,7 @@ void * pullNetFifo(NetFifo * nf);
 
 /*
  * return the first pointer of the fifo
+ * NULL if fifo is empty
  */
 void * firstNetFifo(NetFifo * nf);
 

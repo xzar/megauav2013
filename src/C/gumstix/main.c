@@ -66,13 +66,13 @@ int main(int argc, char *argv[]) {
 	{
 		fprintf(stderr, "port %d is not allowed\n", port_listen);
 	}
-	
+	/*
 	if(serial_open(&file_mkusb, argv[4])==-1)
 	{
 		printf("Can't open serial port !\n");
 		return -1;
 	}
-
+*/
 
 	ip_tower = argv[1];
 	
@@ -114,30 +114,36 @@ int main(int argc, char *argv[]) {
      * END THREAD
 	 */
 	
+	pthread_join(thread_network_receiver, NULL);
+	pthread_join(thread_network_sender, NULL);
+	
 	//TODO Send coucou
 	
-	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
-	init_pilotage();
+	//memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
+	//init_pilotage();
 //printf("test 0\n");
     while(1)
     {
-        sem_wait(&mutex_status);
-///printf("test 01\n");
+        //sem_wait(&mutex_status);
+//printf("test 01\n");
         switch(status)
         {
             case MODE_MANUAL:
-                sem_post(&mutex_status);
+                //sem_post(&mutex_status);
 				//printf("test 1 \n");
+				/*
 				int nick, roll, yaw, gas;
 				MuavCom mc;
 				//printf("test 2\n");
 				sem_wait(&mutex_fifo);
 				//printf("test 3\n");
 				if ( ! isEmptyNetFifo(&globalNetFifo) )
-				{//printf("test 4\n");
+				{
+					printf("test 4444\n");
 					memset(mc.mc_data, 0, BUFFER_SIZE);
-					
-					memcpy(mc.mc_data, firstNetFifo(&globalNetFifo), BUFFER_SIZE);
+					printf("test 445\n");
+					//memcpy(mc.mc_data, firstNetFifo(&globalNetFifo), BUFFER_SIZE);
+					printf("test 55\n");
 					removeNetFifo(&globalNetFifo);
 					printf("test 5\n");
 					sem_post(&mutex_fifo);
@@ -145,10 +151,11 @@ int main(int argc, char *argv[]) {
 					MCDecode(&mc);
 					printf("test 7\n");
 					if (mc.mc_request == PILOTE_MANUAL)
-					{printf("test 8\n");
+					{
+						printf("test 8\n");
 						ManualDecode(&mc, &nick, &roll, &yaw, &gas);
 						printf("%d %d %d %d \n",nick, roll, yaw, gas);
-						set_Nick( (signed char) nick );
+						/*set_Nick( (signed char) nick );
 						set_Roll( (signed char) roll );
 						set_Yaw( (signed char) yaw ); 
 						set_Gas( (unsigned char) gas );
@@ -157,17 +164,17 @@ int main(int argc, char *argv[]) {
 				} else {
 					sem_post(&mutex_fifo);
 				}
-				
+				*/
                 break;
             case MODE_AUTO:
-                sem_post(&mutex_status);
+                //sem_post(&mutex_status);
                 /*
                  * CODE MODE WITH IA
                  */
                 break;
             case MODE_OFF:
-                sem_post(&mutex_status);
-                sem_wait(&sem_off);
+                //sem_post(&mutex_status);
+                //sem_wait(&sem_off);
                 break;
         }
     }

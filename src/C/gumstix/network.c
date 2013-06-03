@@ -58,7 +58,7 @@ void* th_receiver(void* data)
 	
 	MuavCom mc;
 	
-	printf("wait port : %d\n", nt.nt_port);
+	printf("receive command port : %d\n", nt.nt_port);
 	
 	while (1)
 	{
@@ -66,8 +66,7 @@ void* th_receiver(void* data)
 		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		//TODO MUTEX
 		
-		//printf("received: %s", buf);
-		//printf("packet size %d\n", exp_len);
+		printf("received: %s", buf);
 		
 		memcpy(mc.mc_data, buf, BUFFER_SIZE);
 		
@@ -78,10 +77,10 @@ void* th_receiver(void* data)
 		printf(" n %d r %d y %d g %d\n",nick, roll,yaw,gac);
 		printMC(mc);
 		printf("avant sem \n");
-		sem_wait(&mutex_fifo);
-		printf("buf %s retour = %d\n",buf,addNetFifo(&globalNetFifo, buf) );
+		//sem_wait(&mutex_fifo);
+		//printf("buf %s retour = %d\n",buf,addNetFifo(&globalNetFifo, buf) );
 		
-		sem_post(&mutex_fifo);
+		//sem_post(&mutex_fifo);
 		//close(sock);
 		
 	} 
@@ -116,7 +115,7 @@ void *th_sendInfo(void *data)
 	
 	
 	
-
+/*
 	while (1)
 	{
 		initMuavCom(&mc);
@@ -177,9 +176,9 @@ void *th_sendInfo(void *data)
 		/*
 		 * TODO traiter erreur de la requete si besoin
 		 * pas de timeout reponse useless
-		 */
+		 *
 		
-	} 
+	}*/ 
 	
 	close(sock);
 }

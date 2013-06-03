@@ -6,9 +6,7 @@
  */
 int getNextEndIndex(NetFifo * nf)
 {
-	
 	if ( nf->nf_index_end == MAX_SIZE - 1 ) return 0;
-	
 	return ++nf->nf_index_end;
 }
 
@@ -18,9 +16,27 @@ int getNextEndIndex(NetFifo * nf)
  */
 int getNextStartIndex(NetFifo * nf)
 {
-	
 	if ( nf->nf_index_start == MAX_SIZE - 1 ) return 0;
-	
+	return ++nf->nf_index_start;
+}
+
+/*
+ * PRIVATE function, don't declare it in .h
+ * return the next index in fifo.
+ */
+int nextEndIndex(NetFifo * nf)
+{
+	if ( nf->nf_index_end == MAX_SIZE - 1 ) return 0;
+	return ++nf->nf_index_end;
+}
+
+/*
+ * PRIVATE function, don't declare it in .h
+ * return the next index in fifo.
+ */
+int nextStartIndex(NetFifo * nf)
+{
+	if ( nf->nf_index_start == MAX_SIZE - 1 ) return 0;
 	return ++nf->nf_index_start;
 }
 
@@ -49,14 +65,14 @@ int initNetFifo(NetFifo * nf)
  */
 int addNetFifo(NetFifo * nf, void * data)
 {
-	//if ( isFullNetFifo(nf) ) return -1;
+	if ( isFullNetFifo(nf) ) return -1;
 	
 	nf->nf_fifo[nf->nf_index_end] = malloc(BUFFER_SIZE);
 	
 	memset(nf->nf_fifo[nf->nf_index_end], 0, BUFFER_SIZE);
 	memcpy(nf->nf_fifo[nf->nf_index_end], data, BUFFER_SIZE);
 	
-	nf->nf_index_end = getNextEndIndex(nf);
+	nf->nf_index_end = nextEndIndex(nf);
 	
 	return 1;
 }
@@ -74,9 +90,11 @@ int removeNetFifo(NetFifo * nf)
 
 /*
  * return the first pointer of the fifo
+ * NULL if fifo is empty
  */
 void * firstNetFifo(NetFifo * nf)
 {
+	if (isEmptyNetFifo(nf)) return NULL;
 	return nf->nf_fifo[nf->nf_index_start];
 }
 
@@ -108,5 +126,6 @@ int isFullNetFifo(NetFifo * nf)
  */
 int isEmptyNetFifo(NetFifo * nf)
 {
-	
+	if (nf->nf_index_start == nf->nf_index_end) return 1;
+	return 0;
 }

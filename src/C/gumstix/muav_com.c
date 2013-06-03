@@ -22,7 +22,7 @@ void initMuavCom( MuavCom *mc )
 		mc->mc_remainingData[i] = 0;
 	}
 	
-	mc->mc_headerSize = ( sizeof(int) * 4 ) + sizeof(long);
+	mc->mc_headerSize = HEADER_SIZE;
 }
 
 /*
@@ -66,8 +66,8 @@ void MCEncode( MuavCom *mc )
 	convertIntTochar(mc->mc_fid, fid, intSize);
 	convertIntTochar(mc->mc_did, did, intSize);
 	convertIntTochar(mc->mc_request, rt, intSize);
-	convertLongTochar(mc->mc_sec, sec, intSize);
-	convertLongTochar(mc->mc_usec, usec, intSize);
+	convertIntTochar(mc->mc_sec, sec, intSize);
+	convertIntTochar(mc->mc_usec, usec, intSize);
 	convertIntTochar(mc->mc_error, error, intSize);
 	
 	concatchars(mc->mc_data, mc->mc_dataSize, fid, intSize);
@@ -105,10 +105,10 @@ void MCDecode( MuavCom *mc )
 	mc->mc_request=convertcharToInt(mc->mc_data, index, 4);
 	index+=4;
 	
-	mc->mc_sec=convertcharToLong(mc->mc_data, index, 4);
+	mc->mc_sec=convertcharToInt(mc->mc_data, index, 4);
 	index+=4;
 	
-	mc->mc_usec=convertcharToLong(mc->mc_data, index, 4);
+	mc->mc_usec=convertcharToInt(mc->mc_data, index, 4);
 	index+=4;
 	
 	mc->mc_error=convertcharToInt(mc->mc_data, index, 4);
@@ -123,7 +123,7 @@ void printMC(MuavCom mc)
 {
 	printf("\n");
 	printf("MuavCom:\n");
-	printf("fid:%d\ndid:%d\nrt:%d\nts:%ld\nerr:%d\n", mc.mc_fid, mc.mc_did, mc.mc_request, mc.mc_sec, mc.mc_error);
+	printf("fid:%d\ndid:%d\nrt:%d\nsec:%d\nusec:%d\nerr:%d\n", mc.mc_fid, mc.mc_did, mc.mc_request, mc.mc_sec, mc.mc_usec, mc.mc_error);
 	printf("data:%s\n",  mc.mc_data);
 	printf("Remaining Data:%s\n",  mc.mc_remainingData);
 }
