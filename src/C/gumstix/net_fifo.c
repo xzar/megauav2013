@@ -49,7 +49,7 @@ int initNetFifo(NetFifo * nf)
  */
 int addNetFifo(NetFifo * nf, void * data)
 {
-	if ( isFullNetFifo(nf) ) return -1;
+	//if ( isFullNetFifo(nf) ) return -1;
 	
 	nf->nf_fifo[nf->nf_index_end] = malloc(BUFFER_SIZE);
 	

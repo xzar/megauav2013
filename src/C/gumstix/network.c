@@ -30,7 +30,7 @@ int sendData(MuavCom mc, int port, const char *ip)
 
 	dest.sin_addr = *(struct in_addr*)serv->h_addr;
 	
-	printMC(mc);
+	//printMC(mc);
 		
 	sendto(sock, mc.mc_data, mc.mc_dataSize, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
 	
@@ -66,16 +66,21 @@ void* th_receiver(void* data)
 		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		//TODO MUTEX
 		
-		printf("received: %s", buf);
-		printf("packet size %d\n", exp_len);
+		//printf("received: %s", buf);
+		//printf("packet size %d\n", exp_len);
 		
 		memcpy(mc.mc_data, buf, BUFFER_SIZE);
 		
 		MCDecode(&mc);
+		int nick, roll, yaw, gac;
 		
+		ManualDecode(&mc, &nick, & roll,& yaw, & gac);
+		printf(" n %d r %d y %d g %d\n",nick, roll,yaw,gac);
 		printMC(mc);
+		printf("avant sem \n");
 		sem_wait(&mutex_fifo);
-		addNetFifo(&globalNetFifo, buf); 
+		printf("buf %s retour = %d\n",buf,addNetFifo(&globalNetFifo, buf) );
+		
 		sem_post(&mutex_fifo);
 		//close(sock);
 		
@@ -154,7 +159,7 @@ void *th_sendInfo(void *data)
 				
         	}
 			
-			printf("%d %d %d %d \n",AnalogData[0],AnalogData[1],AnalogData[30],AnalogData[31]);
+			//printf("%d %d %d %d \n",AnalogData[0],AnalogData[1],AnalogData[30],AnalogData[31]);
 			setHeader( &mc, 0, 0,SEND_INFO, 0 );
 			
 			InfoEncode(&mc, AnalogData, ANALOG_SIZE);
