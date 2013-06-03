@@ -11,6 +11,7 @@
 
 #include "muav_com.h"
 #include "net_fifo.h"
+#include "fc_com.h"
 
 #define MODE_MANUAL 7686
 #define MODE_AUTO	2754
@@ -35,6 +36,13 @@ typedef struct network
 	char *nt_ip;
 	int nt_port;
 } Network;
+
+typedef struct network_info
+{
+	char *nt_ip;
+	int nt_port;
+	char *nameFile;
+} Network_info;
 
 /*
  * network thread, listen control tower

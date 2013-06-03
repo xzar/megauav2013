@@ -7,7 +7,9 @@ void AddCRC(unsigned int frame_length)
 #ifdef DEBUG2
 printf("entrer AddCRC fc_com.c\n");	
 #endif
-	printf("1   %s \n", tx_buffer);
+	#ifdef DEBUG1
+	printf("TX buffer add CRC pilota.C   %s \n", tx_buffer);
+	#endif
 	unsigned int tmpCRC = 0;
 	unsigned int i;
 
@@ -23,37 +25,56 @@ printf("entrer AddCRC fc_com.c\n");
 
 }
 
-void Decode64(unsigned char *ptrOut, unsigned char len, unsigned char ptrIn,unsigned char max) 
-{
-#ifdef DEBUG2
-printf("entrer Decode64 fc_com.c\n");	
-#endif
 
+int Data2Int(int *Data , int Start)
+{
+    int Out = (Data[Start+1]<<8) | (Data[Start+0]);
+
+    if (Out > 32767)
+      Out = Out - 65536;
+
+    return Out;
+
+}
+
+int Data2Char(int *Data , int Start)
+{
+    int Out = (Data[Start]);
+
+    //if ((Out > 128))
+    //  Out = Out - 256;
+
+    return Out;
+
+}
+
+void Decode64(int *ptrOut, char* RxdBuffer, unsigned char len, unsigned char ptrIn,unsigned char max)
+{
 	unsigned char a,b,c,d;
 	unsigned char ptr = 0;
 	unsigned char x,y,z;
 
-	while(len)
+	while(len != 0)
 	{
-		a = rx_buffer[ptrIn++] - '=';
-		b = rx_buffer[ptrIn++] - '=';
-		c = rx_buffer[ptrIn++] - '=';
-		d = rx_buffer[ptrIn++] - '=';
-
-		if(ptrIn > max - 2) break;     // dont process more data than recieved
-		
+		a = RxdBuffer[ptrIn++] - '=';
+		b = RxdBuffer[ptrIn++] - '=';
+		c = RxdBuffer[ptrIn++] - '=';
+		d = RxdBuffer[ptrIn++] - '=';
+	
+		// dont process more data than recieved
+		if(ptrIn > max - 2) break;
+	
 		x = (a << 2) | (b >> 4);
 		y = ((b & 0x0f) << 4) | (c >> 2);
 		z = ((c & 0x03) << 6) | d;
-		
+	
 		if(len--) ptrOut[ptr++] = x; else break;
 		if(len--) ptrOut[ptr++] = y; else break;
-		if(len--) ptrOut[ptr++] = z; else break;
-	}
+        	if(len--) ptrOut[ptr++] = z; else break;
+       }
 }
 
-
-void SendOutData(unsigned char cmd,unsigned char addr, unsigned char *snd, unsigned char len, int file) 
+int SendOutData(unsigned char cmd,unsigned char addr, unsigned char *snd, unsigned char len, int file) 
 {
 #ifdef DEBUG2
 printf("entrer SendOutData fc_com.c\n");	
@@ -64,7 +85,8 @@ printf("entrer SendOutData fc_com.c\n");
 	unsigned char ptr = 0;
 
 	tx_buffer[pt++] = '#';               // Start-Byte
-	tx_buffer[pt++] = 'a' + addr;        // Adress
+	//tx_buffer[pt++] = 'b';        // Adress
+    tx_buffer[pt++] = 'b';
 	tx_buffer[pt++] = cmd;               // Command
 	while(len)
 	{
@@ -78,7 +100,9 @@ printf("entrer SendOutData fc_com.c\n");
 	}
 
 	AddCRC(pt);
-	printf("2    %s \n", tx_buffer);
-	serial_write(file, tx_buffer, pt+3)
-	; //whole frame length is pt+3
+	#ifdef DEBUG1
+	printf("TX Buffer    %s \n", tx_buffer);
+	#endif
+	return serial_write(file, tx_buffer, pt+3); //whole frame length is pt+3
 }									  //#,adr,cmd,data ; crc1,crc2,\r
+

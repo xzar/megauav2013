@@ -69,13 +69,15 @@ int main(int argc, char *argv[]) {
 	 * END ARG MANAGMENT
 	 */
 	 
-	Network net_listen, net_send;
+	Network net_listen;
+	Network_info net_info;
 	
 	net_listen.nt_ip = gethostbyname(ip_tower);
 	net_listen.nt_port = port_listen;
 	
-	net_send.nt_ip = gethostbyname(ip_tower);
-	net_send.nt_port = port_send;
+	net_info.nt_ip = gethostbyname(ip_tower);
+	net_info.nt_port = port_send;
+	net_info.nameFile = "/dev/ttyS0";
 	
 	sem_init(&mutex_fifo, NULL, 1);
 	sem_init(&mutex_status, NULL, 1);
@@ -91,7 +93,7 @@ int main(int argc, char *argv[]) {
 	pthread_t thread_manual_ruling, thread_self_ruling;
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
-	//pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_send);
+	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
 	
 	//pthread_create(&thread_self_ruling,NULL,self_ruling,NULL);
 	//pthread_create(&thread_manual_ruling,NULL,manual_ruling,NULL);
