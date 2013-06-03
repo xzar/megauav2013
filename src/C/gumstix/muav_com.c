@@ -55,7 +55,6 @@ void setHeader( MuavCom *mc, int fid, int did, RequestType rt, int error )
 void MCEncode( MuavCom *mc )
 {
 	int intSize = sizeof(int);
-	int longSize = sizeof(long);
 	
 	char fid[intSize];
 	char did[intSize];
@@ -98,15 +97,18 @@ void MCDecode( MuavCom *mc )
 	int index = 0;
 	
 	mc->mc_fid=convertcharToInt(mc->mc_data, index, 4);
-	index+=intSize;
+	index+=4;
 	
 	mc->mc_did=convertcharToInt(mc->mc_data, index, 4);
-	index+=intSize;
+	index+=4;
 	
 	mc->mc_request=convertcharToInt(mc->mc_data, index, 4);
-	index+=intSize;
+	index+=4;
 	
-	mc->mc_timestamp=convertcharToLong(mc->mc_data, index, 4);
+	mc->mc_sec=convertcharToLong(mc->mc_data, index, 4);
+	index+=4;
+	
+	mc->mc_usec=convertcharToLong(mc->mc_data, index, 4);
 	index+=4;
 	
 	mc->mc_error=convertcharToInt(mc->mc_data, index, 4);
@@ -120,7 +122,7 @@ void printMC(MuavCom mc)
 {
 	printf("\n");
 	printf("MuavCom:\n");
-	printf("fid:%d\ndid:%d\nrt:%d\nts:%ld\nerr:%d\n", mc.mc_fid, mc.mc_did, mc.mc_request, mc.mc_timestamp, mc.mc_error);
+	printf("fid:%d\ndid:%d\nrt:%d\nts:%ld\nerr:%d\n", mc.mc_fid, mc.mc_did, mc.mc_request, mc.mc_sec, mc.mc_error);
 	printf("data:%s\n",  mc.mc_data);
 	printf("Remaining Data:%s\n",  mc.mc_remainingData);
 }

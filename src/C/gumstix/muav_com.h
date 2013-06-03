@@ -25,7 +25,7 @@ typedef struct muavcom
 	int mc_did;
 	RequestType mc_request;
 	int mc_sec;
-	int usec_sec;
+	int mc_usec;
 	int mc_error;
 	char mc_data[BUFFER_SIZE];
 	char mc_remainingData[BUFFER_SIZE];
@@ -52,7 +52,7 @@ void initMuavCom( MuavCom *mc );
  * rt : the type of this request.
  * error : the error code.
  */ 
-void setHeader( MuavCom *mc, int fid, int did, RequestType rt, long timestamp, int error );
+void setHeader( MuavCom *mc, int fid, int did, RequestType rt, int error );
 
 /*
  * display data of muavcom.
