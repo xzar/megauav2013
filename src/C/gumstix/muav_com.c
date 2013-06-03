@@ -120,3 +120,22 @@ void printMC(MuavCom mc)
 	printf("data:%s\n",  mc.mc_data);
 	printf("Remaining Data:%s\n",  mc.mc_remainingData);
 }
+
+/*
+ * Encode the quadri info.
+ */
+void InfoEncode(MuavCom *mc, int *info, int size)
+{
+	MCEncode(mc);
+	
+	int i=0;
+	int j=0;
+	char tmp[4];
+	
+	for (; i < size; i++)
+	{
+		convertIntTochar(info[i], tmp, 4);
+		concatchars(mc->mc_data, mc->mc_dataSize, tmp, 4);
+		mc->mc_dataSize+=4;
+	}
+}

@@ -63,4 +63,9 @@ void MCDecode( MuavCom *mc );
  */ 
 void MCEncode( MuavCom *mc );
 
+/*
+ * Encode the quadri info.
+ */
+void InfoEncode(MuavCom *mc, int *info, int size);
+
 #endif

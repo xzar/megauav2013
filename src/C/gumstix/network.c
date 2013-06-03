@@ -112,9 +112,9 @@ void *th_sendInfo(void *data)
 		/*
 		 * TODO ENVOI INFO
 		 */
-		//sendData(mc, nt.nt_port, nt.nt_ip);
+		sendData(mc, nt.nt_port, nt.nt_ip);
 		
-		//n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
+		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		
 		//MCDecode(&mc);
 		
