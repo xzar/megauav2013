@@ -40,6 +40,26 @@ int sendData(MuavCom mc, int port, const char *ip)
 	return 1;
 }
 
+/*
+ * Send image to the control tower.
+ */
+int sendImage(int port, const char *ip, char * img, int height, int width)
+{
+	int sock = socket(AF_INET, SOCK_DGRAM, 0);
+	struct sockaddr_in dest;
+	int socklen = sizeof(dest);
+	struct hostent* serv = NULL;
+	int size = height * width * 3;
+	
+	serv = gethostbyname(ip);
+	dest.sin_family = AF_INET;
+	dest.sin_port = htons(port);
+	dest.sin_addr = *(struct in_addr*)serv->h_addr;
+	sendto(sock, img, size, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
+	close(sock);
+	return 1;
+}
+
 void* th_receiver(void* data)
 {
 	Network nt = *(Network*)data;

@@ -2,6 +2,7 @@
 #define _H_NET_FIFO_
 
 #include <stdlib.h>
+#include <string.h>
 #include "var.h"
 #define MAX_SIZE 100
 

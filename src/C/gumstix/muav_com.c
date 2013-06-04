@@ -136,7 +136,6 @@ void InfoEncode(MuavCom *mc, int *info, int size)
 	MCEncode(mc);
 	
 	int i=0;
-	int j=0;
 	char tmp[4];
 	
 	for (; i < size; i++)
@@ -156,4 +155,24 @@ void ManualDecode(MuavCom* mc, int* nick, int* roll, int* yaw, int* gas)
 	*roll = convertcharToInt(mc->mc_data, HEADER_SIZE+4, 4);
 	*yaw = convertcharToInt(mc->mc_data, HEADER_SIZE+8, 4);
 	*gas = convertcharToInt(mc->mc_data, HEADER_SIZE+12, 4);
+}
+
+/*
+ * Encode the image size.
+ */
+void ImgSizeEncode(MuavCom *mc, int height, int width)
+{
+	MCEncode(mc);
+	
+	char c_height[4];
+	char c_width[4];
+	
+	convertIntTochar(height, c_height, 4);
+	convertIntTochar(width, c_width, 4);
+	
+	concatchars(mc->mc_data, mc->mc_dataSize, c_height, 4);
+	mc->mc_dataSize+=4;
+	
+	concatchars(mc->mc_data, mc->mc_dataSize, c_width, 4);
+	mc->mc_dataSize+=4;
 }
