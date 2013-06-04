@@ -144,7 +144,7 @@ void *th_sendInfo(void *data)
 	int buf[BUFFER_SIZE];
 	int parameters[1], file;
 	int i=0;
-	int*  AnalogData   = (int*)  malloc( ANALOG_SIZE   * sizeof(int)  );
+	
 
 	sock = socket(PF_INET, SOCK_DGRAM, 0) ; 
 	bzero ((char *) &recv_addr, sizeof recv_addr) ;
@@ -157,7 +157,7 @@ void *th_sendInfo(void *data)
 	
 	
 	
-/*
+
 	while (1)
 	{
 		initMuavCom(&mc);
@@ -218,9 +218,9 @@ void *th_sendInfo(void *data)
 		/*
 		 * TODO traiter erreur de la requete si besoin
 		 * pas de timeout reponse useless
-		 *
+		 **/
 		
-	}*/ 
+	}
 	
 	close(sock);
 }

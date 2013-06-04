@@ -7,6 +7,7 @@
 #include "pilotage.h"
 #include "network.h"
 #include "serial_util.h"
+#include "odile.h"
 
 
 int main(int argc, char *argv[]) 
@@ -20,7 +21,7 @@ int main(int argc, char *argv[])
 	//listen the control tower in this port
 	int port_listen;
 
-	
+	AnalogData   = (int*)  malloc( ANALOG_SIZE   * sizeof(int)  );
 	/*
 	 * ARG MANAGMENT
 	 */
@@ -66,13 +67,13 @@ int main(int argc, char *argv[])
 	{
 		fprintf(stderr, "port %d is not allowed\n", port_listen);
 	}
-	/*
+	
 	if(serial_open(&file_mkusb, argv[4])==-1)
 	{
 		printf("Can't open serial port !\n");
 		return -1;
 	}
-*/
+
 
 	ip_tower = argv[1];
 	
@@ -95,7 +96,7 @@ int main(int argc, char *argv[])
 	
 	initNetFifo(&globalNetFifo);
 	
-	status = MODE_MANUAL;
+	status = MODE_AUTO;
 	
 	/*
 	 * THREAD
@@ -119,8 +120,8 @@ int main(int argc, char *argv[])
 	
 	//TODO Send coucou
 	
-	//memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
-	//init_pilotage();
+	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
+	init_pilotage();
 //printf("test 0\n");
     while(1)
     {
@@ -155,11 +156,11 @@ int main(int argc, char *argv[])
 						//printf("test 8\n");
 						ManualDecode(&mc, &nick, &roll, &yaw, &gas);
 						printf("%d %d %d %d \n",nick, roll, yaw, gas);
-						/*set_Nick( (signed char) nick );
+						set_Nick( (signed char) nick );
 						set_Roll( (signed char) roll );
 						set_Yaw( (signed char) yaw ); 
 						set_Gas( (unsigned char) gas );
-						envoi_pilotage(file_mkusb);*/
+						envoi_pilotage(file_mkusb);
 					}
 				} else {
 					sem_post(&mutex_fifo);
@@ -168,9 +169,7 @@ int main(int argc, char *argv[])
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);
-                /*
-                 * CODE MODE WITH IA
-                 */
+                take_off( 1 );
                 break;
             case MODE_OFF:
                 sem_post(&mutex_status);

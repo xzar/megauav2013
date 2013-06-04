@@ -30,6 +30,8 @@
 char tx_buffer[TAILLE_BUFER];
 char rx_buffer[TAILLE_BUFER];
 
+extern int*  AnalogData  ;
+
 struct str_DebugOut
 {
     unsigned char Status[2];

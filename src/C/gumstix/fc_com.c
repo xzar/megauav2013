@@ -1,6 +1,6 @@
 #include "fc_com.h"
 
-
+int*  AnalogData ;
 
 void AddCRC(unsigned int frame_length) 
 { //length of #,adr,cmd,data
