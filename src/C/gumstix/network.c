@@ -83,6 +83,13 @@ void* th_receiver(void* data)
 				sem_wait(&mutex_status);
 				status = MODE_MANUAL;
 				sem_post(&mutex_status);
+				
+				initMuavCom(&mc);
+				setHeader(&mc, 0, 0, R_PILOTE_REQ_MANUAL, 0);
+				MCEncode(&mc);
+				sendData(mc, nt.nt_port, nt.nt_ip);
+				
+				sem_post(&sem_off);
 				break;
 			case PILOTE_REQ_AUTO:
 				sem_wait(&mutex_fifo);
@@ -94,6 +101,13 @@ void* th_receiver(void* data)
 				sem_wait(&mutex_status);
 				status = MODE_AUTO;
 				sem_post(&mutex_status);
+				
+				initMuavCom(&mc);
+				setHeader(&mc, 0, 0, R_PILOTE_REQ_AUTO, 0);
+				MCEncode(&mc);
+				sendData(mc, nt.nt_port, nt.nt_ip);
+				
+				sem_post(&sem_off);
 				break;
 			case PILOTE_REQ_OFF:
 				sem_wait(&mutex_fifo);
@@ -113,18 +127,6 @@ void* th_receiver(void* data)
 				
 				printf("debug 04\n");
 		}
-		
-		//int nick, roll, yaw, gac;
-		
-		//ManualDecode(&mc, &nick, & roll,& yaw, & gac);
-		//printf(" n %d r %d y %d g %d\n",nick, roll,yaw,gac);
-		//printMC(mc);
-		//printf("avant sem \n");
-		//sem_wait(&mutex_fifo);
-		//addNetFifo(&globalNetFifo);
-		//sem_post(&mutex_fifo);
-		//close(sock);
-		
 	} 
 	
 	close(sock);
