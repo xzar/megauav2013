@@ -4,30 +4,11 @@
  * PRIVATE function, don't declare it in .h
  * return the next index in fifo.
  */
-int getNextEndIndex(NetFifo * nf)
-{
-	if ( nf->nf_index_end == MAX_SIZE - 1 ) return 0;
-	return ++nf->nf_index_end;
-}
-
-/*
- * PRIVATE function, don't declare it in .h
- * return the next index in fifo.
- */
-int getNextStartIndex(NetFifo * nf)
-{
-	if ( nf->nf_index_start == MAX_SIZE - 1 ) return 0;
-	return ++nf->nf_index_start;
-}
-
-/*
- * PRIVATE function, don't declare it in .h
- * return the next index in fifo.
- */
 int nextEndIndex(NetFifo * nf)
 {
 	if ( nf->nf_index_end == MAX_SIZE - 1 ) return 0;
-	return ++nf->nf_index_end;
+	int i = nf->nf_index_end + 1;
+	return i;
 }
 
 /*
@@ -37,7 +18,8 @@ int nextEndIndex(NetFifo * nf)
 int nextStartIndex(NetFifo * nf)
 {
 	if ( nf->nf_index_start == MAX_SIZE - 1 ) return 0;
-	return ++nf->nf_index_start;
+	int i = nf->nf_index_start + 1;
+	return i;
 }
 
 /*
@@ -79,13 +61,18 @@ int addNetFifo(NetFifo * nf, void * data)
 
 /*
  * delete the first pointer
+ * return 0 if fifo is empty
  */
 int removeNetFifo(NetFifo * nf)
 {
-	free(nf->nf_fifo[nf->nf_index_start]);
-	nf->nf_fifo[nf->nf_index_start] = NULL;
-	nf->nf_index_start = getNextStartIndex(nf);
-	return 1;
+	if (!isEmptyNetFifo(nf))
+	{
+		free(nf->nf_fifo[nf->nf_index_start]);
+		nf->nf_fifo[nf->nf_index_start] = NULL;
+		nf->nf_index_start = nextStartIndex(nf);
+		return 1;
+	}
+	return 0;
 }
 
 /*
@@ -116,8 +103,8 @@ int clearNetFifo(NetFifo * nf)
  */
 int isFullNetFifo(NetFifo * nf)
 {
-	if ( getNextEndIndex(nf) == nf->nf_index_start ) return 0;
-	return 1;
+	if ( nextEndIndex(nf) == nf->nf_index_start ) return 1;
+	return 0;
 }
 
 /*
@@ -128,4 +115,19 @@ int isEmptyNetFifo(NetFifo * nf)
 {
 	if (nf->nf_index_start == nf->nf_index_end) return 1;
 	return 0;
+}
+
+/*
+ * print the fifo
+ */
+void printNF(NetFifo * nf)
+{
+	int i = 0;
+	
+	for(; i < MAX_SIZE; i++ )
+	{
+		printf("index : %d, data: %s\n", i, nf->nf_fifo[i]);
+	}
+	
+	printf("start: %d\n end: %d\n", nf->nf_index_start, nf->nf_index_end);
 }

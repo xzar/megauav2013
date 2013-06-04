@@ -17,7 +17,11 @@ typedef enum
 	R_SEND_INFO=4,
 	EMERGENCY=5,
 	MISSION=6,
-	PILOTE_MANUAL=7
+	PILOTE_MANUAL=7,
+	PILOTE_REQ_AUTO=8,
+	R_PILOTE_REQ_AUTO=9,
+	PILOTE_REQ_OFF=10,
+	R_PILOTE_REQ_OFF=10
 } RequestType;
 
 typedef struct muavcom 

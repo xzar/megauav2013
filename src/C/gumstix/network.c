@@ -62,24 +62,66 @@ void* th_receiver(void* data)
 	
 	while (1)
 	{
-		
+		memset(buf,0,BUFFER_SIZE);
 		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
-		//TODO MUTEX
 		
-		printf("received: %s", buf);
+		printf("received: %s\n", buf);
 		
 		memcpy(mc.mc_data, buf, BUFFER_SIZE);
 		
 		MCDecode(&mc);
-		int nick, roll, yaw, gac;
 		
-		ManualDecode(&mc, &nick, & roll,& yaw, & gac);
-		printf(" n %d r %d y %d g %d\n",nick, roll,yaw,gac);
-		printMC(mc);
-		printf("avant sem \n");
+		switch(mc.mc_request)
+		{
+			case PILOTE_REQ_MANUAL:
+				sem_wait(&mutex_fifo);
+				clearNetFifo(&globalNetFifo);
+				sem_post(&mutex_fifo);
+				
+				printf("debug 03\n");
+				
+				sem_wait(&mutex_status);
+				status = MODE_MANUAL;
+				sem_post(&mutex_status);
+				break;
+			case PILOTE_REQ_AUTO:
+				sem_wait(&mutex_fifo);
+				clearNetFifo(&globalNetFifo);
+				sem_post(&mutex_fifo);
+				
+				printf("debug 02\n");
+				
+				sem_wait(&mutex_status);
+				status = MODE_AUTO;
+				sem_post(&mutex_status);
+				break;
+			case PILOTE_REQ_OFF:
+				sem_wait(&mutex_fifo);
+				clearNetFifo(&globalNetFifo);
+				sem_post(&mutex_fifo);
+				
+				printf("debug 01\n");
+				
+				sem_wait(&mutex_status);
+				status = MODE_OFF;
+				sem_post(&mutex_status);
+				break;
+			default:
+				sem_wait(&mutex_fifo);
+				addNetFifo(&globalNetFifo, buf);
+				sem_post(&mutex_fifo);
+				
+				printf("debug 04\n");
+		}
+		
+		//int nick, roll, yaw, gac;
+		
+		//ManualDecode(&mc, &nick, & roll,& yaw, & gac);
+		//printf(" n %d r %d y %d g %d\n",nick, roll,yaw,gac);
+		//printMC(mc);
+		//printf("avant sem \n");
 		//sem_wait(&mutex_fifo);
-		//printf("buf %s retour = %d\n",buf,addNetFifo(&globalNetFifo, buf) );
-		
+		//addNetFifo(&globalNetFifo);
 		//sem_post(&mutex_fifo);
 		//close(sock);
 		

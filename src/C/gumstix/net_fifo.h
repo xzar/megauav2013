@@ -60,4 +60,9 @@ int isFullNetFifo(NetFifo * nf);
  * 0 else.
  */
 int isEmptyNetFifo(NetFifo * nf);
+
+/*
+ * print the fifo
+ */
+void printNF(NetFifo * nf);
 #endif
