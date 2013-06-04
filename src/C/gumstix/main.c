@@ -92,6 +92,7 @@ int main(int argc, char *argv[])
 	
 	sem_init(&mutex_fifo, NULL, 1);
 	sem_init(&mutex_status, NULL, 1);
+	sem_init(&mutex_analog, NULL, 1);
 	sem_init(&sem_off, NULL, 0);
 	
 	initNetFifo(&globalNetFifo);

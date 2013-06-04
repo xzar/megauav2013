@@ -24,6 +24,7 @@ extern NetFifo globalNetFifo;
 
 extern sem_t mutex_fifo;
 extern sem_t mutex_status;
+extern sem_t mutex_analog;
 extern sem_t sem_off;
 
 extern int status;
