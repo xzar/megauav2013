@@ -21,7 +21,10 @@ typedef enum
 	PILOTE_REQ_AUTO=8,
 	R_PILOTE_REQ_AUTO=9,
 	PILOTE_REQ_OFF=10,
-	R_PILOTE_REQ_OFF=10
+	R_PILOTE_REQ_OFF=11,
+	SEND_IMG_SIZE=12,
+	R_SEND_IMG_SIZE=13,
+	SEND_IMG=14
 } RequestType;
 
 typedef struct muavcom 
@@ -83,5 +86,10 @@ void InfoEncode(MuavCom *mc, int *info, int size);
  * put the received value in the int*;
  */
 void ManualDecode(MuavCom*,int*, int*, int*, int*);
+
+/*
+ * Encode the image size.
+ */
+void ImgSizeEncode(MuavCom *mc, int height, int width);
 
 #endif
