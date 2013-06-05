@@ -77,7 +77,7 @@ void* th_receiver(void* data)
 		memset(buf,0,BUFFER_SIZE);
 		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		
-		printf("received: %s\n", buf);
+		//printf("received: %s\n", buf);
 		
 		memcpy(mc.mc_data, buf, BUFFER_SIZE);
 		
@@ -90,7 +90,7 @@ void* th_receiver(void* data)
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
 				
-				printf("debug 03\n");
+				//printf("debug 03\n");
 				
 				sem_wait(&mutex_status);
 				status = MODE_MANUAL;
@@ -108,7 +108,7 @@ void* th_receiver(void* data)
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
 				
-				printf("debug 02\n");
+				//printf("debug 02\n");
 				
 				sem_wait(&mutex_status);
 				status = MODE_AUTO;
@@ -126,7 +126,7 @@ void* th_receiver(void* data)
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
 				
-				printf("debug 01\n");
+				//printf("debug 01\n");
 				
 				sem_wait(&mutex_status);
 				status = MODE_OFF;
@@ -137,7 +137,7 @@ void* th_receiver(void* data)
 				addNetFifo(&globalNetFifo, buf);
 				sem_post(&mutex_fifo);
 				
-				printf("debug 04\n");
+				//printf("debug 04\n");
 		}
 	} 
 	
