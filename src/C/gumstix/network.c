@@ -43,7 +43,7 @@ int sendData(MuavCom mc, int port, const char *ip)
 /*
  * Send image to the control tower.
  */
-int sendImage(int port, const char *ip, char * img, int height, int width)
+int sendImage(int port, const char *ip, char * imgRGB, int height, int width)
 {
 	int sock = socket(AF_INET, SOCK_DGRAM, 0);
 	struct sockaddr_in dest;
@@ -74,8 +74,6 @@ void* th_receiver(void* data)
 	recv_addr.sin_addr.s_addr = INADDR_ANY ;
 	recv_addr.sin_port = htons (nt.nt_port) ;
 	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
-	
-	//
 	
 	MuavCom mc;
 	
@@ -250,59 +248,3 @@ void *th_sendInfo(void *data)
 	
 	close(sock);
 }
-
-/*
- * thread, auto mode
- *
-void *self_ruling(void *data)
-{
-	while (1)
-	{
-		sem_wait(&sem_auto);
-		
-		printf("test auto\n");
-		
-		sem_post(&sem_sync);
-		usleep(500000);
-	}
-}
-
-/*
- * thread, manual mode
- *
-void *manual_ruling(void *data)
-{
-	while (1)
-	{
-		sem_wait(&sem_manual);
-		
-		printf("test manual\n");
-		
-		sem_post(&sem_sync);
-		usleep(500000);
-	}
-}
-
-
-/*
- * Sync manual and auto mode
- *
- void * sync_mode(void *data)
- {
-	 while (1)
-	 {
-		 sem_wait(&sem_sync);
-		 switch(status)
-		 {
-			 case MODE_AUTO:
-				sem_post(&sem_auto);
-				break;
-			 case MODE_MANUAL:
-				sem_post(&sem_manual);
-				break;
-			 case MODE_OFF:
-				break;
-		 }
-	 }
- }
-*/

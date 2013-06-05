@@ -64,13 +64,8 @@ int sendData(MuavCom mc, int port, const char *ip);
 void *th_sendInfo(void *data);
 
 /*
- * thread, auto mode
- *
-void *self_ruling(void *data);
+ * Send image to the control tower.
+ */
+int sendImage(int port, const char *ip, char * imgRGB, int height, int width);
 
-/*
- * thread, manual mode
- *
-void *manual_ruling(void *data);
-*/
 #endif
