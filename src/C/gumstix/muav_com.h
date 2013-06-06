@@ -1,9 +1,12 @@
 #ifndef _H_MUAV_COM_
 #define _H_MUAV_COM_
 
+#include <stdio.h>
+#include <string.h>
+
 #include "tools.h"
 #include "var.h"
-#include <stdio.h>
+#include "gps.h"
 
 #define EMERGENCY_PORT 1337
 #define SEND_PORT 1338
@@ -24,7 +27,8 @@ typedef enum
 	R_PILOTE_REQ_OFF=11,
 	SEND_IMG_SIZE=12,
 	R_SEND_IMG_SIZE=13,
-	SEND_IMG=14
+	SEND_IMG=14,
+    SEND_GPS_INFO=15
 } RequestType;
 
 typedef struct muavcom 
@@ -91,5 +95,11 @@ void ManualDecode(MuavCom*,int*, int*, int*, int*);
  * Encode the image size.
  */
 void ImgSizeEncode(MuavCom *mc, int height, int width);
+
+/*
+ * Encode the gps info
+ * message form : latitude:longitude:n_sat:altitude
+ */
+void GPSEncode(MuavCom *mc, GPGGA gpgga);
 
 #endif

@@ -176,3 +176,38 @@ void ImgSizeEncode(MuavCom *mc, int height, int width)
 	concatchars(mc->mc_data, mc->mc_dataSize, c_width, 4);
 	mc->mc_dataSize+=4;
 }
+
+/*
+ * Encode the gps info
+ * message form : latitude:longitude:n_sat:gpgga_accuracy_horizontal:altitude
+ */
+void GPSEncode(MuavCom *mc, GPGGA gpgga)
+{
+    MCEncode(mc);
+
+    int len1, len2, len3, len4, len5;
+    char buf[BUFFER_SIZE];
+
+    len1 = strlen(gpgga.gpgga_latitude);
+    len2 = strlen(gpgga.gpgga_longitude);
+    len3 = strlen(gpgga.gpgga_n_sat);
+    len4 = strlen(gpgga.gpgga_accuracy_horizontal);
+    len5 = strlen(gpgga.gpgga_altitude);
+
+    memcpy(buf, gpgga.gpgga_latitude, len1);
+    buf[len1]=':';
+    memcpy(&buf[len1+1], gpgga.gpgga_longitude, len2);
+    buf[len1+len2+1]=':';
+    memcpy(&buf[len1+len2+2], gpgga.gpgga_n_sat, len3);
+    buf[len1+len2+len3+2]=':';
+    memcpy(&buf[len1+len2+len3+3], gpgga.gpgga_accuracy_horizontal, len4);
+    buf[len1+len2+len3+len4+3]=':';
+    memcpy(&buf[len1+len2+len3+len4+4], gpgga.gpgga_altitude, len5);
+    buf[len1+len2+len3+len4+len5+4]='\0';
+
+    len1 = strlen(buf);
+    
+    mc->mc_dataSize+=len1;
+
+    memcpy(&mc->mc_data[HEADER_SIZE], buf, len1);
+}

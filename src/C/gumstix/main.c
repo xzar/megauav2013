@@ -12,6 +12,24 @@
 
 int main(int argc, char *argv[]) 
 {
+
+    MuavCom mc;
+    initMuavCom(&mc);
+    setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
+    
+    GPGGA gg = decode_GPGGA("GPGGA,11373.00,4902.59765,N,00205.00247,E,1,09,1.07,73.1,M,46.0,M,,*65");
+    printf("%s\n", gg.gpgga_latitude);
+    printf("%s\n", gg.gpgga_longitude);
+    printf("%s\n", gg.gpgga_n_sat);
+    printf("%s\n", gg.gpgga_accuracy_horizontal);
+    printf("%s\n", gg.gpgga_altitude);
+
+    GPSEncode(&mc, gg);
+
+    printf("%s\n", mc.mc_data);
+    printf("%s\n", &mc.mc_data[HEADER_SIZE]);
+
+    exit(0);
 	//tower control info
 	char * ip_tower;
 	

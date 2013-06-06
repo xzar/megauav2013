@@ -48,7 +48,7 @@ int sendImage(int port, const char *ip, char * imgRGB, int height, int width)
 	dest.sin_family = AF_INET;
 	dest.sin_port = htons(port);
 	dest.sin_addr = *(struct in_addr*)serv->h_addr;
-	sendto(sock, img, size, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
+	sendto(sock, imgRGB, size, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
 	close(sock);
 	return 1;
 }
@@ -157,7 +157,8 @@ void *th_sendInfo(void *data)
 	int n, exp_len,offset,cpt = 0 ;
 	int buf[BUFFER_SIZE];
 	int parameters[1], file;
-	int i=0;
+	int i=0, info=0;
+    GPGGA gpgga;
 	
 
 	sock = socket(PF_INET, SOCK_DGRAM, 0) ; 
@@ -168,75 +169,98 @@ void *th_sendInfo(void *data)
 	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
 	
 	MuavCom mc;
-	
-	
-	
-
+    
 	while (1)
 	{
+        memset(buf, 0, BUFFER_SIZE);
 		initMuavCom(&mc);
-		
 
-		// Resets reading offset
-		offset = 0;
-		
-		if( cpt == 0 )
-		{
-			// Sets auto send interval (x * 10 => ms)
-			parameters[0] = 20;
+        /*
+         * one time send the microkopter info
+         * next send the gps info
+         */
+        if (info == 0)
+        {
 
-			// Requests debug packet from FC
-			SendOutData('d', 'b', parameters, 1, file_mkusb);
+            // Resets reading offset
+            offset = 0;
+            
+            if( cpt == 0 )
+            {
+                // Sets auto send interval (x * 10 => ms)
+                parameters[0] = 20;
 
-			cpt = 50;
-		}
-		cpt --;
-		// Reads the first packet from the FC
-		offset += read(file_mkusb, &rx_buffer+offset, TAILLE_BUFER-offset);
-		
-		// Checks if it's a debug packet
-		if(rx_buffer[0] == '#' && rx_buffer[2] == 'D')
-		{
-			
-			// Reads to the end
-			while( rx_buffer[offset-1] != '\r' )
-			{
-				offset += read(file_mkusb, &rx_buffer[offset], TAILLE_BUFER-offset);
-			}
-		
-			// Decodes the packet
-			Decode64(buf, rx_buffer, offset,3,offset);
-			sem_wait(&mutex_analog);
-			memset(AnalogData,   0, ANALOG_SIZE  *sizeof(int)  );
-			memset(&rx_buffer, 0, TAILLE_BUFER);
-			// Converts data to integer
-			for (i = 0; i < ANALOG_SIZE; i++)
-        	{
-        		AnalogData[i] = Data2Int(buf, (i * 2) + 2);
-				
-        	}
-			sem_post(&mutex_analog);
-			
-			//printf("%d %d %d %d \n",AnalogData[0],AnalogData[1],AnalogData[30],AnalogData[31]);
-			setHeader( &mc, 0, 0,SEND_INFO, 0 );
-			
-			InfoEncode(&mc, AnalogData, ANALOG_SIZE);
-			
-			sendData(mc, nt.nt_port, nt.nt_ip);
-			//n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
-		
-			//MCDecode(&mc);
-			
-		}
-		
-		
-		
+                // Requests debug packet from FC
+                SendOutData('d', 'b', parameters, 1, file_mkusb);
+
+                cpt = 50;
+            }
+            cpt --;
+            // Reads the first packet from the FC
+            offset += read(file_mkusb, &rx_buffer+offset, TAILLE_BUFER-offset);
+            
+            // Checks if it's a debug packet
+            if(rx_buffer[0] == '#' && rx_buffer[2] == 'D')
+            {
+                
+                // Reads to the end
+                while( rx_buffer[offset-1] != '\r' )
+                {
+                    offset += read(file_mkusb, &rx_buffer[offset], TAILLE_BUFER-offset);
+                }
+            
+                // Decodes the packet
+                Decode64(buf, rx_buffer, offset,3,offset);
+                sem_wait(&mutex_analog);
+                memset(AnalogData,   0, ANALOG_SIZE  *sizeof(int)  );
+                memset(&rx_buffer, 0, TAILLE_BUFER);
+                // Converts data to integer
+                for (i = 0; i < ANALOG_SIZE; i++)
+                {
+                    AnalogData[i] = Data2Int(buf, (i * 2) + 2);
+                    
+                }
+                sem_post(&mutex_analog);
+                
+                //printf("%d %d %d %d \n",AnalogData[0],AnalogData[1],AnalogData[30],AnalogData[31]);
+                setHeader( &mc, 0, 0,SEND_INFO, 0 );
+                
+                InfoEncode(&mc, AnalogData, ANALOG_SIZE);
+                
+                //n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
+            
+                //MCDecode(&mc);
+                
+            }
 		
 		/*
 		 * TODO traiter erreur de la requete si besoin
 		 * pas de timeout reponse useless
 		 **/
-		
+            info = 1;
+		} else {
+            
+            get_info_GPGGA(buf);
+            
+            gpgga = decode_GPGGA(buf);
+            /*
+            printf("%s\n", gg.gpgga_latitude);
+            printf("%s\n", gg.gpgga_longitude);
+            printf("%s\n", gg.gpgga_n_sat);
+            printf("%s\n", gg.gpgga_accuracy_horizontal);
+            printf("%s\n", gg.gpgga_altitude);
+            */
+            setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
+            GPSEncode(&mc, gpgga);
+            /*
+            printf("%s\n", mc.mc_data);
+            printf("%s\n", &mc.mc_data[HEADER_SIZE]);
+            */
+            
+            info=0;
+        }
+
+        sendData(mc, nt.nt_port, nt.nt_ip);
 	}
 	
 	close(sock);
