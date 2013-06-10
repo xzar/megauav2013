@@ -156,7 +156,7 @@ void *th_sendInfo(void *data)
 
 	int n, exp_len,offset,cpt = 0 ;
 	int buf[BUFFER_SIZE];
-	int parameters[1], file;
+	int parameters[1], file, handler;
 	int i=0, info=0;
     GPGGA gpgga;
 	
@@ -169,11 +169,19 @@ void *th_sendInfo(void *data)
 	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
 	
 	MuavCom mc;
+	//serial_open(&handler, "/dev/ttyS0");
+	open_gps();
     
 	while (1)
 	{
         memset(buf, 0, BUFFER_SIZE);
 		initMuavCom(&mc);
+		
+		//
+		
+		//printf("envoi boucle\n");
+		
+		//
 
         /*
          * one time send the microkopter info
@@ -240,9 +248,11 @@ void *th_sendInfo(void *data)
             info = 1;
 		} else {
             
+            //printf("get info\n");
             get_info_GPGGA(buf);
-            
+            //printf("decode info\n");
             gpgga = decode_GPGGA(buf);
+            
             /*
             printf("%s\n", gg.gpgga_latitude);
             printf("%s\n", gg.gpgga_longitude);
@@ -251,13 +261,14 @@ void *th_sendInfo(void *data)
             printf("%s\n", gg.gpgga_altitude);
             */
             setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
+            //MCEncode(&mc);
             GPSEncode(&mc, gpgga);
             /*
             printf("%s\n", mc.mc_data);
             printf("%s\n", &mc.mc_data[HEADER_SIZE]);
             */
-            
-            info=0;
+            //printf("send gps info: %s\n", buf);
+            info = 0;
         }
 
         sendData(mc, nt.nt_port, nt.nt_ip);

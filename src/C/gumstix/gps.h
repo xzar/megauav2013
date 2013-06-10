@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <regex.h>
 #include <string.h>
+#include <sys/time.h>
+#include <unistd.h>
 #include "serial_util.h"
 
 #define BUFFER_READ 1024
@@ -22,13 +24,13 @@ typedef struct
 /*
  * Global file gps descriptor.
  */
-int file_gps;
+extern int file_gps;
 
 /*
  * Open file descriptor with GPS info
  * file descriptor is global.
  */
-int open_gps(char *file);
+int open_gps();
 
 /*
  * read the GPGGA info

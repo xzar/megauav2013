@@ -1,28 +1,44 @@
 #include "gps.h"
 
-int open_gps(char *file)
+int file_gps;
+
+int open_gps()
 {
-	return serial_open(&file_gps, file);
+	return serial_open(&file_gps, FILE_GPS, B9600);
 }
 
 void get_info_GPGGA(char * gpgga)
 {
 	int buf_size = 128;
 	char trame[BUFFER_READ], *tmp_str, tmp_buf[buf_size];
-	int ok = 1, offset;
-	int match;
-	int err;
+	int ok = 1, offset=0;
+	int match, err=0;
 	regex_t preg_start;
+	struct timeval tv1, tv2, res;
 	const char *str_regex_start = "GPGGA";
+	
+	//printf("debug -1\n");
 	
 	err = regcomp (&preg_start, str_regex_start, REG_EXTENDED);
 	if ( err != 0 ) {printf("err comp reg\n");return;}
 	
+	//printf("debug \n");
+	memset(trame, 0 , BUFFER_READ);
+	
+	gettimeofday(&tv1, NULL);
+	
 	while(ok)
 	{
-		memset(trame, 0 , BUFFER_READ);
-		serial_read(file_gps, trame, BUFFER_READ);
-		//printf("%s\n", trame);
+		//memset(trame, 0 , BUFFER_READ);
+		//printf("debug serial\n");
+		//sleep(2);
+		
+		err=read(file_gps, &trame[offset], buf_size-offset);
+		
+		if (err == -1) { printf("error serial_read\n"); return;}
+		offset+=err;
+		
+		//printf("trame : %s\n", trame);
 		match = regexec (&preg_start, trame, 0, NULL, 0);
 		
 		if ( match == 0 ) 
@@ -31,6 +47,11 @@ void get_info_GPGGA(char * gpgga)
 			//printf("MATCH 1 :: %s\n", tmp_str);
 			ok=0;
 		}
+		
+		gettimeofday(&tv2, NULL);
+		timersub(&tv2, &tv1, &res);
+		//printf("%d,%d s\n", res.tv_sec, res.tv_usec);
+		if (res.tv_sec >= 2){ printf("GPGGA not found timeout\n"); return;}
 	}
 	
 	memset(tmp_buf, 0 , buf_size);
@@ -39,6 +60,7 @@ void get_info_GPGGA(char * gpgga)
 	//printf("DEBUG 1\n");
 	
 	offset = strlen(tmp_buf) - 1;
+	gettimeofday(&tv1, NULL);
 	
 	while( offset < buf_size )
 	{
@@ -52,6 +74,11 @@ void get_info_GPGGA(char * gpgga)
 		} else {
 			offset+=err;
 		}
+		
+		gettimeofday(&tv2, NULL);
+		timersub(&tv2, &tv1, &res);
+		//printf("%d,%d s\n", res.tv_sec, res.tv_usec);
+		if (res.tv_sec >= 2){ printf("reading GPS info is too long\n"); return;}
 	}
 	
 	strtok(tmp_buf, "$");

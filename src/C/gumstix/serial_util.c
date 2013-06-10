@@ -1,7 +1,13 @@
 #include "serial_util.h"
 int file_mkusb;
 //#define DEBUG2
-int serial_open(int* file, char* nameFile)
+/*
+ * mkusb : B57600
+ * gps : B9600
+ */
+
+
+int serial_open(int* file, char* nameFile, speed_t baudRate)
 {
 #ifdef DEBUG2
 printf("entrer open serial_util.c\n");	
@@ -10,11 +16,11 @@ printf("entrer open serial_util.c\n");
 	struct termios tops;
 	
 
-	speed_t baudRate;
+	//speed_t baudRate;
 	
 	
 	tops.c_cc[0] = VERASE;
-	baudRate = B57600;
+	//baudRate = B57600;
 
 	*file = open (nameFile, O_RDWR | O_NOCTTY | O_SYNC);
 	if (*file < 0)
