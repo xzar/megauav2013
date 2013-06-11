@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
 	
 	initNetFifo(&globalNetFifo);
 	
-	status = MODE_OFF;
+	status = MODE_AUTO;
 	
 	/*
 	 * THREAD
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);
-                take_off( 1 );
+                deplacement_zero();
                 break;
             case MODE_OFF:
                 sem_post(&mutex_status);

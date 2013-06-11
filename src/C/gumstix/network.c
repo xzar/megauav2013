@@ -182,44 +182,47 @@ void *th_sendInfo(void *data)
 		//printf("envoi boucle\n");
 		
 		//
-
+		//printf("toto \n");
+		
         /*
          * one time send the microkopter info
          * next send the gps info
          */
-        if (info == 0)
-        {
+				//printf("toto 1 \n");
+      /*  if (info == 0)
+        {*/
 
             // Resets reading offset
             offset = 0;
             
+            		//printf("toto2 \n");
             if( cpt == 0 )
-            {
+        	{
                 // Sets auto send interval (x * 10 => ms)
                 parameters[0] = 20;
 
                 // Requests debug packet from FC
                 SendOutData('d', 'b', parameters, 1, file_mkusb);
 
-                cpt = 50;
-            }
-            cpt --;
+                cpt = 10;
+        	}
+			cpt --;
             // Reads the first packet from the FC
             offset += read(file_mkusb, &rx_buffer+offset, TAILLE_BUFER-offset);
-            
+            		//printf("toto 3\n");
             // Checks if it's a debug packet
             if(rx_buffer[0] == '#' && rx_buffer[2] == 'D')
             {
-                
+                		//printf("toto 4\n");
                 // Reads to the end
                 while( rx_buffer[offset-1] != '\r' )
                 {
                     offset += read(file_mkusb, &rx_buffer[offset], TAILLE_BUFER-offset);
                 }
-            
+            			//printf("toto 5\n");
                 // Decodes the packet
                 Decode64(buf, rx_buffer, offset,3,offset);
-                sem_wait(&mutex_analog);
+                //sem_wait(&mutex_analog);
                 memset(AnalogData,   0, ANALOG_SIZE  *sizeof(int)  );
                 memset(&rx_buffer, 0, TAILLE_BUFER);
                 // Converts data to integer
@@ -228,8 +231,8 @@ void *th_sendInfo(void *data)
                     AnalogData[i] = Data2Int(buf, (i * 2) + 2);
                     
                 }
-                sem_post(&mutex_analog);
-                
+                //sem_post(&mutex_analog);
+                		//printf("toto \n");
                 //printf("%d %d %d %d \n",AnalogData[0],AnalogData[1],AnalogData[30],AnalogData[31]);
                 setHeader( &mc, 0, 0,SEND_INFO, 0 );
                 
@@ -246,11 +249,11 @@ void *th_sendInfo(void *data)
 		 * pas de timeout reponse useless
 		 **/
             info = 1;
-		} else {
+		/*} else {
             
-            //printf("get info\n");
+            printf("get info\n");
             get_info_GPGGA(buf);
-            //printf("decode info\n");
+            printf("decode info\n");
             gpgga = decode_GPGGA(buf);
             
             /*
@@ -260,18 +263,19 @@ void *th_sendInfo(void *data)
             printf("%s\n", gg.gpgga_accuracy_horizontal);
             printf("%s\n", gg.gpgga_altitude);
             */
-            setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
+            /*setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
             //MCEncode(&mc);
             GPSEncode(&mc, gpgga);
-            /*
-            printf("%s\n", mc.mc_data);
-            printf("%s\n", &mc.mc_data[HEADER_SIZE]);
-            */
-            //printf("send gps info: %s\n", buf);
+            
+           /* printf("%s\n", mc.mc_data);
+            printf("%s\n", &mc.mc_data[HEADER_SIZE]);*/
+            
+           /* printf("send gps info: %s\n", buf);
             info = 0;
-        }
+        }*/
 
         sendData(mc, nt.nt_port, nt.nt_ip);
+		
 	}
 	
 	close(sock);

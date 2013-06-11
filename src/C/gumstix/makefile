@@ -4,7 +4,7 @@ CC=gcc
 
 ifeq ($(DEBUG),yes)
 	CFLAGS=-W -Wall -g 
-	LDFLAGS=-lm -lpthread
+	LDFLAGS=-lm -lpthread `pkg-config --cflags --libs opencv`
 else
 	CFLAGS=
 	LDFLAGS=
