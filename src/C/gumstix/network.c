@@ -184,7 +184,8 @@ void *th_sendInfo(void *data)
 		//printf("envoi boucle\n");
 		
 		//
-
+		//printf("toto \n");
+		
         /*
          * one time send the microkopter info
          * next send the gps info
@@ -219,7 +220,7 @@ void *th_sendInfo(void *data)
 		
 			// Decodes the packet
 			Decode64(buf, rx_buffer, offset,3,offset);
-			sem_wait(&mutex_analog);
+			//sem_wait(&mutex_analog);
 			memset(AnalogData,   0, ANALOG_SIZE  *sizeof(int)  );
 			memset(&rx_buffer, 0, TAILLE_BUFER);
 			// Converts data to integer
@@ -228,7 +229,7 @@ void *th_sendInfo(void *data)
 				AnalogData[i] = Data2Int(buf, (i * 2) + 2);
 				
 			}
-			sem_post(&mutex_analog);
+			//sem_post(&mutex_analog);
 			
 			//printf("%d %d %d %d \n",AnalogData[0],AnalogData[1],AnalogData[30],AnalogData[31]);
 			setHeader( &mc, 0, 0,SEND_INFO, 0 );
@@ -245,9 +246,9 @@ void *th_sendInfo(void *data)
 		 * TODO traiter erreur de la requete si besoin
 		 * pas de timeout reponse useless
 		 **/
-           
 
         sendData(mc, nt.nt_port, nt.nt_ip);
+		
 	}
 	
 	close(sock);
