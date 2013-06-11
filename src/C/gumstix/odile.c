@@ -12,14 +12,14 @@ void take_off(int altitude )
 	initRoll = AnalogData[1];
 	while (status == MODE_AUTO ){
 
-		sem_wait(&mutex_analog);
+		//sem_wait(&mutex_analog);
 		nick = AnalogData[0] ;
 		roll = AnalogData[1] ;
 		accNick = AnalogData[2] - AnalogData[0];
 		accRoll = AnalogData[3] - AnalogData[1];
 		alti = AnalogData[5];
 		vario = AnalogData[6];
-		sem_post(&mutex_analog);
+		//sem_post(&mutex_analog);
 
 	//		cmdGas
 		//nick+=20;
@@ -86,6 +86,7 @@ void deplacement_zero(){
 	int j ,i = 0;
 	char nick, roll, yaw;
 	unsigned char gas =  255;
+	int nick, roll, accNick, accRoll, alti,vario;
 	for(j=0;j<_NBHARRIS;j++)
    {
 	   tabHarris[j]=(float*)malloc(sizeof(float)*3);
@@ -200,6 +201,13 @@ void deplacement_zero(){
 		if(vecteurMoy.x < -2){
 			roll = (char)10;
 		}
+		alti = AnalogData[5];
+		vario = AnalogData[6];
+		if(gas < 180 && alti < 10){
+			if(vario <= 1){
+				gas++
+			}else gas--;
+		}else gas --;
 	//	printf("puissance = %d %d\n",nick,roll);
 		set_Nick( (signed char) nick );
 		set_Roll( (signed char) roll );

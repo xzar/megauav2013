@@ -67,4 +67,6 @@ void Decode64(int *ptrOut, char* RxdBuffer, unsigned char len, unsigned char ptr
 int SendOutData(unsigned char cmd,unsigned char addr, unsigned char *snd, unsigned char len, int file);
 
 void AddCRC(unsigned int frame_length);
+
+int Data2Int(int *Data , int Start);
 #endif

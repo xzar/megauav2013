@@ -67,6 +67,7 @@ int convertcharToInt(char * buffer, int index, int size)
  * fill buffer with the long chars
  * return -1 if size is greater than sizeof(long)
  */ 
+/*
 int convertLongTochar(long l, char *buffer, int size)
 {
 	if ((unsigned int)size > sizeof(long))
@@ -83,7 +84,7 @@ int convertLongTochar(long l, char *buffer, int size)
 	buffer[6] = (char) ( (l >> 48) & 0xff );
 	buffer[7] = (char) ( (l >> 56) & 0xff );
 	
-	/*
+	*
 	buffer[7] = (char) ( (l >> 0) & 0xff );
 	buffer[6] = (char) ( (l >> 8) & 0xff );
 	buffer[5] = (char) ( (l >> 16) & 0xff );
@@ -92,9 +93,9 @@ int convertLongTochar(long l, char *buffer, int size)
 	buffer[2] = (char) ( (l >> 40) & 0xff );
 	buffer[1] = (char) ( (l >> 48) & 0xff );
 	buffer[0] = (char) ( (l >> 56) & 0xff );
-	*/
+	*
 	
-	/*
+	*
 	buffer[0] = (char) ( (l & 0x000000ff) );
 	buffer[1] = (char) ( (l & 0x0000ff00) >> 8);
 	buffer[2] = (char) ( (l & 0x00ff0000) >> 16);
@@ -103,10 +104,11 @@ int convertLongTochar(long l, char *buffer, int size)
 	buffer[5] = (char) ( (l & 0x0000ff00) >> 40);
 	buffer[6] = (char) ( (l & 0x00ff0000) >> 48);
 	buffer[7] = (char) ( (l & 0xff000000) >> 56);
-	*/
+	*
 	
 	return 1;
 }
+*/
 
 /*
  * convert a part of table in long

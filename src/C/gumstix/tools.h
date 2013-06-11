@@ -36,7 +36,7 @@ int convertcharToInt(char * buffer, int index, int size);
  * fill buffer with the long chars
  * return -1 if size is greater than sizeof(long)
  */ 
-int convertLongTochar(long l, char *buffer, int size) ;
+//int convertLongTochar(long l, char *buffer, int size) ;
 
 /*
  * convert a part of table in long
