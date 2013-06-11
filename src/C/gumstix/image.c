@@ -247,3 +247,23 @@ void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y)
 
 
 }
+
+void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth){
+	int it;
+	int baryX = 0;
+	int baryY = 0;
+	resultat->x = 0;
+	resultat->y = 0;
+	//parcours des points
+	for(it = 0; it < nbPoints; it++){
+		baryX += pointsT[it][0];
+		baryY += pointsT[it][1];
+	}
+	//calcul du barycentre
+	baryX = baryX / nbPoints;
+	baryY = baryY / nbPoints;
+	
+	//calcul vecteur par rapport au centre
+	resultat->x = baryX-mywidth;
+	resultat->y = baryY-myheight;
+}

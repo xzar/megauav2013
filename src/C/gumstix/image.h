@@ -25,5 +25,7 @@ void RGBTOGRAY_1CANAL(IplImage* source_couleur, IplImage* dest_gris);
 
 void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y);
 
+void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth,);
+
 
 #endif
