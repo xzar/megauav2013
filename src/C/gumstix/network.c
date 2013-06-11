@@ -264,6 +264,7 @@ void *th_sendGPS(void *data)
 	char buf[BUFFER_SIZE];
 	GPGGA gpgga;
 	MuavCom mc;
+	int error = 0;
 	
 	open_gps();
 	
@@ -271,9 +272,26 @@ void *th_sendGPS(void *data)
 	{
 	
 		//printf("get info\n");
-		get_info_GPGGA(buf);
+		error = get_info_GPGGA(buf);
+		
+		if ( error == -1 )
+		{
+			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
+			MCEncode(&mc);
+			sendData(mc, nt.nt_port, nt.nt_ip);
+			continue;
+		}
+		
 		//printf("decode info\n");
-		gpgga = decode_GPGGA(buf);
+		gpgga = decode_GPGGA(buf, &error);
+		
+		if ( error == -1 )
+		{
+			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
+			MCEncode(&mc);
+			sendData(mc, nt.nt_port, nt.nt_ip);
+			continue;
+		}
 		
 		/*
 		printf("%s\n", gg.gpgga_latitude);

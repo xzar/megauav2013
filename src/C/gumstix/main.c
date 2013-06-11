@@ -103,13 +103,15 @@ int main(int argc, char *argv[])
 	/*
 	 * HELLO
 	 */
-	 
 	int sock;
 	struct sockaddr_in recv_addr, exp_addr ;
 	int n, exp_len,cpt=0 ;
 	char buf[BUFFER_SIZE];
 	struct timeval timeout;
 	MuavCom mc1, mc2;
+	
+	initMuavCom(&mc1);
+	initMuavCom(&mc2);
 	
 	timeout.tv_sec=0;
 	timeout.tv_usec=TIMEOUT_MS;
@@ -120,7 +122,7 @@ int main(int argc, char *argv[])
 	bzero ((char *) &recv_addr, sizeof recv_addr) ;
 	recv_addr.sin_family = AF_INET ;
 	recv_addr.sin_addr.s_addr = INADDR_ANY ;
-	recv_addr.sin_port = htons (net_listen.nt_port) ;
+	recv_addr.sin_port = htons (net_info.nt_port) ;
 	
 	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
 	
@@ -129,11 +131,13 @@ int main(int argc, char *argv[])
 	 
 	while ( can_start == 0 )
 	{
-		sendData(mc1, net_listen.nt_port, ip_tower);
+		memset(buf,0,BUFFER_SIZE);
+		sendData(mc1, net_info.nt_port, ip_tower);
 		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		
 		if (n != -1)
 		{
+			memcpy(mc2.mc_data, buf, BUFFER_SIZE);
 			MCDecode(&mc2);
 			if (mc2.mc_request == R_HELLO) can_start = 1; 
 		} else {
@@ -146,7 +150,7 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 	}
-	 
+	
 	/*
 	 * FIN HELLO
 	 */

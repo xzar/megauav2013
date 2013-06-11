@@ -33,6 +33,12 @@ typedef enum
     R_HELLO=17
 } RequestType;
 
+typedef enum
+{
+	ERR_GPS=1,
+	ERR_MANUAL=2
+} RequestType;
+
 typedef struct muavcom 
 {
 	int mc_fid;

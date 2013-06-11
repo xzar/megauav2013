@@ -36,7 +36,7 @@ int open_gps();
  * read the GPGGA info
  * copy the info in gpgga string
  */
-void get_info_GPGGA(char * gpgga);
+int get_info_GPGGA(char * gpgga);
 
 /*
  * convert a gpgga string in gpgga struct
@@ -44,6 +44,6 @@ void get_info_GPGGA(char * gpgga);
  * Exemple of GPGGA info from serial port:
  * GPGGA,11373.00,4902.59765,N,00205.00247,E,1,09,1.07,73.1,M,46.0,M,,*65
  */
-GPGGA decode_GPGGA(char * gpgga);
+GPGGA decode_GPGGA(char * gpgga, int *error);
 
 #endif

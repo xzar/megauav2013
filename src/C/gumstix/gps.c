@@ -7,7 +7,7 @@ int open_gps()
 	return serial_open(&file_gps, FILE_GPS, B9600);
 }
 
-void get_info_GPGGA(char * gpgga)
+int get_info_GPGGA(char * gpgga)
 {
 	int buf_size = 128;
 	char trame[BUFFER_READ], *tmp_str, tmp_buf[buf_size];
@@ -20,7 +20,11 @@ void get_info_GPGGA(char * gpgga)
 	//printf("debug -1\n");
 	
 	err = regcomp (&preg_start, str_regex_start, REG_EXTENDED);
-	if ( err != 0 ) {printf("err comp reg\n");return;}
+	if ( err != 0 )
+	{
+		printf("err comp reg\n");
+		return -1;
+	}
 	
 	//printf("debug \n");
 	memset(trame, 0 , BUFFER_READ);
@@ -35,7 +39,12 @@ void get_info_GPGGA(char * gpgga)
 		
 		err=read(file_gps, &trame[offset], buf_size-offset);
 		
-		if (err == -1) { printf("error serial_read\n"); return;}
+		if (err == -1)
+		{
+			printf("error serial_read\n");
+			regfree(&preg_start);
+			return -1;
+		}
 		offset+=err;
 		
 		//printf("trame : %s\n", trame);
@@ -51,8 +60,15 @@ void get_info_GPGGA(char * gpgga)
 		gettimeofday(&tv2, NULL);
 		timersub(&tv2, &tv1, &res);
 		//printf("%d,%d s\n", res.tv_sec, res.tv_usec);
-		if (res.tv_sec >= 2){ printf("GPGGA not found timeout\n"); return;}
+		if (res.tv_sec >= 2)
+		{
+			printf("GPGGA not found timeout\n");
+			regfree(&preg_start);
+			return -1;
+		}
 	}
+	
+	regfree(&preg_start);
 	
 	memset(tmp_buf, 0 , buf_size);
 	memcpy( tmp_buf, tmp_str, strlen(tmp_str) );
@@ -70,7 +86,7 @@ void get_info_GPGGA(char * gpgga)
 		if ( err == -1 )
 		{
 			printf("error gps 1\n");
-			return;
+			return -1;
 		} else {
 			offset+=err;
 		}
@@ -78,14 +94,18 @@ void get_info_GPGGA(char * gpgga)
 		gettimeofday(&tv2, NULL);
 		timersub(&tv2, &tv1, &res);
 		//printf("%d,%d s\n", res.tv_sec, res.tv_usec);
-		if (res.tv_sec >= 2){ printf("reading GPS info is too long\n"); return;}
+		if (res.tv_sec >= 2)
+		{ 
+			printf("reading GPS info is too long\n");
+			return -1;
+		}
 	}
 	
 	strtok(tmp_buf, "$");
 	
 	memcpy(gpgga, tmp_buf, strlen(tmp_buf));
 	
-	regfree(&preg_start);
+	return 1;
 }
 
 /*
@@ -94,7 +114,7 @@ void get_info_GPGGA(char * gpgga)
  * Exemple of GPGGA info from serial port:
  * GPGGA,11373.00,4902.59765,N,00205.00247,E,1,09,1.07,73.1,M,46.0,M,,*65
  */
-GPGGA decode_GPGGA(char * gpgga)
+GPGGA decode_GPGGA(char * gpgga, int *error)
 {
 	GPGGA res;
 	char buf[BUFFER_READ];
@@ -106,13 +126,20 @@ GPGGA decode_GPGGA(char * gpgga)
 	regmatch_t *pmatch = NULL;
 	
 	err = regcomp (&preg_start, str_regex, REG_EXTENDED);
-	if ( err != 0 ) {printf("err comp reg\n");return res;}
+	if ( err != 0 )
+	{
+		printf("err comp reg\n");
+		*error=-1;
+		return res;
+	}
 	
 	nmatch = preg_start.re_nsub;
 	//printf("%d\n", nmatch);
 	pmatch = malloc (sizeof(*pmatch) * nmatch);
 	
 	match = regexec (&preg_start, gpgga, nmatch, pmatch, 0);
+	
+	*error=0;
 	
 	if (match == 0)
 	{
@@ -148,7 +175,7 @@ GPGGA decode_GPGGA(char * gpgga)
 			}
 		}
 	} else {
-		printf("err GPGGA\n");
+		*error=-1;
 	}
 	
 	regfree(&preg_start);
