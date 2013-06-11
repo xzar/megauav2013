@@ -18,6 +18,8 @@
 #define MODE_AUTO	2754
 #define MODE_OFF	7565
 
+#define TIMEOUT_MS	200000
+
 /*
  * GLOBAL
  */
@@ -60,7 +62,7 @@ int sendData(MuavCom mc, int port, const char *ip);
 
 /*
  * send the drone info to the control tower.
- * wait for response
+ * 
  */
 void *th_sendInfo(void *data);
 
@@ -68,5 +70,11 @@ void *th_sendInfo(void *data);
  * Send image to the control tower.
  */
 int sendImage(int port, const char *ip, char * imgRGB, int height, int width);
+
+/*
+ * send the gps drone info to the control tower.
+ * 
+ */
+void *th_sendGPS(void *data);
 
 #endif

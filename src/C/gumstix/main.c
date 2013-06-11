@@ -83,6 +83,7 @@ int main(int argc, char *argv[])
 	 
 	Network net_listen;
 	Network_info net_info;
+	int can_start = 0;
 	
 	net_listen.nt_ip = ip_tower;
 	net_listen.nt_port = port_listen;
@@ -90,36 +91,80 @@ int main(int argc, char *argv[])
 	net_info.nt_ip = ip_tower;
 	net_info.nt_port = port_send;
 	
-	sem_init(&mutex_fifo, NULL, 1);
-	sem_init(&mutex_status, NULL, 1);
-	sem_init(&mutex_analog, NULL, 1);
-	sem_init(&sem_off, NULL, 0);
+	sem_init(&mutex_fifo, 0, 1);
+	sem_init(&mutex_status, 0, 1);
+	sem_init(&mutex_analog, 0, 1);
+	sem_init(&sem_off, 0, 0);
 	
 	initNetFifo(&globalNetFifo);
 	
 	status = MODE_OFF;
 	
 	/*
+	 * HELLO
+	 */
+	 
+	int sock;
+	struct sockaddr_in recv_addr, exp_addr ;
+	int n, exp_len,cpt=0 ;
+	char buf[BUFFER_SIZE];
+	struct timeval timeout;
+	MuavCom mc1, mc2;
+	
+	timeout.tv_sec=0;
+	timeout.tv_usec=TIMEOUT_MS;
+	
+	sock = socket(PF_INET, SOCK_DGRAM, 0) ;
+	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+	
+	bzero ((char *) &recv_addr, sizeof recv_addr) ;
+	recv_addr.sin_family = AF_INET ;
+	recv_addr.sin_addr.s_addr = INADDR_ANY ;
+	recv_addr.sin_port = htons (net_listen.nt_port) ;
+	
+	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
+	
+	setHeader(&mc1, 0,0, HELLO,0);
+	MCEncode(&mc1);
+	 
+	while ( can_start == 0 )
+	{
+		sendData(mc1, net_listen.nt_port, ip_tower);
+		n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
+		
+		if (n != -1)
+		{
+			MCDecode(&mc2);
+			if (mc2.mc_request == R_HELLO) can_start = 1; 
+		} else {
+			cpt++;
+		}
+		
+		if (cpt >= 2)
+		{
+			printf("networt is shit\n");
+			exit(0);
+		}
+	}
+	 
+	/*
+	 * FIN HELLO
+	 */
+	
+	/*
 	 * THREAD
 	 */
 	 
 	pthread_t thread_network_receiver, thread_network_sender;
-	pthread_t thread_manual_ruling, thread_self_ruling;
+	pthread_t thread_gps_info;
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
 	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
-	
-	//pthread_create(&thread_self_ruling,NULL,self_ruling,NULL);
-	//pthread_create(&thread_manual_ruling,NULL,manual_ruling,NULL);
+	pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
 
     /*
      * END THREAD
 	 */
-	
-	//pthread_join(thread_network_receiver, NULL);
-	//pthread_join(thread_network_sender, NULL);
-	
-	//TODO Send coucou
 	
 	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
 	init_pilotage();

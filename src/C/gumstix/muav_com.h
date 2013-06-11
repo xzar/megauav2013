@@ -29,7 +29,8 @@ typedef enum
 	R_SEND_IMG_SIZE=13,
 	SEND_IMG=14,
     SEND_GPS_INFO=15,
-    COUCOU=16
+    HELLO=16,
+    R_HELLO=17
 } RequestType;
 
 typedef struct muavcom 

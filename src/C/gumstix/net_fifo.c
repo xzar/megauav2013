@@ -126,7 +126,7 @@ void printNF(NetFifo * nf)
 	
 	for(; i < MAX_SIZE; i++ )
 	{
-		printf("index : %d, data: %s\n", i, nf->nf_fifo[i]);
+		printf("index : %d, data: %s\n", i, (char*)nf->nf_fifo[i]);
 	}
 	
 	printf("start: %d\n end: %d\n", nf->nf_index_start, nf->nf_index_end);

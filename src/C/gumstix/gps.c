@@ -101,7 +101,7 @@ GPGGA decode_GPGGA(char * gpgga)
 	int match, start, end, err;
 	regex_t preg_start;
 	size_t nmatch = 0, size;
-	int i = 1;
+	unsigned int i = 1;
 	const char *str_regex = "([0-9]+\.[0-9]+,[A-Z]),([0-9]+\.[0-9]+,[A-Z]),[0-9],([0-9]{2}),([0-9]+\.[0-9]+),([0-9]+\.[0-9]+,[A-Z])(,)";
 	regmatch_t *pmatch = NULL;
 	
