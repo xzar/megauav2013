@@ -3,15 +3,25 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
+#include <signal.h>
 
 #include "pilotage.h"
 #include "network.h"
 #include "serial_util.h"
 #include "odile.h"
 
+int paramIA;
 
+void traiter_signal(){
+	printf("ctrl+c trapper\n");
+	if(capture != NULL)cvReleaseCapture( &capture );
+
+	exit(0);
+}
 int main(int argc, char *argv[]) 
 {
+
+	paramIA = 1;
 	//tower control info
 	char * ip_tower;
 	
@@ -58,6 +68,9 @@ int main(int argc, char *argv[])
 	
 	port_send = atoi(argv[3]);
 	
+	/*Trappage du ctrl+c*/
+	signal(SIGINT, traiter_signal);
+
 	if ( port_send <= 0 || port_send >= 255*255 )
 	{
 		fprintf(stderr, "port %d is not allowed\n", port_send);
@@ -152,7 +165,6 @@ int main(int argc, char *argv[])
 	}
 	
 	close(sock);
-	
 	/*
 	 * FIN HELLO
 	 */
@@ -165,8 +177,8 @@ int main(int argc, char *argv[])
 	pthread_t thread_gps_info, thread_send_image;
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
-	//pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
-	//pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
+	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
+	pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
 	pthread_create(&thread_send_image, NULL, th_sendImage, &net_info);
 
     /*
@@ -175,45 +187,37 @@ int main(int argc, char *argv[])
 	
 	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
 	init_pilotage();
-//printf("test 0\n");
+
     while(1)
     {
         sem_wait(&mutex_status);
-//printf("test 01\n");
         switch(status)
         {
             case MODE_MANUAL:
                 sem_post(&mutex_status);
-				//printf("test 1 \n");
 				
 				int nick, roll, yaw, gas;
 				MuavCom mc;
-				//printf("test 2\n");
 				sem_wait(&mutex_fifo);
-				//printf("test 3\n");
 				if ( ! isEmptyNetFifo(&globalNetFifo) )
 				{
-					//printf("test 4444\n");
 					memset(mc.mc_data, 0, BUFFER_SIZE);
-					//printf("test 445\n");
 					memcpy(mc.mc_data, firstNetFifo(&globalNetFifo), BUFFER_SIZE);
-					//printf("test 55\n");
 					removeNetFifo(&globalNetFifo);
-					//printf("test 5\n");
 					sem_post(&mutex_fifo);
-					//printf("test 6\n");
 					MCDecode(&mc);
-					//printf("test 7\n");
 					if (mc.mc_request == PILOTE_MANUAL)
 					{
-						//printf("test 8\n");
 						ManualDecode(&mc, &nick, &roll, &yaw, &gas);
-						printf("%d %d %d %d \n",nick, roll, yaw, gas);
+#ifdef DEBUGJOY1
+printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,yaw,gas);
+#endif
 						set_Nick( (signed char) nick );
 						set_Roll( (signed char) roll );
 						set_Yaw( (signed char) yaw ); 
 						set_Gas( (unsigned char) gas );
 						envoi_pilotage(file_mkusb);
+
 					}
 				} else {
 					sem_post(&mutex_fifo);
@@ -222,7 +226,18 @@ int main(int argc, char *argv[])
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);
-                deplacement_zero();
+				if(paramIA == 1){
+					deplacement_zero();
+				}else
+					if(paramIA == 2)
+					{
+						converge();
+					}else 
+						if(paramIA == 3){
+							
+						}
+               	 
+				
                 break;
             case MODE_OFF:
                 sem_post(&mutex_status);

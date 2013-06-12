@@ -17,7 +17,7 @@ void open_capture(int camera,int width,int height)
 
 void SobelHV(char *buf,int myheight,int mywidth, float *bufHori, float *bufVert)
 {
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("entrer sobel image.c\n");	
 #endif
 	int i,j;
@@ -28,40 +28,27 @@ printf("entrer sobel image.c\n");
     {
 		for (j = 1; j < (mywidth)-1; j+=1)
     	{
-			/*sobelHo =(buf[((i-1)*mywidth)+(j-1)]
-				 -buf[((i-1)*mywidth)+(j+1)]
-				 +buf[((i+1)*mywidth)+(j-1)]
-				 -buf[((i+1)*mywidth)+(j+1)]
-				 +2*buf[((i)*mywidth)+(j-1)]
-				 -2*buf[((i)*mywidth)+(j+1)]);
-
-			sobelVe =(buf[((i-1)*mywidth)+(j-1)]
-				 +buf[((i-1)*mywidth)+(j+1)]
-				 -buf[((i+1)*mywidth)+(j-1)]
-				 -buf[((i+1)*mywidth)+(j+1)]
-				 +2*buf[((i-1)*mywidth)+(j)]
-				 -2*buf[((i+1)*mywidth)+(j)])/4;*/
-
+			
 			sobelHo =(buf[((i+1)*mywidth)+(j)]
 				 -buf[((i-1)*mywidth)+(j)]) >> 1;
 
 			sobelVe =(buf[((i)*mywidth)+(j-1)]
 				 -buf[((i)*mywidth)+(j+1)]) >> 1;
-			//printf("%d \n",sobelHo);
+		
 			bufHori[(i*mywidth)+(j)] = sobelHo ;
  			
 			bufVert[(i*mywidth)+(j)] = sobelVe ;
 			
 		}
 	}
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("sorte sobel image.c\n");	
 #endif
 }
 
 void harris( float* harris, float* gx, float* gy, int size )
 {
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("entrer harris image.c\n");	
 #endif
 	int i;
@@ -69,10 +56,7 @@ printf("entrer harris image.c\n");
 	float gx2;
 	float gy2;
 	float gxy;
-
-	
-	
-	
+		
 	for( i = 0; i < size; i++ )
 	{
 		// Calculer gx²
@@ -86,17 +70,17 @@ printf("entrer harris image.c\n");
 		
 		// Pour chaque pixel, calculer R
 		harris[i] = (gx2 * gy2) - (gxy) - (0.04 * ( gx2 + gy2 ) * ( gx2 + gy2 ) ); 
-		//printf("%f ",harris[i]);
+		
 	}
 
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("sortie harris image.c\n");	
 #endif
 }
 
 void getMaxima( float* bufHarris, int myheight, int mywidth, float** tab, int nbPointsInterets )
 {
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("entrer getMaxima image.c\n");	
 #endif
 	int i,j,k;
@@ -113,38 +97,18 @@ printf("entrer getMaxima image.c\n");
 	for (i = 1; i < myheight-1; i++)
     { 
 		for (j = 1; j < mywidth-1; j++)
-    	{
-			
-					
-					
+    	{					
 					for( k = 0; k < nbPointsInterets; k++ )
 					{
 						if( bufHarris[i*mywidth+j] > tab[k][2] )
 						{
-							//printf("azeeaz\n");
 							tab[k][0] = j;
 							tab[k][1] = i;
 							tab[k][2] = bufHarris[i*mywidth+j];
 							break;
 						}
 					}
-					
-					/*if(indice == nbPointsInterets) indice--;
-					
-					if(indice > 0)
-					{
-						for( k = 0; k < indice; k++ )
-						{
-							tab[k][0] = tab[k+1][0];
-							tab[k][1] = tab[k+1][1];
-							tab[k][2] = tab[k+1][2];
-						}
-					//printf("coucou %d %d %f	 \n",i,j,bufHarris[i*mywidth+j]);
-						tab[indice][0] = j;
-						tab[indice][1] = i;
-						tab[indice][2] = bufHarris[i*mywidth+j];	
-					}*/
-				
+									
 		}	
 	}
 	float t = tab[0][2] - tab[_NBHARRIS-1][2] ;
@@ -154,13 +118,13 @@ printf("entrer getMaxima image.c\n");
 		tab[k][2] = (tab[k][2] /t)*255.0f;
 		
 	}
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("sortie getMaxima image.c\n");	
 #endif
 }
 
 int calcul_vecteur_interet(float ** pointsT, float ** pointsTplusUn, int nbPoints, int seuil,vecteur* resultat){
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("entrer calcul_vecteur_interet image.c\n");	
 #endif
 	int it, itp;
@@ -209,14 +173,14 @@ printf("entrer calcul_vecteur_interet image.c\n");
 				compteVecteur ++;
 		}
 	}
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("sortie calcul_vecteur_interet image.c\n");	
 #endif
 	return compteVecteur;
 }
 
 void calcul_moyenne_vecteur(vecteur* listeVecteurs, int tailleListeVecteur, vecteur* resultat ){
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("entrer calcul_moyenne_vecteur image.c\n");	
 #endif	
 		int index;
@@ -237,13 +201,13 @@ printf("entrer calcul_moyenne_vecteur image.c\n");
 		resultat->x = pileX;
 		resultat->y = pileY;
 		
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("sortie calcul_moyenne_vecteur image.c\n");	
 #endif		
 }
 
 void RGBTOGRAY_1CANAL(IplImage* source_couleur, IplImage* dest_gris){
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("entre RGBTOGRAY_1CANAL image.c\n");	
 #endif
 	int i,gris,size = dest_gris->width * dest_gris->height;
@@ -256,49 +220,40 @@ printf("entre RGBTOGRAY_1CANAL image.c\n");
 		gris /= 3;
 		dest_gris->imageData[i] = gris;
 	}
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("sortie RGBTOGRAY_1CANAL image.c\n");	
 #endif
 }
 
 void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y)
 {
-#ifdef DEBUG2
+#ifdef DEBUG_IMAGE2
 printf("entre dessine_croix image.c\n");	
 #endif
 
 	int i;
 
 	for (i = -10; i <= 10; i++)
-    	{ 
-	 
-
-			//printf("indice croix %d\n ", (((myheight/2)*3*mywidth)+(mywidth/2)*3));
+    	{
 			if((ind_x+i) > 0 && (ind_x+i) < myheight && (ind_y+i) > 0 && (ind_y+i) < mywidth){
+				
 				buf[(((ind_x)+i)*mywidth+(ind_y))]=255;
-
 		
 				buf[(((ind_x))*mywidth+((ind_y)+i))]=255;
 			}
-/*
-			buf[(((myheight/2)+i)*3+((mywidth/2)+j)*3*myheight)+1]=0;
-			buf[(((myheight/2)+i)*3+((mywidth/2)+j)*3*myheight)+2]=0;
 
-			buf[(((myheight/2)-i)*3+((mywidth/2)+j)*3*myheight)]=255;
-			buf[(((myheight/2)-i)*3+((mywidth/2)+j)*3*myheight)+1]=0;
-			buf[(((myheight/2)-i)*3+((mywidth/2)+j)*3*myheight)+2]=0;
-
-		*/
 		
 	}
 	
-
-#ifdef DEBUG2
-printf("entre dessine_croix image.c\n");	
+#ifdef DEBUG_IMAGE2
+printf("sortie dessine_croix image.c\n");	
 #endif
 }
 
 void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth){
+#ifdef DEBUG_IMAGE2
+printf("entre calcul_vecteur_barycentre image.c\n");	
+#endif
 	int it;
 	int baryX = 0;
 	int baryY = 0;
@@ -314,6 +269,3002 @@ void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* result
 	baryY = baryY / nbPoints;
 	
 	//calcul vecteur par rapport au centre
-	resultat->x = baryX-mywidth;
-	resultat->y = baryY-myheight;
+	resultat->x = baryX-(mywidth/2);
+	resultat->y = baryY-(myheight/2);
+#ifdef DEBUG_IMAGE2
+printf("sorite calcul_vecteur_barycentre image.c\n");	
+#endif
 }
+
+void fast_valeur(char* image, int myheight, int mywidth, float** maxHarris, int nbPointsInterets, int seuil)
+{
+#ifdef DEBUG_IMAGE2
+printf("entre fast_Valeur image.c\n");	
+#endif
+	int compteur;
+	int pixel_a_plat[16];
+	//pour chaque coin max detecte par harris
+	for(compteur = 0; compteur < nbPointsInterets; compteur ++)
+	{
+		//si le point n est pas dans les bordures
+		if( 
+			maxHarris[compteur][0] > 3
+			&& maxHarris[compteur][0] < mywidth - 3
+			&& maxHarris[compteur][1] > 3
+			&& maxHarris[compteur][1] < myheight - 3)
+		{
+			mise_a_plat(image, pixel_a_plat,maxHarris[compteur][0],maxHarris[compteur][1], mywidth);
+			maxHarris[compteur][3] = fast9(pixel_a_plat, seuil,image[ ((int)maxHarris[compteur][0]*mywidth+(int)maxHarris[compteur][1])] );
+		}
+		
+		else
+		maxHarris[compteur][3] = -1;
+	}
+#ifdef DEBUG_IMAGE2
+printf("sortie fast valeur image.c\n");	
+#endif
+}
+
+void mise_a_plat(char* image, int* pixel,int x, int y, int mywidth)
+{
+#ifdef DEBUG_IMAGE2
+printf("entre mise a plat image.c\n");	
+#endif
+        pixel[0] = image[x + 0 + mywidth * 3 + mywidth * y];
+        pixel[1] = image[x + 1 + mywidth * 3 + mywidth * y];
+        pixel[2] = image[x + 2 + mywidth * 2 + mywidth * y];
+        pixel[3] = image[x + 3 + mywidth * 1 + mywidth * y];
+        pixel[4] = image[x + 3 + mywidth * 0 + mywidth * y];
+        pixel[5] = image[x + 3 + mywidth * -1 + mywidth * y];
+        pixel[6] = image[x + 2 + mywidth * -2 + mywidth * y];
+        pixel[7] = image[x + 1 + mywidth * -3 + mywidth * y];
+        pixel[8] = image[x + 0 + mywidth * -3 + mywidth * y];
+        pixel[9] = image[x + -1 + mywidth * -3 + mywidth * y];
+        pixel[10] = image[x + -2 + mywidth * -2 + mywidth * y];
+        pixel[11] = image[x + -3 + mywidth * -1 + mywidth * y];
+        pixel[12] = image[x + -3 + mywidth * 0 + mywidth * y];
+        pixel[13] = image[x + -3 + mywidth * 1 + mywidth * y];
+        pixel[14] = image[x + -2 + mywidth * 2 + mywidth * y];
+        pixel[15] = image[x + -1 + mywidth * 3 + mywidth * y];
+#ifdef DEBUG_IMAGE2
+printf("sortie mise a plat image.c\n");	
+#endif
+}
+
+int fast9(int* pixel, int bstart, int p)
+{  
+#ifdef DEBUG_IMAGE2
+printf("entre fast9 image.c\n");	
+#endif  
+    int bmin = bstart;
+    int bmax = 255;
+    int b = (bmax + bmin)/2;
+    
+    /*Compute the score using binary search*/
+	for(;;)
+    {
+		int cb = p + b;
+		int c_b= p - b;
+
+
+        if( pixel[0] > cb)
+         if( pixel[1] > cb)
+          if( pixel[2] > cb)
+           if( pixel[3] > cb)
+            if( pixel[4] > cb)
+             if( pixel[5] > cb)
+              if( pixel[6] > cb)
+               if( pixel[7] > cb)
+                if( pixel[8] > cb)
+                 goto is_a_corner;
+                else
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else if( pixel[7] < c_b)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else if( pixel[14] < c_b)
+                 if( pixel[8] < c_b)
+                  if( pixel[9] < c_b)
+                   if( pixel[10] < c_b)
+                    if( pixel[11] < c_b)
+                     if( pixel[12] < c_b)
+                      if( pixel[13] < c_b)
+                       if( pixel[15] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else if( pixel[6] < c_b)
+               if( pixel[15] > cb)
+                if( pixel[13] > cb)
+                 if( pixel[14] > cb)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else if( pixel[13] < c_b)
+                 if( pixel[7] < c_b)
+                  if( pixel[8] < c_b)
+                   if( pixel[9] < c_b)
+                    if( pixel[10] < c_b)
+                     if( pixel[11] < c_b)
+                      if( pixel[12] < c_b)
+                       if( pixel[14] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                if( pixel[7] < c_b)
+                 if( pixel[8] < c_b)
+                  if( pixel[9] < c_b)
+                   if( pixel[10] < c_b)
+                    if( pixel[11] < c_b)
+                     if( pixel[12] < c_b)
+                      if( pixel[13] < c_b)
+                       if( pixel[14] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else if( pixel[13] < c_b)
+                if( pixel[7] < c_b)
+                 if( pixel[8] < c_b)
+                  if( pixel[9] < c_b)
+                   if( pixel[10] < c_b)
+                    if( pixel[11] < c_b)
+                     if( pixel[12] < c_b)
+                      if( pixel[14] < c_b)
+                       if( pixel[15] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else if( pixel[5] < c_b)
+              if( pixel[14] > cb)
+               if( pixel[12] > cb)
+                if( pixel[13] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      if( pixel[10] > cb)
+                       if( pixel[11] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else if( pixel[12] < c_b)
+                if( pixel[6] < c_b)
+                 if( pixel[7] < c_b)
+                  if( pixel[8] < c_b)
+                   if( pixel[9] < c_b)
+                    if( pixel[10] < c_b)
+                     if( pixel[11] < c_b)
+                      if( pixel[13] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else if( pixel[14] < c_b)
+               if( pixel[7] < c_b)
+                if( pixel[8] < c_b)
+                 if( pixel[9] < c_b)
+                  if( pixel[10] < c_b)
+                   if( pixel[11] < c_b)
+                    if( pixel[12] < c_b)
+                     if( pixel[13] < c_b)
+                      if( pixel[6] < c_b)
+                       goto is_a_corner;
+                      else
+                       if( pixel[15] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               if( pixel[6] < c_b)
+                if( pixel[7] < c_b)
+                 if( pixel[8] < c_b)
+                  if( pixel[9] < c_b)
+                   if( pixel[10] < c_b)
+                    if( pixel[11] < c_b)
+                     if( pixel[12] < c_b)
+                      if( pixel[13] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      if( pixel[10] > cb)
+                       if( pixel[11] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else if( pixel[12] < c_b)
+               if( pixel[7] < c_b)
+                if( pixel[8] < c_b)
+                 if( pixel[9] < c_b)
+                  if( pixel[10] < c_b)
+                   if( pixel[11] < c_b)
+                    if( pixel[13] < c_b)
+                     if( pixel[14] < c_b)
+                      if( pixel[6] < c_b)
+                       goto is_a_corner;
+                      else
+                       if( pixel[15] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else if( pixel[4] < c_b)
+             if( pixel[13] > cb)
+              if( pixel[11] > cb)
+               if( pixel[12] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      if( pixel[10] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      if( pixel[10] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else if( pixel[11] < c_b)
+               if( pixel[5] < c_b)
+                if( pixel[6] < c_b)
+                 if( pixel[7] < c_b)
+                  if( pixel[8] < c_b)
+                   if( pixel[9] < c_b)
+                    if( pixel[10] < c_b)
+                     if( pixel[12] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else if( pixel[13] < c_b)
+              if( pixel[7] < c_b)
+               if( pixel[8] < c_b)
+                if( pixel[9] < c_b)
+                 if( pixel[10] < c_b)
+                  if( pixel[11] < c_b)
+                   if( pixel[12] < c_b)
+                    if( pixel[6] < c_b)
+                     if( pixel[5] < c_b)
+                      goto is_a_corner;
+                     else
+                      if( pixel[14] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                    else
+                     if( pixel[14] < c_b)
+                      if( pixel[15] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              if( pixel[5] < c_b)
+               if( pixel[6] < c_b)
+                if( pixel[7] < c_b)
+                 if( pixel[8] < c_b)
+                  if( pixel[9] < c_b)
+                   if( pixel[10] < c_b)
+                    if( pixel[11] < c_b)
+                     if( pixel[12] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             if( pixel[11] > cb)
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      if( pixel[10] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      if( pixel[10] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else if( pixel[11] < c_b)
+              if( pixel[7] < c_b)
+               if( pixel[8] < c_b)
+                if( pixel[9] < c_b)
+                 if( pixel[10] < c_b)
+                  if( pixel[12] < c_b)
+                   if( pixel[13] < c_b)
+                    if( pixel[6] < c_b)
+                     if( pixel[5] < c_b)
+                      goto is_a_corner;
+                     else
+                      if( pixel[14] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                    else
+                     if( pixel[14] < c_b)
+                      if( pixel[15] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+           else if( pixel[3] < c_b)
+            if( pixel[10] > cb)
+             if( pixel[11] > cb)
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else if( pixel[10] < c_b)
+             if( pixel[7] < c_b)
+              if( pixel[8] < c_b)
+               if( pixel[9] < c_b)
+                if( pixel[11] < c_b)
+                 if( pixel[6] < c_b)
+                  if( pixel[5] < c_b)
+                   if( pixel[4] < c_b)
+                    goto is_a_corner;
+                   else
+                    if( pixel[12] < c_b)
+                     if( pixel[13] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                  else
+                   if( pixel[12] < c_b)
+                    if( pixel[13] < c_b)
+                     if( pixel[14] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[12] < c_b)
+                   if( pixel[13] < c_b)
+                    if( pixel[14] < c_b)
+                     if( pixel[15] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            if( pixel[10] > cb)
+             if( pixel[11] > cb)
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     if( pixel[9] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else if( pixel[10] < c_b)
+             if( pixel[7] < c_b)
+              if( pixel[8] < c_b)
+               if( pixel[9] < c_b)
+                if( pixel[11] < c_b)
+                 if( pixel[12] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[5] < c_b)
+                    if( pixel[4] < c_b)
+                     goto is_a_corner;
+                    else
+                     if( pixel[13] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                   else
+                    if( pixel[13] < c_b)
+                     if( pixel[14] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                  else
+                   if( pixel[13] < c_b)
+                    if( pixel[14] < c_b)
+                     if( pixel[15] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+          else if( pixel[2] < c_b)
+           if( pixel[9] > cb)
+            if( pixel[10] > cb)
+             if( pixel[11] > cb)
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] > cb)
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else if( pixel[9] < c_b)
+            if( pixel[7] < c_b)
+             if( pixel[8] < c_b)
+              if( pixel[10] < c_b)
+               if( pixel[6] < c_b)
+                if( pixel[5] < c_b)
+                 if( pixel[4] < c_b)
+                  if( pixel[3] < c_b)
+                   goto is_a_corner;
+                  else
+                   if( pixel[11] < c_b)
+                    if( pixel[12] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[11] < c_b)
+                   if( pixel[12] < c_b)
+                    if( pixel[13] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[11] < c_b)
+                  if( pixel[12] < c_b)
+                   if( pixel[13] < c_b)
+                    if( pixel[14] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[11] < c_b)
+                 if( pixel[12] < c_b)
+                  if( pixel[13] < c_b)
+                   if( pixel[14] < c_b)
+                    if( pixel[15] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else
+           if( pixel[9] > cb)
+            if( pixel[10] > cb)
+             if( pixel[11] > cb)
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] > cb)
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    if( pixel[8] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else if( pixel[9] < c_b)
+            if( pixel[7] < c_b)
+             if( pixel[8] < c_b)
+              if( pixel[10] < c_b)
+               if( pixel[11] < c_b)
+                if( pixel[6] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[4] < c_b)
+                   if( pixel[3] < c_b)
+                    goto is_a_corner;
+                   else
+                    if( pixel[12] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                  else
+                   if( pixel[12] < c_b)
+                    if( pixel[13] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[12] < c_b)
+                   if( pixel[13] < c_b)
+                    if( pixel[14] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[12] < c_b)
+                  if( pixel[13] < c_b)
+                   if( pixel[14] < c_b)
+                    if( pixel[15] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+         else if( pixel[1] < c_b)
+          if( pixel[8] > cb)
+           if( pixel[9] > cb)
+            if( pixel[10] > cb)
+             if( pixel[11] > cb)
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] > cb)
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[2] > cb)
+               if( pixel[3] > cb)
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else if( pixel[8] < c_b)
+           if( pixel[7] < c_b)
+            if( pixel[9] < c_b)
+             if( pixel[6] < c_b)
+              if( pixel[5] < c_b)
+               if( pixel[4] < c_b)
+                if( pixel[3] < c_b)
+                 if( pixel[2] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[10] < c_b)
+                   if( pixel[11] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[10] < c_b)
+                  if( pixel[11] < c_b)
+                   if( pixel[12] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[10] < c_b)
+                 if( pixel[11] < c_b)
+                  if( pixel[12] < c_b)
+                   if( pixel[13] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[10] < c_b)
+                if( pixel[11] < c_b)
+                 if( pixel[12] < c_b)
+                  if( pixel[13] < c_b)
+                   if( pixel[14] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[10] < c_b)
+               if( pixel[11] < c_b)
+                if( pixel[12] < c_b)
+                 if( pixel[13] < c_b)
+                  if( pixel[14] < c_b)
+                   if( pixel[15] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else
+           goto is_not_a_corner;
+         else
+          if( pixel[8] > cb)
+           if( pixel[9] > cb)
+            if( pixel[10] > cb)
+             if( pixel[11] > cb)
+              if( pixel[12] > cb)
+               if( pixel[13] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[15] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] > cb)
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[2] > cb)
+               if( pixel[3] > cb)
+                if( pixel[4] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[7] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else if( pixel[8] < c_b)
+           if( pixel[7] < c_b)
+            if( pixel[9] < c_b)
+             if( pixel[10] < c_b)
+              if( pixel[6] < c_b)
+               if( pixel[5] < c_b)
+                if( pixel[4] < c_b)
+                 if( pixel[3] < c_b)
+                  if( pixel[2] < c_b)
+                   goto is_a_corner;
+                  else
+                   if( pixel[11] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[11] < c_b)
+                   if( pixel[12] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[11] < c_b)
+                  if( pixel[12] < c_b)
+                   if( pixel[13] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[11] < c_b)
+                 if( pixel[12] < c_b)
+                  if( pixel[13] < c_b)
+                   if( pixel[14] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[11] < c_b)
+                if( pixel[12] < c_b)
+                 if( pixel[13] < c_b)
+                  if( pixel[14] < c_b)
+                   if( pixel[15] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else
+           goto is_not_a_corner;
+        else if( pixel[0] < c_b)
+         if( pixel[1] > cb)
+          if( pixel[8] > cb)
+           if( pixel[7] > cb)
+            if( pixel[9] > cb)
+             if( pixel[6] > cb)
+              if( pixel[5] > cb)
+               if( pixel[4] > cb)
+                if( pixel[3] > cb)
+                 if( pixel[2] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[10] > cb)
+                   if( pixel[11] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[10] > cb)
+                  if( pixel[11] > cb)
+                   if( pixel[12] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[10] > cb)
+                 if( pixel[11] > cb)
+                  if( pixel[12] > cb)
+                   if( pixel[13] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[10] > cb)
+                if( pixel[11] > cb)
+                 if( pixel[12] > cb)
+                  if( pixel[13] > cb)
+                   if( pixel[14] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[10] > cb)
+               if( pixel[11] > cb)
+                if( pixel[12] > cb)
+                 if( pixel[13] > cb)
+                  if( pixel[14] > cb)
+                   if( pixel[15] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else if( pixel[8] < c_b)
+           if( pixel[9] < c_b)
+            if( pixel[10] < c_b)
+             if( pixel[11] < c_b)
+              if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] < c_b)
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[2] < c_b)
+               if( pixel[3] < c_b)
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else
+           goto is_not_a_corner;
+         else if( pixel[1] < c_b)
+          if( pixel[2] > cb)
+           if( pixel[9] > cb)
+            if( pixel[7] > cb)
+             if( pixel[8] > cb)
+              if( pixel[10] > cb)
+               if( pixel[6] > cb)
+                if( pixel[5] > cb)
+                 if( pixel[4] > cb)
+                  if( pixel[3] > cb)
+                   goto is_a_corner;
+                  else
+                   if( pixel[11] > cb)
+                    if( pixel[12] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[11] > cb)
+                   if( pixel[12] > cb)
+                    if( pixel[13] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[11] > cb)
+                  if( pixel[12] > cb)
+                   if( pixel[13] > cb)
+                    if( pixel[14] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[11] > cb)
+                 if( pixel[12] > cb)
+                  if( pixel[13] > cb)
+                   if( pixel[14] > cb)
+                    if( pixel[15] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else if( pixel[9] < c_b)
+            if( pixel[10] < c_b)
+             if( pixel[11] < c_b)
+              if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] < c_b)
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else if( pixel[2] < c_b)
+           if( pixel[3] > cb)
+            if( pixel[10] > cb)
+             if( pixel[7] > cb)
+              if( pixel[8] > cb)
+               if( pixel[9] > cb)
+                if( pixel[11] > cb)
+                 if( pixel[6] > cb)
+                  if( pixel[5] > cb)
+                   if( pixel[4] > cb)
+                    goto is_a_corner;
+                   else
+                    if( pixel[12] > cb)
+                     if( pixel[13] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                  else
+                   if( pixel[12] > cb)
+                    if( pixel[13] > cb)
+                     if( pixel[14] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[12] > cb)
+                   if( pixel[13] > cb)
+                    if( pixel[14] > cb)
+                     if( pixel[15] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else if( pixel[10] < c_b)
+             if( pixel[11] < c_b)
+              if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else if( pixel[3] < c_b)
+            if( pixel[4] > cb)
+             if( pixel[13] > cb)
+              if( pixel[7] > cb)
+               if( pixel[8] > cb)
+                if( pixel[9] > cb)
+                 if( pixel[10] > cb)
+                  if( pixel[11] > cb)
+                   if( pixel[12] > cb)
+                    if( pixel[6] > cb)
+                     if( pixel[5] > cb)
+                      goto is_a_corner;
+                     else
+                      if( pixel[14] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                    else
+                     if( pixel[14] > cb)
+                      if( pixel[15] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else if( pixel[13] < c_b)
+              if( pixel[11] > cb)
+               if( pixel[5] > cb)
+                if( pixel[6] > cb)
+                 if( pixel[7] > cb)
+                  if( pixel[8] > cb)
+                   if( pixel[9] > cb)
+                    if( pixel[10] > cb)
+                     if( pixel[12] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else if( pixel[11] < c_b)
+               if( pixel[12] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      if( pixel[10] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      if( pixel[10] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              if( pixel[5] > cb)
+               if( pixel[6] > cb)
+                if( pixel[7] > cb)
+                 if( pixel[8] > cb)
+                  if( pixel[9] > cb)
+                   if( pixel[10] > cb)
+                    if( pixel[11] > cb)
+                     if( pixel[12] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else if( pixel[4] < c_b)
+             if( pixel[5] > cb)
+              if( pixel[14] > cb)
+               if( pixel[7] > cb)
+                if( pixel[8] > cb)
+                 if( pixel[9] > cb)
+                  if( pixel[10] > cb)
+                   if( pixel[11] > cb)
+                    if( pixel[12] > cb)
+                     if( pixel[13] > cb)
+                      if( pixel[6] > cb)
+                       goto is_a_corner;
+                      else
+                       if( pixel[15] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else if( pixel[14] < c_b)
+               if( pixel[12] > cb)
+                if( pixel[6] > cb)
+                 if( pixel[7] > cb)
+                  if( pixel[8] > cb)
+                   if( pixel[9] > cb)
+                    if( pixel[10] > cb)
+                     if( pixel[11] > cb)
+                      if( pixel[13] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else if( pixel[12] < c_b)
+                if( pixel[13] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      if( pixel[10] < c_b)
+                       if( pixel[11] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               if( pixel[6] > cb)
+                if( pixel[7] > cb)
+                 if( pixel[8] > cb)
+                  if( pixel[9] > cb)
+                   if( pixel[10] > cb)
+                    if( pixel[11] > cb)
+                     if( pixel[12] > cb)
+                      if( pixel[13] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else if( pixel[5] < c_b)
+              if( pixel[6] > cb)
+               if( pixel[15] < c_b)
+                if( pixel[13] > cb)
+                 if( pixel[7] > cb)
+                  if( pixel[8] > cb)
+                   if( pixel[9] > cb)
+                    if( pixel[10] > cb)
+                     if( pixel[11] > cb)
+                      if( pixel[12] > cb)
+                       if( pixel[14] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else if( pixel[13] < c_b)
+                 if( pixel[14] < c_b)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                if( pixel[7] > cb)
+                 if( pixel[8] > cb)
+                  if( pixel[9] > cb)
+                   if( pixel[10] > cb)
+                    if( pixel[11] > cb)
+                     if( pixel[12] > cb)
+                      if( pixel[13] > cb)
+                       if( pixel[14] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else if( pixel[6] < c_b)
+               if( pixel[7] > cb)
+                if( pixel[14] > cb)
+                 if( pixel[8] > cb)
+                  if( pixel[9] > cb)
+                   if( pixel[10] > cb)
+                    if( pixel[11] > cb)
+                     if( pixel[12] > cb)
+                      if( pixel[13] > cb)
+                       if( pixel[15] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else if( pixel[7] < c_b)
+                if( pixel[8] < c_b)
+                 goto is_a_corner;
+                else
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[13] > cb)
+                if( pixel[7] > cb)
+                 if( pixel[8] > cb)
+                  if( pixel[9] > cb)
+                   if( pixel[10] > cb)
+                    if( pixel[11] > cb)
+                     if( pixel[12] > cb)
+                      if( pixel[14] > cb)
+                       if( pixel[15] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[12] > cb)
+               if( pixel[7] > cb)
+                if( pixel[8] > cb)
+                 if( pixel[9] > cb)
+                  if( pixel[10] > cb)
+                   if( pixel[11] > cb)
+                    if( pixel[13] > cb)
+                     if( pixel[14] > cb)
+                      if( pixel[6] > cb)
+                       goto is_a_corner;
+                      else
+                       if( pixel[15] > cb)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      if( pixel[10] < c_b)
+                       if( pixel[11] < c_b)
+                        goto is_a_corner;
+                       else
+                        goto is_not_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             if( pixel[11] > cb)
+              if( pixel[7] > cb)
+               if( pixel[8] > cb)
+                if( pixel[9] > cb)
+                 if( pixel[10] > cb)
+                  if( pixel[12] > cb)
+                   if( pixel[13] > cb)
+                    if( pixel[6] > cb)
+                     if( pixel[5] > cb)
+                      goto is_a_corner;
+                     else
+                      if( pixel[14] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                    else
+                     if( pixel[14] > cb)
+                      if( pixel[15] > cb)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else if( pixel[11] < c_b)
+              if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      if( pixel[10] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      if( pixel[10] < c_b)
+                       goto is_a_corner;
+                      else
+                       goto is_not_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+           else
+            if( pixel[10] > cb)
+             if( pixel[7] > cb)
+              if( pixel[8] > cb)
+               if( pixel[9] > cb)
+                if( pixel[11] > cb)
+                 if( pixel[12] > cb)
+                  if( pixel[6] > cb)
+                   if( pixel[5] > cb)
+                    if( pixel[4] > cb)
+                     goto is_a_corner;
+                    else
+                     if( pixel[13] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                   else
+                    if( pixel[13] > cb)
+                     if( pixel[14] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                  else
+                   if( pixel[13] > cb)
+                    if( pixel[14] > cb)
+                     if( pixel[15] > cb)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else if( pixel[10] < c_b)
+             if( pixel[11] < c_b)
+              if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     if( pixel[9] < c_b)
+                      goto is_a_corner;
+                     else
+                      goto is_not_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+          else
+           if( pixel[9] > cb)
+            if( pixel[7] > cb)
+             if( pixel[8] > cb)
+              if( pixel[10] > cb)
+               if( pixel[11] > cb)
+                if( pixel[6] > cb)
+                 if( pixel[5] > cb)
+                  if( pixel[4] > cb)
+                   if( pixel[3] > cb)
+                    goto is_a_corner;
+                   else
+                    if( pixel[12] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                  else
+                   if( pixel[12] > cb)
+                    if( pixel[13] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[12] > cb)
+                   if( pixel[13] > cb)
+                    if( pixel[14] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[12] > cb)
+                  if( pixel[13] > cb)
+                   if( pixel[14] > cb)
+                    if( pixel[15] > cb)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else if( pixel[9] < c_b)
+            if( pixel[10] < c_b)
+             if( pixel[11] < c_b)
+              if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] < c_b)
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    if( pixel[8] < c_b)
+                     goto is_a_corner;
+                    else
+                     goto is_not_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+         else
+          if( pixel[8] > cb)
+           if( pixel[7] > cb)
+            if( pixel[9] > cb)
+             if( pixel[10] > cb)
+              if( pixel[6] > cb)
+               if( pixel[5] > cb)
+                if( pixel[4] > cb)
+                 if( pixel[3] > cb)
+                  if( pixel[2] > cb)
+                   goto is_a_corner;
+                  else
+                   if( pixel[11] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                 else
+                  if( pixel[11] > cb)
+                   if( pixel[12] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[11] > cb)
+                  if( pixel[12] > cb)
+                   if( pixel[13] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[11] > cb)
+                 if( pixel[12] > cb)
+                  if( pixel[13] > cb)
+                   if( pixel[14] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[11] > cb)
+                if( pixel[12] > cb)
+                 if( pixel[13] > cb)
+                  if( pixel[14] > cb)
+                   if( pixel[15] > cb)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else if( pixel[8] < c_b)
+           if( pixel[9] < c_b)
+            if( pixel[10] < c_b)
+             if( pixel[11] < c_b)
+              if( pixel[12] < c_b)
+               if( pixel[13] < c_b)
+                if( pixel[14] < c_b)
+                 if( pixel[15] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[3] < c_b)
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[2] < c_b)
+               if( pixel[3] < c_b)
+                if( pixel[4] < c_b)
+                 if( pixel[5] < c_b)
+                  if( pixel[6] < c_b)
+                   if( pixel[7] < c_b)
+                    goto is_a_corner;
+                   else
+                    goto is_not_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else
+           goto is_not_a_corner;
+        else
+         if( pixel[7] > cb)
+          if( pixel[8] > cb)
+           if( pixel[9] > cb)
+            if( pixel[6] > cb)
+             if( pixel[5] > cb)
+              if( pixel[4] > cb)
+               if( pixel[3] > cb)
+                if( pixel[2] > cb)
+                 if( pixel[1] > cb)
+                  goto is_a_corner;
+                 else
+                  if( pixel[10] > cb)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[10] > cb)
+                  if( pixel[11] > cb)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[10] > cb)
+                 if( pixel[11] > cb)
+                  if( pixel[12] > cb)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[10] > cb)
+                if( pixel[11] > cb)
+                 if( pixel[12] > cb)
+                  if( pixel[13] > cb)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[10] > cb)
+               if( pixel[11] > cb)
+                if( pixel[12] > cb)
+                 if( pixel[13] > cb)
+                  if( pixel[14] > cb)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             if( pixel[10] > cb)
+              if( pixel[11] > cb)
+               if( pixel[12] > cb)
+                if( pixel[13] > cb)
+                 if( pixel[14] > cb)
+                  if( pixel[15] > cb)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else
+           goto is_not_a_corner;
+         else if( pixel[7] < c_b)
+          if( pixel[8] < c_b)
+           if( pixel[9] < c_b)
+            if( pixel[6] < c_b)
+             if( pixel[5] < c_b)
+              if( pixel[4] < c_b)
+               if( pixel[3] < c_b)
+                if( pixel[2] < c_b)
+                 if( pixel[1] < c_b)
+                  goto is_a_corner;
+                 else
+                  if( pixel[10] < c_b)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                else
+                 if( pixel[10] < c_b)
+                  if( pixel[11] < c_b)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+               else
+                if( pixel[10] < c_b)
+                 if( pixel[11] < c_b)
+                  if( pixel[12] < c_b)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+              else
+               if( pixel[10] < c_b)
+                if( pixel[11] < c_b)
+                 if( pixel[12] < c_b)
+                  if( pixel[13] < c_b)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+             else
+              if( pixel[10] < c_b)
+               if( pixel[11] < c_b)
+                if( pixel[12] < c_b)
+                 if( pixel[13] < c_b)
+                  if( pixel[14] < c_b)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+            else
+             if( pixel[10] < c_b)
+              if( pixel[11] < c_b)
+               if( pixel[12] < c_b)
+                if( pixel[13] < c_b)
+                 if( pixel[14] < c_b)
+                  if( pixel[15] < c_b)
+                   goto is_a_corner;
+                  else
+                   goto is_not_a_corner;
+                 else
+                  goto is_not_a_corner;
+                else
+                 goto is_not_a_corner;
+               else
+                goto is_not_a_corner;
+              else
+               goto is_not_a_corner;
+             else
+              goto is_not_a_corner;
+           else
+            goto is_not_a_corner;
+          else
+           goto is_not_a_corner;
+         else
+          goto is_not_a_corner;
+
+		is_a_corner:
+			bmin=b;
+			goto end_if;
+
+		is_not_a_corner:
+			bmax=b;
+			goto end_if;
+
+		end_if:
+
+		if(bmin == bmax - 1 || bmin == bmax)
+			return bmin;
+		b = (bmin + bmax) / 2;
+    }
+#ifdef DEBUG_IMAGE2
+printf("entre fast9 image.c\n");	
+#endif
+}
+

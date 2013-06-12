@@ -85,8 +85,11 @@ void* th_receiver(void* data)
 		memset(buf,0,BUFFER_SIZE);
 		recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
 		
-		//printf("received: %s\n", buf);
 		
+		
+#ifdef DEBUG1
+printf("received: %s\n", buf);
+#endif
 		memcpy(mc.mc_data, buf, BUFFER_SIZE);
 		
 		MCDecode(&mc);
@@ -94,12 +97,11 @@ void* th_receiver(void* data)
 		switch(mc.mc_request)
 		{
 			case PILOTE_REQ_MANUAL:
+			
 				sem_wait(&mutex_fifo);
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
-				
-				//printf("debug 03\n");
-				
+
 				sem_wait(&mutex_status);
 				status = MODE_MANUAL;
 				sem_post(&mutex_status);
@@ -115,9 +117,7 @@ void* th_receiver(void* data)
 				sem_wait(&mutex_fifo);
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
-				
-				//printf("debug 02\n");
-				
+
 				sem_wait(&mutex_status);
 				status = MODE_AUTO;
 				sem_post(&mutex_status);
@@ -133,9 +133,7 @@ void* th_receiver(void* data)
 				sem_wait(&mutex_fifo);
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
-				
-				//printf("debug 01\n");
-				
+
 				sem_wait(&mutex_status);
 				status = MODE_OFF;
 				sem_post(&mutex_status);
@@ -144,8 +142,7 @@ void* th_receiver(void* data)
 				sem_wait(&mutex_fifo);
 				addNetFifo(&globalNetFifo, buf);
 				sem_post(&mutex_fifo);
-				
-				//printf("debug 04\n");
+
 		}
 	} 
 	
