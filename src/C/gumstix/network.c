@@ -11,6 +11,8 @@ sem_t sem_off;
 sem_t mutex_analog;
 
 int status;
+int status_gps;
+int status_sdimg;
 
 /*
  * Send data to the control tower.
@@ -64,6 +66,7 @@ void* th_receiver(void* data)
 	char buf[BUFFER_SIZE];
 	struct timeval timeout;
 	MuavCom mc;
+	pthread_t thread_gps_info, thread_send_image;
 	
 	timeout.tv_sec=0;
 	timeout.tv_usec=TIMEOUT_MS;
@@ -137,6 +140,20 @@ printf("received: %s\n", buf);
 				sem_wait(&mutex_status);
 				status = MODE_OFF;
 				sem_post(&mutex_status);
+				break;
+			case GPS_INFO_START:
+				status_gps=1;
+				pthread_create(&thread_gps_info, NULL, th_sendGPS, &nt);
+				break;
+			case GPS_INFO_STOP:
+				status_gps=0;
+				break;
+			case IMAGE_SEND_START:
+				status_sdimg=1;
+				pthread_create(&thread_send_image, NULL, th_sendImage, &nt);
+				break;
+			case IMAGE_SEND_STOP:
+				status_sdimg=0;
 				break;
 			default:
 				sem_wait(&mutex_fifo);
@@ -277,7 +294,7 @@ void *th_sendGPS(void *data)
 		{
 			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
 			MCEncode(&mc);
-			sendData(mc, nt.nt_port, nt.nt_ip);
+			sendData(mc, nt.nt_port2, nt.nt_ip);
 			continue;
 		}
 		
@@ -288,7 +305,7 @@ void *th_sendGPS(void *data)
 		{
 			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
 			MCEncode(&mc);
-			sendData(mc, nt.nt_port, nt.nt_ip);
+			sendData(mc, nt.nt_port2, nt.nt_ip);
 			continue;
 		}
 		
@@ -308,7 +325,9 @@ void *th_sendGPS(void *data)
 		
 		//printf("send gps info: %s\n", buf);
 		
-		sendData(mc, nt.nt_port, nt.nt_ip);
+		sendData(mc, nt.nt_port2, nt.nt_ip);
+		
+		if ( status_gps == 0 ) pthread_exit(NULL);
 	}
 	
 	//close(sock);
@@ -342,7 +361,7 @@ void * th_sendImage(void * data)
 	bzero ((char *) &recv_addr, sizeof recv_addr) ;
 	recv_addr.sin_family = AF_INET ;
 	recv_addr.sin_addr.s_addr = INADDR_ANY ;
-	recv_addr.sin_port = htons (nt.nt_port) ;
+	recv_addr.sin_port = htons (nt.nt_port2) ;
 	
 	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
 	
@@ -396,7 +415,7 @@ void * th_sendImage(void * data)
 			imageEncode(&mc, image, size_part, encodedData, offset, part);
 			
 			//printf("debug img4\n");
-			sendImage(nt.nt_port, nt.nt_ip, encodedData, BUFFER_SIZE);
+			sendImage(nt.nt_port2, nt.nt_ip, encodedData, BUFFER_SIZE);
 			//printf("debug img5\n");
 			
 			n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
@@ -408,7 +427,6 @@ void * th_sendImage(void * data)
 				memcpy(mc2.mc_data, buf, BUFFER_SIZE);
 				
 				MCDecode(&mc2);
-				//printf("", );
 				if ( mc2.mc_request == R_SEND_IMG ) 
 				{
 					printf("part %d\n", (int)mc2.mc_data[HEADER_SIZE]);
@@ -420,5 +438,7 @@ void * th_sendImage(void * data)
 		} while (offset < size);
 		
 		usleep(500000);
+		
+		if ( status_sdimg == 0 ) pthread_exit(NULL);
 	}
 }

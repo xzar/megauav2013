@@ -34,7 +34,11 @@ typedef enum
     SEND_GPS_INFO=15,
     HELLO=16,
     R_HELLO=17,
-    R_SEND_IMG=18
+    R_SEND_IMG=18,
+    GPS_INFO_START=19,
+    GPS_INFO_STOP=20,
+    IMAGE_SEND_START=21,
+    IMAGE_SEND_STOP=22
 } RequestType;
 
 typedef enum

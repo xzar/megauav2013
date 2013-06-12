@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
 	
 	net_listen.nt_ip = ip_tower;
 	net_listen.nt_port = port_listen;
+	net_listen.nt_port2 = port_send;
 	
 	net_info.nt_ip = ip_tower;
 	net_info.nt_port = port_send;
@@ -112,6 +113,8 @@ int main(int argc, char *argv[])
 	initNetFifo(&globalNetFifo);
 	
 	status = MODE_OFF;
+	status_gps=0;
+	status_sdimg=0;
 	
 	/*
 	 * HELLO
@@ -174,12 +177,10 @@ int main(int argc, char *argv[])
 	 */
 	 
 	pthread_t thread_network_receiver, thread_network_sender;
-	pthread_t thread_gps_info, thread_send_image;
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
 	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
-	pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
-	pthread_create(&thread_send_image, NULL, th_sendImage, &net_info);
+
 
     /*
      * END THREAD

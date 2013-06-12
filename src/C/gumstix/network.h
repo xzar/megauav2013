@@ -32,6 +32,8 @@ extern sem_t mutex_analog;
 extern sem_t sem_off;
 
 extern int status;
+extern int status_gps;
+extern int status_sdimg;
 
 /*
  * Structure Network
@@ -40,6 +42,7 @@ typedef struct network
 {
 	char *nt_ip;
 	int nt_port;
+	int nt_port2;
 } Network;
 
 typedef struct network_info
