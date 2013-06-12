@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include "serial_util.h"
 
-#define BUFFER_READ 1024
+#define BUFFER_READ 2048
 #define FILE_GPS "/dev/ttyS0"
 
 typedef struct

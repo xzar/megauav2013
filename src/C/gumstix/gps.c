@@ -14,7 +14,7 @@ int get_info_GPGGA(char * gpgga)
 	int ok = 1, offset=0;
 	int match, err=0;
 	regex_t preg_start;
-	struct timeval tv1, tv2, res;
+	//struct timeval tv1, tv2, res;
 	const char *str_regex_start = "GPGGA";
 	
 	//printf("debug -1\n");
@@ -29,15 +29,20 @@ int get_info_GPGGA(char * gpgga)
 	//printf("debug \n");
 	memset(trame, 0 , BUFFER_READ);
 	
-	gettimeofday(&tv1, NULL);
+	//gettimeofday(&tv1, NULL);
 	
 	while(ok)
 	{
-		//memset(trame, 0 , BUFFER_READ);
+		
 		//printf("debug serial\n");
 		//sleep(2);
 		
-		err=read(file_gps, &trame[offset], buf_size-offset);
+		if ( (BUFFER_READ-offset) <= 0 )
+		{
+			memset(trame, 0 , BUFFER_READ);
+		}
+		
+		err=read(file_gps, &trame[offset], BUFFER_READ-offset);
 		
 		if (err == -1)
 		{
@@ -57,15 +62,15 @@ int get_info_GPGGA(char * gpgga)
 			ok=0;
 		}
 		
-		gettimeofday(&tv2, NULL);
-		timersub(&tv2, &tv1, &res);
+		//gettimeofday(&tv2, NULL);
+		//timersub(&tv2, &tv1, &res);
 		//printf("%d,%d s\n", res.tv_sec, res.tv_usec);
-		if (res.tv_sec >= 2)
+		/*if (res.tv_sec >= 2)
 		{
 			printf("GPGGA not found timeout\n");
 			regfree(&preg_start);
 			return -1;
-		}
+		}*/
 	}
 	
 	regfree(&preg_start);
@@ -76,7 +81,7 @@ int get_info_GPGGA(char * gpgga)
 	//printf("DEBUG 1\n");
 	
 	offset = strlen(tmp_buf) - 1;
-	gettimeofday(&tv1, NULL);
+	//gettimeofday(&tv1, NULL);
 	
 	while( offset < buf_size )
 	{
@@ -91,14 +96,14 @@ int get_info_GPGGA(char * gpgga)
 			offset+=err;
 		}
 		
-		gettimeofday(&tv2, NULL);
-		timersub(&tv2, &tv1, &res);
+		//gettimeofday(&tv2, NULL);
+		//timersub(&tv2, &tv1, &res);
 		//printf("%d,%d s\n", res.tv_sec, res.tv_usec);
-		if (res.tv_sec >= 2)
+		/*if (res.tv_sec >= 2)
 		{ 
 			printf("reading GPS info is too long\n");
 			return -1;
-		}
+		}*/
 	}
 	
 	strtok(tmp_buf, "$");

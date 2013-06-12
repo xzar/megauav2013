@@ -19,7 +19,7 @@
 #define MODE_AUTO	2754
 #define MODE_OFF	7565
 
-#define TIMEOUT_MS	200000
+#define TIMEOUT_MS	500000
 
 /*
  * GLOBAL
@@ -70,7 +70,7 @@ void *th_sendInfo(void *data);
 /*
  * Send image to the control tower.
  */
-int sendImage(int port, const char *ip, char * imgRGB, int height, int width);
+int sendImage(int port, const char *ip, char * imgRGB, int size);
 
 /*
  * send the gps drone info to the control tower.

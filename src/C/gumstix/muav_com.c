@@ -211,3 +211,13 @@ void GPSEncode(MuavCom *mc, GPGGA gpgga)
 
     memcpy(&mc->mc_data[HEADER_SIZE], buf, len1);
 }
+
+int imageEncode(MuavCom *mc, unsigned char *img, int img_size, char * encodedData, int offset, char *part)
+{
+	//printf("debug encode 1\n");
+	memcpy(encodedData, mc->mc_data, HEADER_SIZE);
+	//printf("debug encode 2\n");
+	memcpy(&encodedData[HEADER_SIZE], part, 1);
+	//printf("debug encode 3 \n");
+	memcpy(&encodedData[HEADER_SIZE+1], &img[offset], img_size);
+}

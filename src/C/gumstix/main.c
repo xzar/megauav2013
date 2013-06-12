@@ -98,12 +98,12 @@ int main(int argc, char *argv[])
 	
 	initNetFifo(&globalNetFifo);
 	
-	status = MODE_AUTO;
+	status = MODE_OFF;
 	
 	/*
 	 * HELLO
 	 */
-	/*int sock;
+	int sock;
 	struct sockaddr_in recv_addr, exp_addr ;
 	int n, exp_len,cpt=0 ;
 	char buf[BUFFER_SIZE];
@@ -150,7 +150,9 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 	}
-	*/
+	
+	close(sock);
+	
 	/*
 	 * FIN HELLO
 	 */
@@ -160,11 +162,12 @@ int main(int argc, char *argv[])
 	 */
 	 
 	pthread_t thread_network_receiver, thread_network_sender;
-	pthread_t thread_gps_info;
+	pthread_t thread_gps_info, thread_send_image;
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
-	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
-	pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
+	//pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
+	//pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
+	pthread_create(&thread_send_image, NULL, th_sendImage, &net_info);
 
     /*
      * END THREAD
