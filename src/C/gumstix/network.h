@@ -13,6 +13,7 @@
 #include "net_fifo.h"
 #include "fc_com.h"
 #include "gps.h"
+#include "image.h"
 
 #define MODE_MANUAL 7686
 #define MODE_AUTO	2754

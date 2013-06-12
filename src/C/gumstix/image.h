@@ -11,6 +11,9 @@ typedef struct {
 	int y;
 }vecteur;
 
+extern CvCapture* capture ;
+
+void open_capture(int camera,int width,int height);
 
 void SobelHV(char *buf,int myheight,int mywidth, float *bufHori, float *bufVert);
 

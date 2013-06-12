@@ -3,7 +3,10 @@
 
 #include <stdio.h>
 #include <string.h>
-
+#include <sys/time.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "tools.h"
 #include "var.h"
 #include "gps.h"
@@ -37,7 +40,7 @@ typedef enum
 {
 	ERR_GPS=1,
 	ERR_MANUAL=2
-} RequestType;
+} ErreurType;
 
 typedef struct muavcom 
 {
@@ -59,10 +62,7 @@ typedef struct muavcom
  */ 
 void initMuavCom( MuavCom *mc );
 
-#include <sys/time.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdio.h>
+
 
 /*
  * Set the request's header. the date is set here.

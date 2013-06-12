@@ -54,7 +54,7 @@ void deplacement_zero(){
 
 
 	struct timeval start,stop,res;
-	CvCapture* capture = cvCaptureFromCAM( CV_CAP_ANY );
+	open_capture(0,160,120);
 	char* buffer = (char*) malloc(sizeof(char)*20);
 	char * t2;
 	//unsigned char * t3;
@@ -66,9 +66,7 @@ void deplacement_zero(){
 	}
 
 	printf("debut capture:\n");
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 160 );
-
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT,  120	);
+	
 	//recuperation d une premiere image pour avoir les dimensions
 	//IplImage* frame = cvQueryFrame( capture );
 	IplImage* frame = cvQueryFrame( capture );
@@ -86,7 +84,7 @@ void deplacement_zero(){
 	int j ,i = 0;
 	char nick, roll, yaw;
 	unsigned char gas =  255;
-	int nick, roll, accNick, accRoll, alti,vario;
+	int alti,vario;
 	for(j=0;j<_NBHARRIS;j++)
    {
 	   tabHarris[j]=(float*)malloc(sizeof(float)*3);
@@ -201,13 +199,13 @@ void deplacement_zero(){
 		if(vecteurMoy.x < -2){
 			roll = (char)10;
 		}
-		alti = AnalogData[5];
+		/*alti = AnalogData[5];
 		vario = AnalogData[6];
 		if(gas < 180 && alti < 10){
 			if(vario <= 1){
 				gas++
 			}else gas--;
-		}else gas --;
+		}else gas --;*/
 	//	printf("puissance = %d %d\n",nick,roll);
 		set_Nick( (signed char) nick );
 		set_Roll( (signed char) roll );
