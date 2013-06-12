@@ -78,4 +78,9 @@ int sendImage(int port, const char *ip, char * imgRGB, int height, int width);
  */
 void *th_sendGPS(void *data);
 
+/*
+ * send the image to the control tower.
+ */
+void * th_sendImage(void * data);
+
 #endif

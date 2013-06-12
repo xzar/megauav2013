@@ -326,3 +326,13 @@ void *th_sendGPS(void *data)
 	
 	//close(sock);
 }
+
+void * th_sendImage(void * data)
+{
+	
+	int port, const char *ip, char * imgRGB, int height, int width;
+	while(1)
+	{
+		//sendImage(int port, const char *ip, char * imgRGB, int height, int width);
+	}
+}
