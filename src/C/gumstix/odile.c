@@ -250,12 +250,12 @@ struct timeval start,stop,res;
 
 	for(j=0;j<_NBHARRIS;j++)
     {
-	   tabHarris[j]=(float*)malloc(sizeof(float)*3);
+	   tabHarris[j]=(float*)malloc(sizeof(float)*4);
 		
     }
 	for(j=0;j<_NBHARRIS;j++)
     {
-	   tabHarrisPrec[j]=(float*)malloc(sizeof(float)*3);
+	   tabHarrisPrec[j]=(float*)malloc(sizeof(float)*4);
 		
     }
 	vecteur vecteurMoy;
@@ -293,13 +293,16 @@ gettimeofday(&start,NULL);
 		//Maxima de Harris
 		getMaxima(matriceHarris, taille.height, taille.width, tabHarris, _NBHARRIS);
 		
-		calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height, taille.width);
-				
+		fast_valeur(imageData, taille.height, taille.width, tabHarris, _NBHARRIS, 100);
+		
+		//calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height, taille.width);
+		printf("valeur FAST : \n");		
 		for(j=0;j<_NBHARRIS;j++)
   		{
-			  tabHarrisPrec[j][0] = tabHarris[j][0];
+			  /*tabHarrisPrec[j][0] = tabHarris[j][0];
 			  tabHarrisPrec[j][1] = tabHarris[j][1];
-			  tabHarrisPrec[j][2] = tabHarris[j][2];
+			  tabHarrisPrec[j][2] = tabHarris[j][2];*/
+				printf("%f \n",tabHarris[j][3]);
 		}
 		
 #ifdef DEBUGIA1		

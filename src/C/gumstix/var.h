@@ -9,9 +9,9 @@
 //#define DEBUG1
 //#define DEBUG2
 #define DEBUGIA1
-#define DEBUGIA2
+//#define DEBUGIA2
 #define DEBUGJOY1
-#define DEBUG_IMAGE2
+//#define DEBUG_IMAGE2
 
 extern int paramIA ;
 
