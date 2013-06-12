@@ -79,6 +79,9 @@ printf("entrer read serial_util.c\n");
     #ifdef DEBUG1
 	printf("lu lenght = %d \n",n);
 	#endif
+	#ifdef DEBUG2
+	printf("sortie read serial_util.c\n");	
+	#endif
 	return n;
 }
 

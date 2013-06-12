@@ -6,7 +6,7 @@ void take_off(int altitude )
 	signed char cmdNick = 0, cmdRoll = 0, cmdYaw = 0;
 	int initNick, initRoll;
 	unsigned char cmdGas = 255;
-	unsigned char GasInter = 0;
+	//unsigned char GasInter = 0;
 	
 	initNick = AnalogData[0];
 	initRoll = AnalogData[1];
@@ -50,163 +50,29 @@ void take_off(int altitude )
 }
 
 
-void deplacement_zero(){
 
 
-	struct timeval start,stop,res;
-	open_capture(0,160,120);
-	char* buffer = (char*) malloc(sizeof(char)*20);
-	char * t2;
-	//unsigned char * t3;
-	if ( !capture ) 
-	{
-		fprintf( stderr, "ERROR: capture is NULL \n" );
-		getchar();
-		return -1;
-	}
 
-	printf("debut capture:\n");
-	
-	//recuperation d une premiere image pour avoir les dimensions
-	//IplImage* frame = cvQueryFrame( capture );
-	IplImage* frame = cvQueryFrame( capture );
-	//recuperation des dimensions de l image
-	CvSize taille = cvGetSize(frame);
-	int tailleInt = taille.width * taille.height;
-	//creation des image et matrices intermediaires
-	IplImage* frameGray = cvCreateImage(taille,8,1);
-	IplImage* frameGray2 = cvCreateImage(taille,8,1);
-	float* matriceGradX = malloc(sizeof(float)*tailleInt);
-	float* matriceGradY = malloc(sizeof(float)*tailleInt);
-	float* matriceHarris= malloc(sizeof(float)*tailleInt);
-	float** tabHarris = (float **)malloc(sizeof(float*)*_NBHARRIS);
-	float** tabHarrisPrec = (float **)malloc(sizeof(float*)*_NBHARRIS);
-	int j ,i = 0;
-	char nick, roll, yaw;
-	unsigned char gas =  255;
-	int alti,vario;
-	for(j=0;j<_NBHARRIS;j++)
-   {
-	   tabHarris[j]=(float*)malloc(sizeof(float)*3);
-		
-   }
-	for(j=0;j<_NBHARRIS;j++)
-   {
-	   tabHarrisPrec[j]=(float*)malloc(sizeof(float)*3);
-		
-   }
-	vecteur *tabVect = (vecteur*) malloc(sizeof(vecteur)*_NBHARRIS);
-	vecteur vecteurMoy;
-	vecteurMoy.x = 0; vecteurMoy.y=0;
-	int nbVect = 0;
-	
-	
-	//int p[3];
-	//cvNamedWindow( "toto", CV_WINDOW_AUTOSIZE );
-	while(i<30)
-	{
-		gettimeofday(&start,NULL);
-		//Recuperation de l image de la camera
-		//printf("toto 3\n");
-		frame = cvQueryFrame( capture );
-		printf("toto\n");
-		//printf("toto 4\n");
-		if ( ! frame  )
-		{
-			fprintf( stderr, "ERROR: pas d'image\n" );
-			return 0;
-		}
-		
-		t2 = frameGray->imageData;
-		//t3 = frameGray2->imageData;
-		//printf("toto 5\n");
-		//printf("%d %d",taille.height,taille.width);		
-		//Passage en niveau de gris
-		//cvCvtColor(frame, frameGray, CV_RGB2GRAY);
-		RGBTOGRAY_1CANAL(frame, frameGray);
-		//printf("toto 6\n");
-		
-		//Sobel pour les gradients
-		SobelHV(t2,taille.height, taille.width, matriceGradX, matriceGradY);
-		//printf("sobel H te V : OK\n");
-		
-		//Detecteur de Harris
-		harris(matriceHarris, matriceGradX, matriceGradY, tailleInt);
-		//printf("harris : OK\n");
-	
+void pilote_IA(vecteur vecteurMoy,int timeOut,int seuil,int norme,int Gas){
 
-		//Maxima de Harris
-		getMaxima(matriceHarris, taille.height, taille.width, tabHarris, _NBHARRIS);
-		//printf("maxima : OK\n");
-		calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height,taille.width);
-		
-		//if(premierTour == 0){
-			//Matching des points pour trouver les vecteurs
-			//nbVect = calcul_vecteur_interet(tabHarrisPrec, tabHarris, _NBHARRIS, _SEUIL_DISTANCE, tabVect);
-			//printf("matching : OK nbvect %d\n",nbVect);
-			
-			//Moyenne des vecteurs
-			//calcul_moyenne_vecteur(tabVect, nbVect,&vecteurMoy);
-			//printf("moyenne : OK\n");
-			//premierTour=0;
-		//}
-	/*	}else{
-			premierTour=0;	
-		}*/
-		printf("val harris : \n");
-		/*for(j=0;j<_NBHARRIS;j++)
-  		{
-				//printf("j = %f %f\n",tabHarris[j][0],tabHarris[j][1]);
-			  tabHarrisPrec[j][0] = tabHarris[j][0];
-			  tabHarrisPrec[j][1] = tabHarris[j][1];
-			  tabHarrisPrec[j][2] = tabHarris[j][2];*/
-			
-			//Dessine_croix(t,taille.height, taille.width,tabHarris[j][0],tabHarris[j][1]);
-			//Dessine_croix(t2,taille.height, taille.width,tabHarris[j][1],tabHarris[j][0]);
-			/*Dessine_croix(t2,taille.height,taille.width, 10,10);
-			Dessine_croix(t2,taille.height,taille.width, 20,20);
-			Dessine_croix(t2,taille.height,taille.width, 30,30);
-			Dessine_croix(t2,taille.height,taille.width, 40,40);
-			Dessine_croix(t2,taille.height, taille.width,0,50);*/	
-   		//}
-		
-		printf("nbVecteur = %d \nveteur  = %d %d\n",nbVect,vecteurMoy.x,vecteurMoy.y);
-		//printf("nbVecteur = %d %d\n",nick,roll);
-		gettimeofday(&stop,NULL);
-		timersub(&stop, &start, &res);
-		printf("time = %i %d\n",res.tv_sec, res.tv_usec);
-		//cvSaveImage("toto.jpg",frame,0);
-		if(i > 19){
-			sprintf(buffer,"toto%d.jpg",i);
-			cvSaveImage(buffer,frameGray,0);
-		}
-		/*cvShowImage( "toto", frameGray );
-		if ( (cvWaitKey(10) & 255) == 27 ) break;*/
-		i++;
-		if(vecteurMoy.y > 2){
+		char nick, roll, yaw=0;
+		unsigned char gas =  Gas;
 
-			
-			nick = (char)-10;
+		if(vecteurMoy.y > seuil){
+			nick = (char)-norme;
 		}
-		if(vecteurMoy.y < -2){
-			nick = (char)10;
+		if(vecteurMoy.y < -seuil){
+			nick = (char)norme;
 		}
-		if(vecteurMoy.x > 2 ){
+		if(vecteurMoy.x > seuil ){
 
-				roll = (char)-10;
+			roll = (char)-norme;
 		}
 		
-		if(vecteurMoy.x < -2){
-			roll = (char)10;
+		if(vecteurMoy.x < -seuil){
+			roll = (char)norme;
 		}
-		/*alti = AnalogData[5];
-		vario = AnalogData[6];
-		if(gas < 180 && alti < 10){
-			if(vario <= 1){
-				gas++
-			}else gas--;
-		}else gas --;*/
-	//	printf("puissance = %d %d\n",nick,roll);
+		
 		set_Nick( (signed char) nick );
 		set_Roll( (signed char) roll );
 		set_Yaw( (signed char) yaw ); 
@@ -215,7 +81,7 @@ void deplacement_zero(){
 
 		nick =0;
 		roll =0;
-		usleep(1000);
+		usleep(timeOut);
 
 		set_Nick( (signed char) nick );
 		set_Roll( (signed char) roll );
@@ -223,11 +89,301 @@ void deplacement_zero(){
 		set_Gas( (unsigned char) gas );
 		envoi_pilotage(file_mkusb);
 
+}
+
+
+int deplacement_zero()
+{
+
+#ifdef DEBUGIA1
+struct timeval start,stop,res;
+#endif
+	
+	open_capture(0,160,120);
+	if ( !capture ) 
+	{
+		fprintf( stderr, "ERROR: capture is NULL \n" );
+		getchar();
+		return -1;
+	}
+	//recuperation d une premiere image pour avoir les dimensions
+	IplImage* frame = cvQueryFrame( capture );
+	//recuperation des dimensions de l image
+	CvSize taille = cvGetSize(frame);
+	int tailleInt = taille.width * taille.height;
+
+	//creation des image et matrices intermediaires
+	IplImage* frameGray = cvCreateImage(taille,8,1);
+	float* matriceGradX = malloc(sizeof(float)*tailleInt);
+	float* matriceGradY = malloc(sizeof(float)*tailleInt);
+	float* matriceHarris= malloc(sizeof(float)*tailleInt);
+	float** tabHarris = (float **)malloc(sizeof(float*)*_NBHARRIS);
+	float** tabHarrisPrec = (float **)malloc(sizeof(float*)*_NBHARRIS);
+	char * imageData;
+	int j;
+
+	for(j=0;j<_NBHARRIS;j++)
+    {
+	   tabHarris[j]=(float*)malloc(sizeof(float)*3);
+		
+    }
+	for(j=0;j<_NBHARRIS;j++)
+    {
+	   tabHarrisPrec[j]=(float*)malloc(sizeof(float)*3);
+		
+    }
+	vecteur *tabVect = (vecteur*) malloc(sizeof(vecteur)*_NBHARRIS);
+	vecteur vecteurMoy;
+	vecteurMoy.x = 0; vecteurMoy.y=0;
+	int nbVect = 0;
+	
+	
+	
+	while(status == MODE_AUTO)
+	{
+#ifdef DEBUGIA1	
+gettimeofday(&start,NULL);
+#endif
+		//Recuperation de l image de la camera
+		frame = cvQueryFrame( capture );
+	
+		if ( ! frame  )
+		{
+			fprintf( stderr, "ERROR: pas d'image\n" );
+			return -1;
+		}
+		
+		imageData = frameGray->imageData;
+
+		
+		//Passage en niveau de gris	
+		RGBTOGRAY_1CANAL(frame, frameGray);
+
+		
+		//Sobel pour les gradients
+		SobelHV(imageData,taille.height, taille.width, matriceGradX, matriceGradY);
+		
+		
+		//Detecteur de Harris
+		harris(matriceHarris, matriceGradX, matriceGradY, tailleInt);
+	
+		//Maxima de Harris
+		getMaxima(matriceHarris, taille.height, taille.width, tabHarris, _NBHARRIS);
+		
+		
+		//Matching des points pour trouver les vecteurs
+		nbVect = calcul_vecteur_interet(tabHarrisPrec, tabHarris, _NBHARRIS, _SEUIL_DISTANCE, tabVect);
+		
+		
+		//Moyenne des vecteurs
+		calcul_moyenne_vecteur(tabVect, nbVect,&vecteurMoy);
+		
+		for(j=0;j<_NBHARRIS;j++)
+  		{
+
+			  tabHarrisPrec[j][0] = tabHarris[j][0];
+			  tabHarrisPrec[j][1] = tabHarris[j][1];
+			  tabHarrisPrec[j][2] = tabHarris[j][2];
+		}
+		
+#ifdef DEBUGIA1		
+		printf("nbVecteur Match = %d \nVecteur moyen  = %d %d\n",nbVect,vecteurMoy.x,vecteurMoy.y);
+		gettimeofday(&stop,NULL);
+		timersub(&stop, &start, &res);
+		printf("time Harris= %d %d\n",(int)res.tv_sec, (int)res.tv_usec);
+#endif
+
+		pilote_IA(vecteurMoy,1000,2,10, 255);
+				
 	}
 
 	cvReleaseCapture( &capture );
 
-	exit(0);
+	return 0;
 
 
+}
+
+int converge()
+{
+//calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height,taille.width);
+
+
+#ifdef DEBUGIA1
+struct timeval start,stop,res;
+#endif
+
+	open_capture(0,160,120);
+	if ( !capture ) 
+	{
+		fprintf( stderr, "ERROR: capture is NULL \n" );
+		getchar();
+		return -1;
+	}
+	
+	//recuperation d une premiere image pour avoir les dimensions
+	IplImage* frame = cvQueryFrame( capture );
+	//recuperation des dimensions de l image
+	CvSize taille = cvGetSize(frame);
+	int tailleInt = taille.width * taille.height;
+
+	//creation des image et matrices intermediaires
+	IplImage* frameGray = cvCreateImage(taille,8,1);
+
+	float* matriceGradX = malloc(sizeof(float)*tailleInt);
+	float* matriceGradY = malloc(sizeof(float)*tailleInt);
+	float* matriceHarris= malloc(sizeof(float)*tailleInt);
+	float** tabHarris = (float **)malloc(sizeof(float*)*_NBHARRIS);
+	float** tabHarrisPrec = (float **)malloc(sizeof(float*)*_NBHARRIS);
+	char * imageData;
+	int j;
+
+	for(j=0;j<_NBHARRIS;j++)
+    {
+	   tabHarris[j]=(float*)malloc(sizeof(float)*3);
+		
+    }
+	for(j=0;j<_NBHARRIS;j++)
+    {
+	   tabHarrisPrec[j]=(float*)malloc(sizeof(float)*3);
+		
+    }
+	vecteur vecteurMoy;
+	vecteurMoy.x = 0; vecteurMoy.y=0;
+	int nbVect = 0;
+		
+	while(status == MODE_AUTO)
+	{
+#ifdef DEBUGIA1	
+gettimeofday(&start,NULL);
+#endif
+		//Recuperation de l image de la camera
+		frame = cvQueryFrame( capture );
+	
+		if ( ! frame  )
+		{
+			fprintf( stderr, "ERROR: pas d'image\n" );
+			return -1;
+		}
+		
+		imageData = frameGray->imageData;
+
+		
+		//Passage en niveau de gris	
+		RGBTOGRAY_1CANAL(frame, frameGray);
+
+		
+		//Sobel pour les gradients
+		SobelHV(imageData,taille.height, taille.width, matriceGradX, matriceGradY);
+		
+		
+		//Detecteur de Harris
+		harris(matriceHarris, matriceGradX, matriceGradY, tailleInt);
+	
+		//Maxima de Harris
+		getMaxima(matriceHarris, taille.height, taille.width, tabHarris, _NBHARRIS);
+		
+		calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height, taille.width);
+				
+		for(j=0;j<_NBHARRIS;j++)
+  		{
+			  tabHarrisPrec[j][0] = tabHarris[j][0];
+			  tabHarrisPrec[j][1] = tabHarris[j][1];
+			  tabHarrisPrec[j][2] = tabHarris[j][2];
+		}
+		
+#ifdef DEBUGIA1		
+		printf("nbVecteur match = %d \nveteur Moyen  = %d %d\n",nbVect,vecteurMoy.x,vecteurMoy.y);
+		gettimeofday(&stop,NULL);
+		timersub(&stop, &start, &res);
+		printf("time Harris = %d %d\n",(int)res.tv_sec, (int)res.tv_usec);
+#endif
+
+		pilote_IA(vecteurMoy,1000,20,5, 255);
+	}
+
+	cvReleaseCapture( &capture );
+	return 0;
+}
+
+int prise_photo()
+{
+
+	struct timeval start,stop,res;
+
+	open_capture(0,160,120);
+
+	if ( !capture ) 
+	{
+		fprintf( stderr, "ERROR: capture is NULL \n" );
+		getchar();
+		return -1;
+	}	
+
+	//recuperation d une premiere image pour avoir les dimensions
+	IplImage* frame = cvQueryFrame( capture );
+	//recuperation des dimensions de l image
+	CvSize taille = cvGetSize(frame);
+	int tailleInt = taille.width * taille.height;
+	
+	//creation des image et matrices intermediaires
+
+	IplImage* frameGray = cvCreateImage(taille,8,1);
+	
+	float* matriceGradX = malloc(sizeof(float)*tailleInt);
+	float* matriceGradY = malloc(sizeof(float)*tailleInt);
+	float* matriceHarris= malloc(sizeof(float)*tailleInt);
+	float** tabHarris = (float **)malloc(sizeof(float*)*_NBHARRIS);
+	char * imageData;
+	char* buffer = (char*) malloc(sizeof(char)*20);
+	int i=0,j;
+	
+	for(j=0;j<_NBHARRIS;j++)
+    {
+	   tabHarris[j]=(float*)malloc(sizeof(float)*3);	
+    }
+
+	while(i < 30)
+	{
+		
+		//Recuperation de l image de la camera
+		frame = cvQueryFrame( capture );
+	
+		if ( ! frame  )
+		{
+			fprintf( stderr, "ERROR: pas d'image\n" );
+			return -1;
+		}
+		
+		imageData = frameGray->imageData;
+
+		gettimeofday(&start,NULL);
+		//Passage en niveau de gris	
+		RGBTOGRAY_1CANAL(frame, frameGray);
+		
+		//Sobel pour les gradients
+		SobelHV(imageData,taille.height, taille.width, matriceGradX, matriceGradY);
+				
+		//Detecteur de Harris
+		harris(matriceHarris, matriceGradX, matriceGradY, tailleInt);
+	
+		//Maxima de Harris
+		getMaxima(matriceHarris, taille.height, taille.width, tabHarris, _NBHARRIS);
+		for(j=0;j<_NBHARRIS;j++)
+  		{
+			
+			Dessine_croix(imageData,taille.height, taille.width,tabHarris[j][1],tabHarris[j][0]);
+		}		
+		if(i > 19){
+			sprintf(buffer,"image%d.jpg",i-19);
+			cvSaveImage(buffer,frameGray,0);
+		}
+		
+		gettimeofday(&stop,NULL);
+		timersub(&stop, &start, &res);
+		printf("time Harris = %i,%d sec\n",(int)res.tv_sec, (int)res.tv_usec);
+	}
+	
+	cvReleaseCapture( &capture );
+	return 0;
 }

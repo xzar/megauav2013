@@ -3,15 +3,25 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <string.h>
+#include <signal.h>
 
 #include "pilotage.h"
 #include "network.h"
 #include "serial_util.h"
 #include "odile.h"
 
+int paramIA;
 
+void traiter_signal(){
+	printf("ctrl+c trapper\n");
+	if(capture != NULL)cvReleaseCapture( &capture );
+
+	exit(0);
+}
 int main(int argc, char *argv[]) 
 {
+
+	paramIA = 1;
 	//tower control info
 	char * ip_tower;
 	
@@ -58,6 +68,9 @@ int main(int argc, char *argv[])
 	
 	port_send = atoi(argv[3]);
 	
+	/*Trappage du ctrl+c*/
+	signal(SIGINT, traiter_signal);
+
 	if ( port_send <= 0 || port_send >= 255*255 )
 	{
 		fprintf(stderr, "port %d is not allowed\n", port_send);
@@ -98,12 +111,12 @@ int main(int argc, char *argv[])
 	
 	initNetFifo(&globalNetFifo);
 	
-	status = MODE_AUTO;
+	status = MODE_OFF;
 	
 	/*
 	 * HELLO
 	 */
-	/*int sock;
+	int sock;
 	struct sockaddr_in recv_addr, exp_addr ;
 	int n, exp_len,cpt=0 ;
 	char buf[BUFFER_SIZE];
@@ -150,7 +163,7 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 	}
-	*/
+	
 	/*
 	 * FIN HELLO
 	 */
@@ -164,7 +177,7 @@ int main(int argc, char *argv[])
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
 	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
-	pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
+	//pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
 
     /*
      * END THREAD
@@ -219,7 +232,18 @@ int main(int argc, char *argv[])
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);
-                deplacement_zero();
+				if(paramIA == 1){
+					deplacement_zero();
+				}else
+					if(paramIA == 2)
+					{
+						converge();
+					}else 
+						if(paramIA == 3){
+							
+						}
+               	 
+				
                 break;
             case MODE_OFF:
                 sem_post(&mutex_status);

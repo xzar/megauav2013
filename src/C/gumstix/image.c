@@ -28,26 +28,13 @@ printf("entrer sobel image.c\n");
     {
 		for (j = 1; j < (mywidth)-1; j+=1)
     	{
-			/*sobelHo =(buf[((i-1)*mywidth)+(j-1)]
-				 -buf[((i-1)*mywidth)+(j+1)]
-				 +buf[((i+1)*mywidth)+(j-1)]
-				 -buf[((i+1)*mywidth)+(j+1)]
-				 +2*buf[((i)*mywidth)+(j-1)]
-				 -2*buf[((i)*mywidth)+(j+1)]);
-
-			sobelVe =(buf[((i-1)*mywidth)+(j-1)]
-				 +buf[((i-1)*mywidth)+(j+1)]
-				 -buf[((i+1)*mywidth)+(j-1)]
-				 -buf[((i+1)*mywidth)+(j+1)]
-				 +2*buf[((i-1)*mywidth)+(j)]
-				 -2*buf[((i+1)*mywidth)+(j)])/4;*/
-
+			
 			sobelHo =(buf[((i+1)*mywidth)+(j)]
 				 -buf[((i-1)*mywidth)+(j)]) >> 1;
 
 			sobelVe =(buf[((i)*mywidth)+(j-1)]
 				 -buf[((i)*mywidth)+(j+1)]) >> 1;
-			//printf("%d \n",sobelHo);
+		
 			bufHori[(i*mywidth)+(j)] = sobelHo ;
  			
 			bufVert[(i*mywidth)+(j)] = sobelVe ;
@@ -113,38 +100,18 @@ printf("entrer getMaxima image.c\n");
 	for (i = 1; i < myheight-1; i++)
     { 
 		for (j = 1; j < mywidth-1; j++)
-    	{
-			
-					
-					
+    	{					
 					for( k = 0; k < nbPointsInterets; k++ )
 					{
 						if( bufHarris[i*mywidth+j] > tab[k][2] )
 						{
-							//printf("azeeaz\n");
 							tab[k][0] = j;
 							tab[k][1] = i;
 							tab[k][2] = bufHarris[i*mywidth+j];
 							break;
 						}
 					}
-					
-					/*if(indice == nbPointsInterets) indice--;
-					
-					if(indice > 0)
-					{
-						for( k = 0; k < indice; k++ )
-						{
-							tab[k][0] = tab[k+1][0];
-							tab[k][1] = tab[k+1][1];
-							tab[k][2] = tab[k+1][2];
-						}
-					//printf("coucou %d %d %f	 \n",i,j,bufHarris[i*mywidth+j]);
-						tab[indice][0] = j;
-						tab[indice][1] = i;
-						tab[indice][2] = bufHarris[i*mywidth+j];	
-					}*/
-				
+									
 		}	
 	}
 	float t = tab[0][2] - tab[_NBHARRIS-1][2] ;
@@ -270,29 +237,17 @@ printf("entre dessine_croix image.c\n");
 	int i;
 
 	for (i = -10; i <= 10; i++)
-    	{ 
-	 
-
-			//printf("indice croix %d\n ", (((myheight/2)*3*mywidth)+(mywidth/2)*3));
+    	{
 			if((ind_x+i) > 0 && (ind_x+i) < myheight && (ind_y+i) > 0 && (ind_y+i) < mywidth){
+				
 				buf[(((ind_x)+i)*mywidth+(ind_y))]=255;
-
 		
 				buf[(((ind_x))*mywidth+((ind_y)+i))]=255;
 			}
-/*
-			buf[(((myheight/2)+i)*3+((mywidth/2)+j)*3*myheight)+1]=0;
-			buf[(((myheight/2)+i)*3+((mywidth/2)+j)*3*myheight)+2]=0;
 
-			buf[(((myheight/2)-i)*3+((mywidth/2)+j)*3*myheight)]=255;
-			buf[(((myheight/2)-i)*3+((mywidth/2)+j)*3*myheight)+1]=0;
-			buf[(((myheight/2)-i)*3+((mywidth/2)+j)*3*myheight)+2]=0;
-
-		*/
 		
 	}
 	
-
 #ifdef DEBUG2
 printf("entre dessine_croix image.c\n");	
 #endif
@@ -314,6 +269,6 @@ void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* result
 	baryY = baryY / nbPoints;
 	
 	//calcul vecteur par rapport au centre
-	resultat->x = baryX-mywidth;
-	resultat->y = baryY-myheight;
+	resultat->x = baryX-(mywidth/2);
+	resultat->y = baryY-(myheight/2);
 }

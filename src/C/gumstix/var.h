@@ -6,8 +6,11 @@
 #include <errno.h>
 
 #define BUFFER_SIZE 1024
-//#define DEBUG1
+#define DEBUG1
 //#define DEBUG2
+#define DEBUGIA1
+#define DEBUGIA2
+
 
 
 #endif
