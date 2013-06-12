@@ -51,7 +51,7 @@ int sendImage(int port, const char *ip, char * imgRGB, int height, int width)
 
 	open_capture(0,160,120);
 	IplImage* frame = cvQueryFrame( capture );
-	//donnée a envoyer
+	//donnee a envoyer
 	Image = frame->imageData;
 	sendto(sock, imgRGB, size, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
 	

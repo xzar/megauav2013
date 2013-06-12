@@ -103,7 +103,7 @@ int main(int argc, char *argv[])
 	/*
 	 * HELLO
 	 */
-	int sock;
+	/*int sock;
 	struct sockaddr_in recv_addr, exp_addr ;
 	int n, exp_len,cpt=0 ;
 	char buf[BUFFER_SIZE];
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
 			exit(0);
 		}
 	}
-	
+	*/
 	/*
 	 * FIN HELLO
 	 */
