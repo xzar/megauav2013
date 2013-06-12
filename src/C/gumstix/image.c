@@ -1,8 +1,25 @@
 #include "image.h"
 
 
+CvCapture* capture ;
+
+void open_capture(int camera,int width,int height)
+{
+	capture = cvCaptureFromCAM( camera );
+	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, width );
+
+	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT,  height	);
+
+
+}
+
+
+
 void SobelHV(char *buf,int myheight,int mywidth, float *bufHori, float *bufVert)
 {
+#ifdef DEBUG2
+printf("entrer sobel image.c\n");	
+#endif
 	int i,j;
 	float sobelHo;
 	float sobelVe;
@@ -37,11 +54,16 @@ void SobelHV(char *buf,int myheight,int mywidth, float *bufHori, float *bufVert)
 			
 		}
 	}
-
+#ifdef DEBUG2
+printf("sorte sobel image.c\n");	
+#endif
 }
 
 void harris( float* harris, float* gx, float* gy, int size )
 {
+#ifdef DEBUG2
+printf("entrer harris image.c\n");	
+#endif
 	int i;
 	
 	float gx2;
@@ -67,11 +89,16 @@ void harris( float* harris, float* gx, float* gy, int size )
 		//printf("%f ",harris[i]);
 	}
 
-	
+#ifdef DEBUG2
+printf("sortie harris image.c\n");	
+#endif
 }
 
 void getMaxima( float* bufHarris, int myheight, int mywidth, float** tab, int nbPointsInterets )
 {
+#ifdef DEBUG2
+printf("entrer getMaxima image.c\n");	
+#endif
 	int i,j,k;
 	
 
@@ -127,9 +154,15 @@ void getMaxima( float* bufHarris, int myheight, int mywidth, float** tab, int nb
 		tab[k][2] = (tab[k][2] /t)*255.0f;
 		
 	}
+#ifdef DEBUG2
+printf("sortie getMaxima image.c\n");	
+#endif
 }
 
 int calcul_vecteur_interet(float ** pointsT, float ** pointsTplusUn, int nbPoints, int seuil,vecteur* resultat){
+#ifdef DEBUG2
+printf("entrer calcul_vecteur_interet image.c\n");	
+#endif
 	int it, itp;
 	int compteVecteur = 0;
 	int distanceHarris = 0;
@@ -176,12 +209,16 @@ int calcul_vecteur_interet(float ** pointsT, float ** pointsTplusUn, int nbPoint
 				compteVecteur ++;
 		}
 	}
-	
+#ifdef DEBUG2
+printf("sortie calcul_vecteur_interet image.c\n");	
+#endif
 	return compteVecteur;
 }
 
 void calcul_moyenne_vecteur(vecteur* listeVecteurs, int tailleListeVecteur, vecteur* resultat ){
-		
+#ifdef DEBUG2
+printf("entrer calcul_moyenne_vecteur image.c\n");	
+#endif	
 		int index;
 		int pileX = 0;
 		int pileY = 0;
@@ -200,10 +237,15 @@ void calcul_moyenne_vecteur(vecteur* listeVecteurs, int tailleListeVecteur, vect
 		resultat->x = pileX;
 		resultat->y = pileY;
 		
-		
+#ifdef DEBUG2
+printf("sortie calcul_moyenne_vecteur image.c\n");	
+#endif		
 }
 
 void RGBTOGRAY_1CANAL(IplImage* source_couleur, IplImage* dest_gris){
+#ifdef DEBUG2
+printf("entre RGBTOGRAY_1CANAL image.c\n");	
+#endif
 	int i,gris,size = dest_gris->width * dest_gris->height;
 	unsigned char* data = (unsigned char*)source_couleur->imageData;
 	for(i=0; i<size; i++)
@@ -214,10 +256,16 @@ void RGBTOGRAY_1CANAL(IplImage* source_couleur, IplImage* dest_gris){
 		gris /= 3;
 		dest_gris->imageData[i] = gris;
 	}
+#ifdef DEBUG2
+printf("sortie RGBTOGRAY_1CANAL image.c\n");	
+#endif
 }
 
 void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y)
 {
+#ifdef DEBUG2
+printf("entre dessine_croix image.c\n");	
+#endif
 
 	int i;
 
@@ -245,5 +293,27 @@ void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y)
 	}
 	
 
+#ifdef DEBUG2
+printf("entre dessine_croix image.c\n");	
+#endif
+}
 
+void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth){
+	int it;
+	int baryX = 0;
+	int baryY = 0;
+	resultat->x = 0;
+	resultat->y = 0;
+	//parcours des points
+	for(it = 0; it < nbPoints; it++){
+		baryX += pointsT[it][0];
+		baryY += pointsT[it][1];
+	}
+	//calcul du barycentre
+	baryX = baryX / nbPoints;
+	baryY = baryY / nbPoints;
+	
+	//calcul vecteur par rapport au centre
+	resultat->x = baryX-mywidth;
+	resultat->y = baryY-myheight;
 }

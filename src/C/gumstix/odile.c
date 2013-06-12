@@ -54,7 +54,7 @@ void deplacement_zero(){
 
 
 	struct timeval start,stop,res;
-	CvCapture* capture = cvCaptureFromCAM( CV_CAP_ANY );
+	open_capture(0,160,120);
 	char* buffer = (char*) malloc(sizeof(char)*20);
 	char * t2;
 	//unsigned char * t3;
@@ -66,9 +66,7 @@ void deplacement_zero(){
 	}
 
 	printf("debut capture:\n");
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_WIDTH, 160 );
-
-	cvSetCaptureProperty( capture, CV_CAP_PROP_FRAME_HEIGHT,  120	);
+	
 	//recuperation d une premiere image pour avoir les dimensions
 	//IplImage* frame = cvQueryFrame( capture );
 	IplImage* frame = cvQueryFrame( capture );
@@ -86,7 +84,7 @@ void deplacement_zero(){
 	int j ,i = 0;
 	char nick, roll, yaw;
 	unsigned char gas =  255;
-	int nick, roll, accNick, accRoll, alti,vario;
+	int alti,vario;
 	for(j=0;j<_NBHARRIS;j++)
    {
 	   tabHarris[j]=(float*)malloc(sizeof(float)*3);
@@ -105,7 +103,7 @@ void deplacement_zero(){
 	
 	//int p[3];
 	//cvNamedWindow( "toto", CV_WINDOW_AUTOSIZE );
-	while(status == MODE_AUTO)
+	while(i<30)
 	{
 		gettimeofday(&start,NULL);
 		//Recuperation de l image de la camera
@@ -140,15 +138,15 @@ void deplacement_zero(){
 		//Maxima de Harris
 		getMaxima(matriceHarris, taille.height, taille.width, tabHarris, _NBHARRIS);
 		//printf("maxima : OK\n");
-		
+		calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height,taille.width);
 		
 		//if(premierTour == 0){
 			//Matching des points pour trouver les vecteurs
-			nbVect = calcul_vecteur_interet(tabHarrisPrec, tabHarris, _NBHARRIS, _SEUIL_DISTANCE, tabVect);
+			//nbVect = calcul_vecteur_interet(tabHarrisPrec, tabHarris, _NBHARRIS, _SEUIL_DISTANCE, tabVect);
 			//printf("matching : OK nbvect %d\n",nbVect);
 			
 			//Moyenne des vecteurs
-			calcul_moyenne_vecteur(tabVect, nbVect,&vecteurMoy);
+			//calcul_moyenne_vecteur(tabVect, nbVect,&vecteurMoy);
 			//printf("moyenne : OK\n");
 			//premierTour=0;
 		//}
@@ -156,12 +154,12 @@ void deplacement_zero(){
 			premierTour=0;	
 		}*/
 		printf("val harris : \n");
-		for(j=0;j<_NBHARRIS;j++)
+		/*for(j=0;j<_NBHARRIS;j++)
   		{
 				//printf("j = %f %f\n",tabHarris[j][0],tabHarris[j][1]);
 			  tabHarrisPrec[j][0] = tabHarris[j][0];
 			  tabHarrisPrec[j][1] = tabHarris[j][1];
-			  tabHarrisPrec[j][2] = tabHarris[j][2];
+			  tabHarrisPrec[j][2] = tabHarris[j][2];*/
 			
 			//Dessine_croix(t,taille.height, taille.width,tabHarris[j][0],tabHarris[j][1]);
 			//Dessine_croix(t2,taille.height, taille.width,tabHarris[j][1],tabHarris[j][0]);
@@ -170,18 +168,18 @@ void deplacement_zero(){
 			Dessine_croix(t2,taille.height,taille.width, 30,30);
 			Dessine_croix(t2,taille.height,taille.width, 40,40);
 			Dessine_croix(t2,taille.height, taille.width,0,50);*/	
-   		}
+   		//}
 		
-		//printf("nbVecteur = %d \nveteur  = %d %d\n",nbVect,vecteurMoy.x,vecteurMoy.y);
+		printf("nbVecteur = %d \nveteur  = %d %d\n",nbVect,vecteurMoy.x,vecteurMoy.y);
 		//printf("nbVecteur = %d %d\n",nick,roll);
 		gettimeofday(&stop,NULL);
 		timersub(&stop, &start, &res);
 		printf("time = %i %d\n",res.tv_sec, res.tv_usec);
 		//cvSaveImage("toto.jpg",frame,0);
-		/*if(i > 19){
+		if(i > 19){
 			sprintf(buffer,"toto%d.jpg",i);
 			cvSaveImage(buffer,frameGray,0);
-		}*/
+		}
 		/*cvShowImage( "toto", frameGray );
 		if ( (cvWaitKey(10) & 255) == 27 ) break;*/
 		i++;
@@ -201,13 +199,13 @@ void deplacement_zero(){
 		if(vecteurMoy.x < -2){
 			roll = (char)10;
 		}
-		alti = AnalogData[5];
+		/*alti = AnalogData[5];
 		vario = AnalogData[6];
 		if(gas < 180 && alti < 10){
 			if(vario <= 1){
 				gas++
 			}else gas--;
-		}else gas --;
+		}else gas --;*/
 	//	printf("puissance = %d %d\n",nick,roll);
 		set_Nick( (signed char) nick );
 		set_Roll( (signed char) roll );
@@ -229,7 +227,7 @@ void deplacement_zero(){
 
 	cvReleaseCapture( &capture );
 
-
+	exit(0);
 
 
 }

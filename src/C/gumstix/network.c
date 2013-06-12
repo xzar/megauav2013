@@ -43,12 +43,19 @@ int sendImage(int port, const char *ip, char * imgRGB, int height, int width)
 	int socklen = sizeof(dest);
 	struct hostent* serv = NULL;
 	int size = height * width * 3;
-	
+	char * Image;
 	serv = gethostbyname(ip);
 	dest.sin_family = AF_INET;
 	dest.sin_port = htons(port);
 	dest.sin_addr = *(struct in_addr*)serv->h_addr;
+
+	open_capture(0,160,120);
+	IplImage* frame = cvQueryFrame( capture );
+	//donnee a envoyer
+	Image = frame->imageData;
 	sendto(sock, imgRGB, size, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
+	
+
 	close(sock);
 	return 1;
 }
@@ -251,7 +258,7 @@ void *th_sendInfo(void *data)
 		
 	}
 	
-	close(sock);
+	//close(sock);
 }
 
 /*
@@ -270,7 +277,7 @@ void *th_sendGPS(void *data)
 	
 	while(1)
 	{
-	
+		initMuavCom(&mc);
 		//printf("get info\n");
 		error = get_info_GPGGA(buf);
 		

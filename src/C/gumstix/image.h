@@ -11,6 +11,9 @@ typedef struct {
 	int y;
 }vecteur;
 
+extern CvCapture* capture ;
+
+void open_capture(int camera,int width,int height);
 
 void SobelHV(char *buf,int myheight,int mywidth, float *bufHori, float *bufVert);
 
@@ -24,6 +27,8 @@ void calcul_moyenne_vecteur(vecteur* listeVecteurs, int tailleListeVecteur, vect
 void RGBTOGRAY_1CANAL(IplImage* source_couleur, IplImage* dest_gris);
 
 void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y);
+
+void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth);
 
 
 #endif
