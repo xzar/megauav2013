@@ -72,7 +72,9 @@ void pilote_IA(vecteur vecteurMoy,int timeOut,int seuil,int norme,int Gas){
 		if(vecteurMoy.x < -seuil){
 			roll = (char)norme;
 		}
-		
+#ifdef DEBUGIA1	
+printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,yaw,gas);
+#endif	
 		set_Nick( (signed char) nick );
 		set_Roll( (signed char) roll );
 		set_Yaw( (signed char) yaw ); 
@@ -94,6 +96,9 @@ void pilote_IA(vecteur vecteurMoy,int timeOut,int seuil,int norme,int Gas){
 
 int deplacement_zero()
 {
+#ifdef DEBUG2
+printf("entrer deplacement_zero odile.c\n");	
+#endif
 
 #ifdef DEBUGIA1
 struct timeval start,stop,res;
@@ -199,6 +204,9 @@ gettimeofday(&start,NULL);
 
 	cvReleaseCapture( &capture );
 
+#ifdef DEBUG2
+printf("FIN deplacement_zero odile.c\n");	
+#endif
 	return 0;
 
 
@@ -207,7 +215,9 @@ gettimeofday(&start,NULL);
 int converge()
 {
 //calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height,taille.width);
-
+#ifdef DEBUG2
+printf("entrer converge odile.c\n");	
+#endif
 
 #ifdef DEBUGIA1
 struct timeval start,stop,res;
@@ -303,11 +313,17 @@ gettimeofday(&start,NULL);
 	}
 
 	cvReleaseCapture( &capture );
+#ifdef DEBUG2
+printf("sortie converge odile.c\n");	
+#endif
 	return 0;
 }
 
 int prise_photo()
 {
+#ifdef DEBUG2
+printf("entrer prise_photo odile.c\n");	
+#endif
 
 	struct timeval start,stop,res;
 
@@ -385,5 +401,8 @@ int prise_photo()
 	}
 	
 	cvReleaseCapture( &capture );
+#ifdef DEBUG2
+printf("sortie prise_photo odile.c\n");	
+#endif
 	return 0;
 }

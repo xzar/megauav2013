@@ -30,5 +30,10 @@ void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y);
 
 void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth);
 
+void fast_valeur(char* image, int myheight, int mywidth, float** maxHarris, int nbPointsInterets, int seuil);
+void mise_a_plat(char* image, int* pixel,int x, int y, int mywidth);
+
+int fast9(int* pixel, int bstart,int p);
+
 
 #endif

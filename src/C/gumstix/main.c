@@ -185,45 +185,37 @@ int main(int argc, char *argv[])
 	
 	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
 	init_pilotage();
-//printf("test 0\n");
+
     while(1)
     {
         sem_wait(&mutex_status);
-//printf("test 01\n");
         switch(status)
         {
             case MODE_MANUAL:
                 sem_post(&mutex_status);
-				//printf("test 1 \n");
 				
 				int nick, roll, yaw, gas;
 				MuavCom mc;
-				//printf("test 2\n");
 				sem_wait(&mutex_fifo);
-				//printf("test 3\n");
 				if ( ! isEmptyNetFifo(&globalNetFifo) )
 				{
-					//printf("test 4444\n");
 					memset(mc.mc_data, 0, BUFFER_SIZE);
-					//printf("test 445\n");
 					memcpy(mc.mc_data, firstNetFifo(&globalNetFifo), BUFFER_SIZE);
-					//printf("test 55\n");
 					removeNetFifo(&globalNetFifo);
-					//printf("test 5\n");
 					sem_post(&mutex_fifo);
-					//printf("test 6\n");
 					MCDecode(&mc);
-					//printf("test 7\n");
 					if (mc.mc_request == PILOTE_MANUAL)
 					{
-						//printf("test 8\n");
 						ManualDecode(&mc, &nick, &roll, &yaw, &gas);
-						printf("%d %d %d %d \n",nick, roll, yaw, gas);
+#ifdef DEBUGJOY1
+printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,yaw,gas);
+#endif
 						set_Nick( (signed char) nick );
 						set_Roll( (signed char) roll );
 						set_Yaw( (signed char) yaw ); 
 						set_Gas( (unsigned char) gas );
 						envoi_pilotage(file_mkusb);
+
 					}
 				} else {
 					sem_post(&mutex_fifo);

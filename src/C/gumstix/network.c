@@ -106,9 +106,7 @@ printf("received: %s\n", buf);
 				sem_wait(&mutex_fifo);
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
-#ifdef DEBUG1
-printf("debug 01\n");
-#endif
+
 				sem_wait(&mutex_status);
 				status = MODE_MANUAL;
 				sem_post(&mutex_status);
@@ -124,9 +122,7 @@ printf("debug 01\n");
 				sem_wait(&mutex_fifo);
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
-#ifdef DEBUG1
-printf("debug 02\n");
-#endif
+
 				sem_wait(&mutex_status);
 				status = MODE_AUTO;
 				sem_post(&mutex_status);
@@ -142,9 +138,7 @@ printf("debug 02\n");
 				sem_wait(&mutex_fifo);
 				clearNetFifo(&globalNetFifo);
 				sem_post(&mutex_fifo);
-#ifdef DEBUG1
-printf("debug 03\n");
-#endif
+
 				sem_wait(&mutex_status);
 				status = MODE_OFF;
 				sem_post(&mutex_status);
@@ -153,9 +147,7 @@ printf("debug 03\n");
 				sem_wait(&mutex_fifo);
 				addNetFifo(&globalNetFifo, buf);
 				sem_post(&mutex_fifo);
-#ifdef DEBUG1
-printf("debug 04\n");
-#endif
+
 		}
 	} 
 	
@@ -330,7 +322,9 @@ void *th_sendGPS(void *data)
 void * th_sendImage(void * data)
 {
 	
-	int port, const char *ip, char * imgRGB, int height, int width;
+	int port;
+ 	const char *ip,  * imgRGB;
+	 int height,  width;
 	while(1)
 	{
 		//sendImage(int port, const char *ip, char * imgRGB, int height, int width);
