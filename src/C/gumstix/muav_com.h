@@ -120,4 +120,9 @@ void GPSEncode(MuavCom *mc, GPGGA gpgga);
  */
 int imageEncode(MuavCom *mc, unsigned char *img, int img_size, char * encodedData, int offset, char *part);
 
+/*
+ * return the ia type.
+ */
+int decodeIA(MuavCom *mc);
+
 #endif

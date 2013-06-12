@@ -188,9 +188,12 @@ int main(int argc, char *argv[])
 	
 	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
 	init_pilotage();
-
+	MuavCom mc;
+	int iaType;
     while(1)
     {
+		initMuavCom(&mc);
+		
         sem_wait(&mutex_status);
         switch(status)
         {
@@ -198,7 +201,7 @@ int main(int argc, char *argv[])
                 sem_post(&mutex_status);
 				
 				int nick, roll, yaw, gas;
-				MuavCom mc;
+				
 				sem_wait(&mutex_fifo);
 				if ( ! isEmptyNetFifo(&globalNetFifo) )
 				{
@@ -227,6 +230,31 @@ printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,ya
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);
+                sem_wait(&mutex_fifo);
+                if ( ! isEmptyNetFifo(&globalNetFifo) )
+				{
+					memset(mc.mc_data, 0, BUFFER_SIZE);
+					memcpy(mc.mc_data, firstNetFifo(&globalNetFifo), BUFFER_SIZE);
+					removeNetFifo(&globalNetFifo);
+					sem_post(&mutex_fifo);
+					iaType = decodeIA(&mc);
+					if (mc.mc_request == PILOTE_REQ_AUTO)
+					{
+						
+#ifdef DEBUGJOY1
+printf("type ia : %d\n", iaType);
+#endif
+						/*
+						 * METTRE SWITCH/IF else ici
+						 * 
+						 */
+
+					}
+				} else {
+					sem_post(&mutex_fifo);
+				}
+				
+				
 				if(paramIA == 1){
 					deplacement_zero();
 				}else

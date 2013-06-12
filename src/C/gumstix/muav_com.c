@@ -221,3 +221,13 @@ int imageEncode(MuavCom *mc, unsigned char *img, int img_size, char * encodedDat
 	//printf("debug encode 3 \n");
 	memcpy(&encodedData[HEADER_SIZE+1], &img[offset], img_size);
 }
+
+int decodeIA(MuavCom *mc)
+{
+	int iaType;
+	MCDecode(mc);
+	
+	iaType = convertcharToInt(mc->mc_data, HEADER_SIZE, 4);
+	
+	return iaType;
+}

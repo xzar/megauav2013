@@ -125,6 +125,10 @@ printf("received: %s\n", buf);
 				status = MODE_AUTO;
 				sem_post(&mutex_status);
 				
+				sem_wait(&mutex_fifo);
+				addNetFifo(&globalNetFifo, buf);
+				sem_post(&mutex_fifo);
+				
 				initMuavCom(&mc);
 				setHeader(&mc, 0, 0, R_PILOTE_REQ_AUTO, 0);
 				MCEncode(&mc);
