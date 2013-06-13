@@ -187,3 +187,8 @@ GPGGA decode_GPGGA(char * gpgga, int *error)
 	free(pmatch);
 	return res;
 }
+
+void closeGPS()
+{
+	close(file_gps);
+}
