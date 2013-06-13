@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
 	
 	net_listen.nt_ip = ip_tower;
 	net_listen.nt_port = port_listen;
+	net_listen.nt_port2 = port_send;
 	
 	net_info.nt_ip = ip_tower;
 	net_info.nt_port = port_send;
@@ -112,6 +113,8 @@ int main(int argc, char *argv[])
 	initNetFifo(&globalNetFifo);
 	
 	status = MODE_OFF;
+	status_gps=0;
+	status_sdimg=0;
 	
 	/*
 	 * HELLO
@@ -164,6 +167,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	
+	close(sock);
 	/*
 	 * FIN HELLO
 	 */
@@ -173,11 +177,11 @@ int main(int argc, char *argv[])
 	 */
 	 
 	pthread_t thread_network_receiver, thread_network_sender;
-	pthread_t thread_gps_info;
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
 	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
-	pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
+
+
 
     /*
      * END THREAD
@@ -185,9 +189,12 @@ int main(int argc, char *argv[])
 	
 	memset(&ExternControl, 0, sizeof(struct str_ExternControl) );
 	init_pilotage();
-
+	MuavCom mc;
+	int iaType;
     while(1)
     {
+		initMuavCom(&mc);
+		
         sem_wait(&mutex_status);
         switch(status)
         {
@@ -195,7 +202,7 @@ int main(int argc, char *argv[])
                 sem_post(&mutex_status);
 				
 				int nick, roll, yaw, gas;
-				MuavCom mc;
+				
 				sem_wait(&mutex_fifo);
 				if ( ! isEmptyNetFifo(&globalNetFifo) )
 				{
@@ -224,6 +231,31 @@ printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,ya
                 break;
             case MODE_AUTO:
                 sem_post(&mutex_status);
+                sem_wait(&mutex_fifo);
+                if ( ! isEmptyNetFifo(&globalNetFifo) )
+				{
+					memset(mc.mc_data, 0, BUFFER_SIZE);
+					memcpy(mc.mc_data, firstNetFifo(&globalNetFifo), BUFFER_SIZE);
+					removeNetFifo(&globalNetFifo);
+					sem_post(&mutex_fifo);
+					iaType = decodeIA(&mc);
+					if (mc.mc_request == PILOTE_REQ_AUTO)
+					{
+						
+#ifdef DEBUGJOY1
+printf("type ia : %d\n", iaType);
+#endif
+						/*
+						 * METTRE SWITCH/IF else ici
+						 * 
+						 */
+
+					}
+				} else {
+					sem_post(&mutex_fifo);
+				}
+				
+				
 				if(paramIA == 1){
 					deplacement_zero();
 				}else

@@ -19,7 +19,7 @@
 #define MODE_AUTO	2754
 #define MODE_OFF	7565
 
-#define TIMEOUT_MS	200000
+#define TIMEOUT_MS	500000
 
 /*
  * GLOBAL
@@ -32,6 +32,8 @@ extern sem_t mutex_analog;
 extern sem_t sem_off;
 
 extern int status;
+extern int status_gps;
+extern int status_sdimg;
 
 /*
  * Structure Network
@@ -40,6 +42,7 @@ typedef struct network
 {
 	char *nt_ip;
 	int nt_port;
+	int nt_port2;
 } Network;
 
 typedef struct network_info
@@ -70,7 +73,7 @@ void *th_sendInfo(void *data);
 /*
  * Send image to the control tower.
  */
-int sendImage(int port, const char *ip, char * imgRGB, int height, int width);
+int sendImage(int port, const char *ip, char * imgRGB, int size);
 
 /*
  * send the gps drone info to the control tower.

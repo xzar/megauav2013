@@ -11,6 +11,8 @@ sem_t sem_off;
 sem_t mutex_analog;
 
 int status;
+int status_gps;
+int status_sdimg;
 
 /*
  * Send data to the control tower.
@@ -36,23 +38,18 @@ int sendData(MuavCom mc, int port, const char *ip)
 /*
  * Send image to the control tower.
  */
-int sendImage(int port, const char *ip, char * imgRGB, int height, int width)
+int sendImage(int port, const char *ip, char * imgRGB, int size)
 {
 	int sock = socket(AF_INET, SOCK_DGRAM, 0);
 	struct sockaddr_in dest;
 	int socklen = sizeof(dest);
 	struct hostent* serv = NULL;
-	int size = height * width * 3;
 	char * Image;
 	serv = gethostbyname(ip);
 	dest.sin_family = AF_INET;
 	dest.sin_port = htons(port);
 	dest.sin_addr = *(struct in_addr*)serv->h_addr;
 
-	open_capture(0,160,120);
-	IplImage* frame = cvQueryFrame( capture );
-	//donnee a envoyer
-	Image = frame->imageData;
 	sendto(sock, imgRGB, size, 0, (struct sockaddr*)&dest, (socklen_t)socklen);
 	
 
@@ -69,6 +66,7 @@ void* th_receiver(void* data)
 	char buf[BUFFER_SIZE];
 	struct timeval timeout;
 	MuavCom mc;
+	pthread_t thread_gps_info, thread_send_image;
 	
 	timeout.tv_sec=0;
 	timeout.tv_usec=TIMEOUT_MS;
@@ -127,6 +125,10 @@ printf("received: %s\n", buf);
 				status = MODE_AUTO;
 				sem_post(&mutex_status);
 				
+				sem_wait(&mutex_fifo);
+				addNetFifo(&globalNetFifo, buf);
+				sem_post(&mutex_fifo);
+				
 				initMuavCom(&mc);
 				setHeader(&mc, 0, 0, R_PILOTE_REQ_AUTO, 0);
 				MCEncode(&mc);
@@ -142,6 +144,20 @@ printf("received: %s\n", buf);
 				sem_wait(&mutex_status);
 				status = MODE_OFF;
 				sem_post(&mutex_status);
+				break;
+			case GPS_INFO_START:
+				status_gps=1;
+				pthread_create(&thread_gps_info, NULL, th_sendGPS, &nt);
+				break;
+			case GPS_INFO_STOP:
+				status_gps=0;
+				break;
+			case IMAGE_SEND_START:
+				status_sdimg=1;
+				pthread_create(&thread_send_image, NULL, th_sendImage, &nt);
+				break;
+			case IMAGE_SEND_STOP:
+				status_sdimg=0;
 				break;
 			default:
 				sem_wait(&mutex_fifo);
@@ -264,7 +280,7 @@ void *th_sendInfo(void *data)
  */
 void *th_sendGPS(void *data)
 {
-	Network_info nt = *(Network_info*)data;
+	Network nt = *(Network*)data;
 	char buf[BUFFER_SIZE];
 	GPGGA gpgga;
 	MuavCom mc;
@@ -282,7 +298,7 @@ void *th_sendGPS(void *data)
 		{
 			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
 			MCEncode(&mc);
-			sendData(mc, nt.nt_port, nt.nt_ip);
+			sendData(mc, nt.nt_port2, nt.nt_ip);
 			continue;
 		}
 		
@@ -293,7 +309,7 @@ void *th_sendGPS(void *data)
 		{
 			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
 			MCEncode(&mc);
-			sendData(mc, nt.nt_port, nt.nt_ip);
+			sendData(mc, nt.nt_port2, nt.nt_ip);
 			continue;
 		}
 		
@@ -307,13 +323,15 @@ void *th_sendGPS(void *data)
 		setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
 		//MCEncode(&mc);
 		GPSEncode(&mc, gpgga);
-		/*
-		printf("%s\n", mc.mc_data);
-		printf("%s\n", &mc.mc_data[HEADER_SIZE]);
-		*/
+		
+		//printf("%s\n", mc.mc_data);
+		//printf("%s\n", &mc.mc_data[HEADER_SIZE]);
+		
 		//printf("send gps info: %s\n", buf);
 		
-		sendData(mc, nt.nt_port, nt.nt_ip);
+		sendData(mc, nt.nt_port2, nt.nt_ip);
+		
+		if ( status_gps == 0 ) pthread_exit(NULL);
 	}
 	
 	//close(sock);
@@ -321,12 +339,110 @@ void *th_sendGPS(void *data)
 
 void * th_sendImage(void * data)
 {
+	Network nt = *(Network*)data;
+	MuavCom mc, mc2;
+	int height=120, width=192;
+	int offset=0;
+	int size, n;
+	unsigned char * image;
+	char part[1];
+	CvSize taille;
+	IplImage* frame;
+	IplImage* frameGray;
 	
-	int port;
- 	const char *ip,  * imgRGB;
-	 int height,  width;
+	int sock;
+	struct sockaddr_in recv_addr, exp_addr ;
+	int exp_len;
+	char buf[BUFFER_SIZE];
+	struct timeval timeout;
+	
+	timeout.tv_sec=0;
+	timeout.tv_usec=TIMEOUT_MS;
+	
+	sock = socket(PF_INET, SOCK_DGRAM, 0) ;
+	setsockopt(sock, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout));
+	
+	bzero ((char *) &recv_addr, sizeof recv_addr) ;
+	recv_addr.sin_family = AF_INET ;
+	recv_addr.sin_addr.s_addr = INADDR_ANY ;
+	recv_addr.sin_port = htons (nt.nt_port2) ;
+	
+	bind (sock, (struct sockaddr *)&recv_addr, sizeof recv_addr) ;
+	
+	open_capture(0,width,height);
+	
+	//cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_WIDTH, 16);
+	//cvSetCaptureProperty(capture, CV_CAP_PROP_FRAME_HEIGHT, 12);
+	
+	frame = cvQueryFrame( capture );
+	if ( ! frame  )
+	{
+		fprintf( stderr, "ERROR: pas d'image\n" );
+		return 0;
+	}
+	taille = cvGetSize(frame);
+	frameGray = cvCreateImage(taille,8,1);
+	image = frameGray->imageData;
+	
+	size = ( taille.width * taille.height ) + HEADER_SIZE;
+	int size_part = BUFFER_SIZE - HEADER_SIZE - 1;
+	
+	//printf("taille img : %d %d\n", taille.width, taille.height);
+	
+	char encodedData[BUFFER_SIZE];
+	
 	while(1)
 	{
-		//sendImage(int port, const char *ip, char * imgRGB, int height, int width);
+		part[0]=(char)1;
+		initMuavCom(&mc);
+		setHeader(&mc, 0, 0, SEND_IMG, 0);
+		MCEncode(&mc);
+		memset(encodedData, 0, BUFFER_SIZE);
+		offset=0;
+		
+		//printf("debug img1\n");
+		
+		frame = cvQueryFrame( capture );
+		if ( ! frame  )
+		{
+			fprintf( stderr, "ERROR: pas d'image\n" );
+			return 0;
+		}
+		RGBTOGRAY_1CANAL(frame, frameGray);
+		
+		//printf("debug img2\n");
+		
+		do
+		{
+			memset(buf, 0, BUFFER_SIZE);
+			//printf("debug img3\n");
+			imageEncode(&mc, image, size_part, encodedData, offset, part);
+			
+			//printf("debug img4\n");
+			sendImage(nt.nt_port2, nt.nt_ip, encodedData, BUFFER_SIZE);
+			//printf("debug img5\n");
+			
+			n = recvfrom (sock, buf, BUFFER_SIZE, 0, (struct sockaddr *)&exp_addr, (socklen_t *)&exp_len);
+			
+			if (n != -1)
+			{
+				
+				
+				memcpy(mc2.mc_data, buf, BUFFER_SIZE);
+				
+				MCDecode(&mc2);
+				if ( mc2.mc_request == R_SEND_IMG ) 
+				{
+					printf("part %d\n", (int)mc2.mc_data[HEADER_SIZE]);
+					offset = size_part * ( (int)mc2.mc_data[HEADER_SIZE] - 1 );
+					part[0] = mc2.mc_data[HEADER_SIZE];
+				}
+			}
+			
+		} while (offset < size);
+		
+		usleep(500000);
+		
+		if ( status_sdimg == 0 ) pthread_exit(NULL);
 	}
 }

@@ -33,7 +33,12 @@ typedef enum
 	SEND_IMG=14,
     SEND_GPS_INFO=15,
     HELLO=16,
-    R_HELLO=17
+    R_HELLO=17,
+    R_SEND_IMG=18,
+    GPS_INFO_START=19,
+    GPS_INFO_STOP=20,
+    IMAGE_SEND_START=21,
+    IMAGE_SEND_STOP=22
 } RequestType;
 
 typedef enum
@@ -109,5 +114,15 @@ void ImgSizeEncode(MuavCom *mc, int height, int width);
  * message form : latitude:longitude:n_sat:altitude
  */
 void GPSEncode(MuavCom *mc, GPGGA gpgga);
+
+/*
+ * encode a image
+ */
+int imageEncode(MuavCom *mc, unsigned char *img, int img_size, char * encodedData, int offset, char *part);
+
+/*
+ * return the ia type.
+ */
+int decodeIA(MuavCom *mc);
 
 #endif
