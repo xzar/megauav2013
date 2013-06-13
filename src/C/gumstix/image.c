@@ -122,6 +122,65 @@ printf("entrer getMaxima image.c\n");
 printf("sortie getMaxima image.c\n");	
 #endif
 }
+int calcul_vecteur_interet_fast(float ** pointsT, float ** pointsTplusUn, int nbPoints, int seuil,vecteur* resultat,int seuil2){
+#ifdef DEBUG_IMAGE2
+printf("entrer calcul_vecteur_interet image.c\n");	
+#endif
+	int it, itp;
+	int compteVecteur = 0;
+	int distanceHarris = 0;
+	int premierPointTrouve = 0;
+	vecteur v;
+	
+	//parcours des points a l'instant t
+	for(it = 0; it < nbPoints; it++){
+		if(pointsT[it][0] > seuil2){
+			distanceHarris =0;
+			premierPointTrouve = 0;
+			//parcours des points de l'instant tplusun
+			for(itp = 0; itp < nbPoints; itp++){
+				//printf("i = %d, j = %d\n",it,itp);
+				//si point est proche dans le seuil
+				if(	(pointsTplusUn[itp][0] < pointsT[it][0]+seuil)
+					&& (pointsTplusUn[itp][0] > pointsT[it][0]-seuil)
+					&& (pointsTplusUn[itp][1] < pointsT[it][1]+seuil)
+					&&  (pointsTplusUn[itp][1] > pointsT[it][1]-seuil))
+					{
+						if (premierPointTrouve == 0){
+							if(abs(pointsTplusUn[itp][3] - pointsT[it][3]) < 20){
+								distanceHarris = (pointsTplusUn[itp][3] - pointsT[it][3]);
+								v.x = pointsT[it][0] - pointsTplusUn[itp][0];
+								v.y = pointsT[it][1] - pointsTplusUn[itp][1];
+							
+								premierPointTrouve =1;
+							
+							}
+						}
+						else{
+						
+							if ( abs(pointsTplusUn[itp][3] - pointsT[it][3]) < distanceHarris ){	
+								distanceHarris = (pointsTplusUn[itp][3] - pointsT[it][3]);
+								v.x = pointsT[it][0] - pointsTplusUn[itp][0];
+								v.y = pointsT[it][1] - pointsTplusUn[itp][1];
+							
+							}
+						}
+					
+					}
+				}			
+			if(premierPointTrouve != 0){
+					resultat[compteVecteur]= v;
+					compteVecteur ++;
+			}
+		}
+	}
+#ifdef DEBUG_IMAGE2
+printf("sortie calcul_vecteur_interet image.c\n");	
+#endif
+	return compteVecteur;
+}
+
+
 
 int calcul_vecteur_interet(float ** pointsT, float ** pointsTplusUn, int nbPoints, int seuil,vecteur* resultat){
 #ifdef DEBUG_IMAGE2
@@ -147,7 +206,7 @@ printf("entrer calcul_vecteur_interet image.c\n");
 				&&  (pointsTplusUn[itp][1] > pointsT[it][1]-seuil))
 				{
 					if (premierPointTrouve == 0){
-						if(abs(pointsTplusUn[itp][2] - pointsT[it][2]) < 6){
+						if(abs(pointsTplusUn[itp][2] - pointsT[it][2]) < 20){
 							distanceHarris = (pointsTplusUn[itp][2] - pointsT[it][2]);
 							v.x = pointsT[it][0] - pointsTplusUn[itp][0];
 							v.y = pointsT[it][1] - pointsTplusUn[itp][1];
@@ -250,7 +309,7 @@ printf("sortie dessine_croix image.c\n");
 #endif
 }
 
-void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth){
+void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth, float seuil){
 #ifdef DEBUG_IMAGE2
 printf("entre calcul_vecteur_barycentre image.c\n");	
 #endif
@@ -259,18 +318,28 @@ printf("entre calcul_vecteur_barycentre image.c\n");
 	int baryY = 0;
 	resultat->x = 0;
 	resultat->y = 0;
+	int compt = 0;
 	//parcours des points
 	for(it = 0; it < nbPoints; it++){
-		baryX += pointsT[it][0];
-		baryY += pointsT[it][1];
+		if(pointsT[it][3] > seuil || seuil == -1.0f)
+		{
+			baryX += pointsT[it][0];
+			baryY += pointsT[it][1];
+			compt ++;
+		}
 	}
-	//calcul du barycentre
-	baryX = baryX / nbPoints;
-	baryY = baryY / nbPoints;
+	if(compt != 0){
+		//calcul du barycentre
+		baryX = baryX / compt;
+		baryY = baryY / compt;
+		//calcul vecteur par rapport au centre
+		resultat->x = baryX-(mywidth/2);
+		resultat->y = baryY-(myheight/2);
+	}else {
+		resultat->x = 0;
+		resultat->y = 0;
+	}
 	
-	//calcul vecteur par rapport au centre
-	resultat->x = baryX-(mywidth/2);
-	resultat->y = baryY-(myheight/2);
 #ifdef DEBUG_IMAGE2
 printf("sorite calcul_vecteur_barycentre image.c\n");	
 #endif

@@ -53,24 +53,24 @@ void take_off(int altitude )
 
 
 
-void pilote_IA(vecteur vecteurMoy,int timeOut,int seuil,int norme,int Gas){
+void pilote_IA(vecteur vecteurMoy,int timeOut,int seuil,char norme,int Gas){
 
-		char nick, roll, yaw=0;
+		signed char nick = 0 , roll =0, yaw=0;
 		unsigned char gas =  Gas;
 
 		if(vecteurMoy.y > seuil){
-			nick = (char)-norme;
+			nick = norme;
 		}
 		if(vecteurMoy.y < -seuil){
-			nick = (char)norme;
+			nick = -norme;
 		}
 		if(vecteurMoy.x > seuil ){
 
-			roll = (char)-norme;
+			roll = norme;
 		}
 		
 		if(vecteurMoy.x < -seuil){
-			roll = (char)norme;
+			roll = -norme;
 		}
 #ifdef DEBUGIA1	
 printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,yaw,gas);
@@ -261,7 +261,7 @@ struct timeval start,stop,res;
 	vecteur vecteurMoy;
 	vecteurMoy.x = 0; vecteurMoy.y=0;
 	int nbVect = 0;
-		
+	vecteur *tabVect = (vecteur*) malloc(sizeof(vecteur)*_NBHARRIS);
 	while(status == MODE_AUTO)
 	{
 #ifdef DEBUGIA1	
@@ -293,16 +293,23 @@ gettimeofday(&start,NULL);
 		//Maxima de Harris
 		getMaxima(matriceHarris, taille.height, taille.width, tabHarris, _NBHARRIS);
 		
-		fast_valeur(imageData, taille.height, taille.width, tabHarris, _NBHARRIS, 100);
+		fast_valeur(imageData, taille.height, taille.width, tabHarris, _NBHARRIS, 0);
+		//Matching des points pour trouver les vecteurs
+		nbVect = calcul_vecteur_interet_fast(tabHarrisPrec, tabHarris, _NBHARRIS, _SEUIL_DISTANCE, tabVect,80);
 		
+		
+		//Moyenne des vecteurs
+		calcul_moyenne_vecteur(tabVect, nbVect,&vecteurMoy);
+		//calcul_vecteur_barycentre (tabHarris ,  _NBHARRIS, &vecteurMoy, taille.height, taille.width,80);
 		//calcul_vecteur_barycentre ( tabHarris, _NBHARRIS, &vecteurMoy, taille.height, taille.width);
 		printf("valeur FAST : \n");		
 		for(j=0;j<_NBHARRIS;j++)
   		{
-			  /*tabHarrisPrec[j][0] = tabHarris[j][0];
+			  tabHarrisPrec[j][0] = tabHarris[j][0];
 			  tabHarrisPrec[j][1] = tabHarris[j][1];
-			  tabHarrisPrec[j][2] = tabHarris[j][2];*/
-				printf("%f \n",tabHarris[j][3]);
+			  tabHarrisPrec[j][2] = tabHarris[j][2];
+			  tabHarrisPrec[j][3] = tabHarris[j][3];
+			  printf("FAST = %f , x = %f, x= %f \n",tabHarris[j][3],tabHarris[j][0],tabHarris[j][1]);
 		}
 		
 #ifdef DEBUGIA1		
@@ -312,7 +319,7 @@ gettimeofday(&start,NULL);
 		printf("time Harris = %d %d\n",(int)res.tv_sec, (int)res.tv_usec);
 #endif
 
-		pilote_IA(vecteurMoy,1000,20,5, 255);
+		pilote_IA(vecteurMoy,1000,2,5, 255);
 	}
 
 	cvReleaseCapture( &capture );
@@ -397,13 +404,14 @@ printf("entrer prise_photo odile.c\n");
 			sprintf(buffer,"image%d.jpg",i-19);
 			cvSaveImage(buffer,frameGray,0);
 		}
-		
+		i++;
 		gettimeofday(&stop,NULL);
 		timersub(&stop, &start, &res);
-		printf("time Harris = %i,%d sec\n",(int)res.tv_sec, (int)res.tv_usec);
+		printf("time Harris = %i,%d sec i= %d\n",(int)res.tv_sec, (int)res.tv_usec,i);
 	}
 	
 	cvReleaseCapture( &capture );
+	exit(0);
 #ifdef DEBUG2
 printf("sortie prise_photo odile.c\n");	
 #endif

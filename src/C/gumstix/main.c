@@ -21,7 +21,7 @@ void traiter_signal(){
 int main(int argc, char *argv[]) 
 {
 
-	paramIA = 1;
+	paramIA =3;
 	//tower control info
 	char * ip_tower;
 	
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 	
 	pthread_create(&thread_network_receiver, NULL, th_receiver, &net_listen);
 	pthread_create(&thread_network_sender, NULL, th_sendInfo, &net_info);
-	//pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
+	pthread_create(&thread_gps_info, NULL, th_sendGPS, &net_info);
 
     /*
      * END THREAD
@@ -232,7 +232,7 @@ printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,ya
 						converge();
 					}else 
 						if(paramIA == 3){
-							
+							prise_photo();
 						}
                	 
 				

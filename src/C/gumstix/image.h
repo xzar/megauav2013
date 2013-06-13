@@ -25,10 +25,10 @@ int calcul_vecteur_interet(float ** pointsT, float ** pointsTplusUn, int nbPoint
 void calcul_moyenne_vecteur(vecteur* listeVecteurs, int tailleListeVecteur, vecteur* resultat );
 
 void RGBTOGRAY_1CANAL(IplImage* source_couleur, IplImage* dest_gris);
-
+int calcul_vecteur_interet_fast(float ** pointsT, float ** pointsTplusUn, int nbPoints, int seuil,vecteur* resultat,int seuil2);
 void Dessine_croix(char *buf,int myheight,int mywidth,int ind_x, int ind_y);
 
-void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth);
+void calcul_vecteur_barycentre ( float ** pointsT, int nbPoints, vecteur* resultat, int myheight,int mywidth,float seuil);
 
 void fast_valeur(char* image, int myheight, int mywidth, float** maxHarris, int nbPointsInterets, int seuil);
 void mise_a_plat(char* image, int* pixel,int x, int y, int mywidth);
