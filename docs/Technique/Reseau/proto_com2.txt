@@ -28,6 +28,8 @@ détail:
 (mettre image)
 
 Nous gardons la longitude, la latitude, le nombre de satellites , la précision horizontale et l'Altitude.
+exemple d'une trame GPGGA sur le port série:
+GPGGA,11373.00,4902.59765,N,00205.00247,E,1,09,1.07,73.1,M,46.0,M,,*65
 
 RESEAU
 
@@ -75,14 +77,41 @@ GPS_INFO_STOP: on demande au drone d'arreter d'envoyer les info gps
 IMAGE_SEND_START: on demande l'envoi des images capturés par la caméra
 IMAGE_SEND_STOP: on demande d'areté d'envoyer l'image.
 
+Datagramme MUAVCOM
+
+|IP|UDP|FLOTTE_ID[INT]|DRONE_ID[INT]|TYPE_R[INT]|TIMESTAMP[LONG]|ERROR[INT]|DATA|
+
 détail:
 
 -image
+|ID_PART[BYTE]|IMAGE_PART[BYTE]|
+
+A cause du MTU par défaut (maximum taille des packets accepté) à 1500 octets de la plupart des cartes réseaux,
+nous sommes dans l'obligation de découper l'image. Les images capturés font environ 25ko que nous envoyons en 25 parties.
+Dans les données nous avons le numéro de partie de l'image suivi de la partie elle même.
 
 -gps
 
+|latitude:longitude:nombre de satellite:précision:altitude|
+
+Les données GPS sont envoyées sous forme de chaines de caractères.
+On envoi seulement la latitude, la longitude, le nombre de sateleite capté, la précision de la position horizontale et l'altitude.
+
 -info microkoptère
+
+les informations de la cartes microkoptère sont sont envoyées dans un tableau de 32 int
+ce tableau, contient de niveau de batterie, l'état du quadri, les erreurs éventuels, etc ...
 
 -pilotage
 
+|NICK[INT]|ROLL[INT]|YAW[INT]|GAS[INT]|
+
+lorsque que l'on pilote le quadri à l'aide du joystik,
+on envoi les infos qui vont indiquer la puissance des moteurs.
+
+
 -ia
+
+|TYPE|
+
+Lorque que l'on passe en mode automatique, l'on indique quelle type d'ia on choisi

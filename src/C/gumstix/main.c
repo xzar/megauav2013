@@ -242,32 +242,21 @@ printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,ya
 					if (mc.mc_request == PILOTE_REQ_AUTO)
 					{
 						
-#ifdef DEBUGJOY1
+//#ifdef DEBUGJOY1
 printf("type ia : %d\n", iaType);
-#endif
-						/*
-						 * METTRE SWITCH/IF else ici
-						 * 
-						 */
-
+//#endif
+						if ( iaType == 1 ){
+							deplacement_zero();
+						}else if ( iaType == 2 )
+						{
+							converge();
+						}else if ( iaType == 3 ){
+							prise_photo();
+						}
 					}
 				} else {
 					sem_post(&mutex_fifo);
 				}
-				
-				
-				if(paramIA == 1){
-					deplacement_zero();
-				}else
-					if(paramIA == 2)
-					{
-						converge();
-					}else 
-						if(paramIA == 3){
-							prise_photo();
-						}
-               	 
-				
                 break;
             case MODE_OFF:
                 sem_post(&mutex_status);
