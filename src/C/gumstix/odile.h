@@ -11,7 +11,7 @@ void take_off(int altitude );
 
 int deplacement_zero();
 
-void pilote_IA(vecteur vecteurMoy,int timeOut,int seuil,char norme,int Gas);
+void pilote_IA(vecteur vecteurMoy,int timeOut,int Gas);
 int converge();
 int prise_photo();
 

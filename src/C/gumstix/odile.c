@@ -53,27 +53,15 @@ void take_off(int altitude )
 
 
 
-void pilote_IA(vecteur vecteurMoy,int timeOut,int seuil,char norme,int Gas){
+void pilote_IA(vecteur vecteurMoy,int timeOut,int Gas){
 
 		signed char nick = 0 , roll =0, yaw=0;
 		unsigned char gas =  Gas;
 
-		if(vecteurMoy.y > seuil){
-			nick = norme;
-		}
-		if(vecteurMoy.y < -seuil){
-			nick = -norme;
-		}
-		if(vecteurMoy.x > seuil ){
-
-			roll = norme;
-		}
-		
-		if(vecteurMoy.x < -seuil){
-			roll = -norme;
-		}
+		nick = - vecteurMoy.y;
+		roll = - vecteurMoy.x;
 #ifdef DEBUGIA1	
-printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d",nick,roll,yaw,gas);
+printf("commande moteur : Nick = %d, Roll = %d, Yaw = %d, Gas = %d\n",nick,roll,yaw,gas);
 #endif	
 		set_Nick( (signed char) nick );
 		set_Roll( (signed char) roll );
@@ -198,7 +186,7 @@ gettimeofday(&start,NULL);
 		printf("time Harris= %d %d\n",(int)res.tv_sec, (int)res.tv_usec);
 #endif
 
-		pilote_IA(vecteurMoy,1000,2,10, 255);
+		pilote_IA(vecteurMoy,1000, 255);
 				
 	}
 
@@ -319,7 +307,7 @@ gettimeofday(&start,NULL);
 		printf("time Harris = %d %d\n",(int)res.tv_sec, (int)res.tv_usec);
 #endif
 
-		pilote_IA(vecteurMoy,1000,2,5, 255);
+		pilote_IA(vecteurMoy,1000, 255);
 	}
 
 	cvReleaseCapture( &capture );

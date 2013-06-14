@@ -443,6 +443,10 @@ void * th_sendImage(void * data)
 		
 		usleep(500000);
 		
-		if ( status_sdimg == 0 ) pthread_exit(NULL);
+		if ( status_sdimg == 0 ) {
+			if(capture != NULL)cvReleaseCapture( &capture );
+			pthread_exit(NULL);
+
+		}
 	}
 }
