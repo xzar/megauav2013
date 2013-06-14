@@ -1,0 +1,15 @@
+Temps Réel
+
+
+L'os sur le gumstix n'étant pas temps réel, il nous est difficile de controler
+le temp d'execution de nos processus.
+
+Lors du traitement de l'image le temps de traitement n'est pas fixe,
+il peux prendre entre 60 à 100ms. Cela dépend des taches concurentes.
+
+pour optimiser le temps de traitement nous avons choisis de couper
+toutes les taches concurentes non critiques pour diminuer le temps de
+traitement des images.
+
+Appliqué une priorité sur l'execution de nos thread ne résoud pas le problème
+car il faut un maximum de ressources et limité au possible les préemptions.
