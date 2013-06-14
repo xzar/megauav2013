@@ -15,7 +15,7 @@ les infos GPS sont récupérés directement sur la gumstix via le port série
 
 SERIE
 
--serie inter carte
+-serie inter carte	
 
 -gps
 
@@ -58,8 +58,8 @@ PILOTE_REQ_MANUAL: on demande au drone de passer en mode manuel
 R_PILOTE_REQ_MANUAL: acquitement du passage au mode manuel
 SEND_INFO: envoi des informations du drone
 R_SEND_INFO: acquitement de reception des infos
-EMERGENCY: indication que le drone se trouve en situation critique (ex: plus de batterie)
-MISSION: non utilisé, non défini
+EMERGENCY: (non utilisé) indication que le drone se trouve en situation critique (ex: plus de batterie)
+MISSION: non utilisé, à définir
 PILOTE_MANUAL: envoi des informations de pilotage manuel
 PILOTE_REQ_AUTO: on demande au drone de passer en mode automatique
 R_PILOTE_REQ_AUTO: acquitemment du passage au mode auto
@@ -79,30 +79,33 @@ IMAGE_SEND_STOP: on demande d'areté d'envoyer l'image.
 
 Datagramme MUAVCOM
 
-|IP|UDP|FLOTTE_ID[INT]|DRONE_ID[INT]|TYPE_R[INT]|TIMESTAMP[LONG]|ERROR[INT]|DATA|
+|IP|UDP|FLOTTE_ID[INT]|DRONE_ID[INT]|TYPE_R[INT]|TIMESTAMP[INT][INT]|ERROR[INT]|DATA|
+
+l'entête muavcom commence à FLOTTE_ID, et se termine à ERROR, elle fait 24 octets
 
 détail:
 
--image
+-image TYPE_R = SEND_IMG
+
 |ID_PART[BYTE]|IMAGE_PART[BYTE]|
 
 A cause du MTU par défaut (maximum taille des packets accepté) à 1500 octets de la plupart des cartes réseaux,
 nous sommes dans l'obligation de découper l'image. Les images capturés font environ 25ko que nous envoyons en 25 parties.
 Dans les données nous avons le numéro de partie de l'image suivi de la partie elle même.
 
--gps
+-gps TYPE_R = SEND_GPS_INFO
 
 |latitude:longitude:nombre de satellite:précision:altitude|
 
 Les données GPS sont envoyées sous forme de chaines de caractères.
 On envoi seulement la latitude, la longitude, le nombre de sateleite capté, la précision de la position horizontale et l'altitude.
 
--info microkoptère
+-info microkoptère TYPE_R = SEND_INFO
 
 les informations de la cartes microkoptère sont sont envoyées dans un tableau de 32 int
 ce tableau, contient de niveau de batterie, l'état du quadri, les erreurs éventuels, etc ...
 
--pilotage
+-pilotage TYPE_R = PILOTE_MANUAL
 
 |NICK[INT]|ROLL[INT]|YAW[INT]|GAS[INT]|
 
@@ -110,7 +113,7 @@ lorsque que l'on pilote le quadri à l'aide du joystik,
 on envoi les infos qui vont indiquer la puissance des moteurs.
 
 
--ia
+-ia TYPE_R = PILOTE_REQ_AUTO
 
 |TYPE|
 
