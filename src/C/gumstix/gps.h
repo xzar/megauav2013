@@ -46,4 +46,6 @@ int get_info_GPGGA(char * gpgga);
  */
 GPGGA decode_GPGGA(char * gpgga, int *error);
 
+void closeGPS();
+
 #endif

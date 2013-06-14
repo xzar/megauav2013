@@ -8,6 +8,7 @@
 #include <netdb.h>
 #include <string.h>
 #include <semaphore.h>
+#include <pthread.h>
 
 #include "muav_com.h"
 #include "net_fifo.h"

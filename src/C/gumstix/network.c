@@ -146,15 +146,21 @@ printf("received: %s\n", buf);
 				sem_post(&mutex_status);
 				break;
 			case GPS_INFO_START:
-				status_gps=1;
-				pthread_create(&thread_gps_info, NULL, th_sendGPS, &nt);
+				if (status_gps == 0)
+				{
+					status_gps=1;
+					pthread_create(&thread_gps_info, NULL, th_sendGPS, &nt);
+				}
 				break;
 			case GPS_INFO_STOP:
 				status_gps=0;
 				break;
 			case IMAGE_SEND_START:
-				status_sdimg=1;
-				pthread_create(&thread_send_image, NULL, th_sendImage, &nt);
+				if (status_sdimg == 0)
+				{
+					status_sdimg=1;
+					pthread_create(&thread_send_image, NULL, th_sendImage, &nt);
+				}
 				break;
 			case IMAGE_SEND_STOP:
 				status_sdimg=0;
@@ -177,7 +183,7 @@ printf("received: %s\n", buf);
 void *th_sendInfo(void *data)
 {
 	Network_info nt = *(Network_info*)data;
-	int sock;
+	//int sock;
 	int buf[BUFFER_SIZE];
 	//struct sockaddr_in recv_addr, exp_addr ;
 
@@ -291,10 +297,10 @@ void *th_sendGPS(void *data)
 	while(1)
 	{
 		initMuavCom(&mc);
-		//printf("get info\n");
+		printf("get info\n");
 		error = get_info_GPGGA(buf);
 		
-		if ( error == -1 )
+		if ( error == -1 && status_gps == 1)
 		{
 			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
 			MCEncode(&mc);
@@ -302,10 +308,10 @@ void *th_sendGPS(void *data)
 			continue;
 		}
 		
-		//printf("decode info\n");
-		gpgga = decode_GPGGA(buf, &error);
+		printf("decode info\n");
+		if ( status_gps == 1) gpgga = decode_GPGGA(buf, &error);
 		
-		if ( error == -1 )
+		if ( error == -1 && status_gps == 1)
 		{
 			setHeader(&mc, 0, 0, SEND_GPS_INFO, ERR_GPS);
 			MCEncode(&mc);
@@ -320,21 +326,26 @@ void *th_sendGPS(void *data)
 		printf("%s\n", gg.gpgga_accuracy_horizontal);
 		printf("%s\n", gg.gpgga_altitude);
 		*/
-		setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
-		//MCEncode(&mc);
-		GPSEncode(&mc, gpgga);
 		
-		//printf("%s\n", mc.mc_data);
-		//printf("%s\n", &mc.mc_data[HEADER_SIZE]);
-		
-		//printf("send gps info: %s\n", buf);
-		
-		sendData(mc, nt.nt_port2, nt.nt_ip);
-		
-		if ( status_gps == 0 ) pthread_exit(NULL);
+		if (status_gps == 1)
+		{
+			setHeader(&mc, 0, 0, SEND_GPS_INFO, 0);
+			//MCEncode(&mc);
+			GPSEncode(&mc, gpgga);
+			
+			//printf("%s\n", mc.mc_data);
+			//printf("%s\n", &mc.mc_data[HEADER_SIZE]);
+			printf("debug gps\n");
+			printf("send gps info: %s\n", buf);
+			
+			sendData(mc, nt.nt_port2, nt.nt_ip);
+		} else {
+			//pthread_exit(NULL);
+			break;
+		}
 	}
 	
-	//close(sock);
+	closeGPS();
 }
 
 void * th_sendImage(void * data)
@@ -414,6 +425,12 @@ void * th_sendImage(void * data)
 		
 		do
 		{
+			if ( status_sdimg == 0 )
+			{
+				if(capture != NULL)cvReleaseCapture( &capture );
+				//pthread_exit(NULL);
+				break;
+			}
 			memset(buf, 0, BUFFER_SIZE);
 			//printf("debug img3\n");
 			imageEncode(&mc, image, size_part, encodedData, offset, part);
@@ -441,12 +458,15 @@ void * th_sendImage(void * data)
 			
 		} while (offset < size);
 		
-		usleep(500000);
+		//usleep(500000);
 		
-		if ( status_sdimg == 0 ) {
-			if(capture != NULL)cvReleaseCapture( &capture );
-			pthread_exit(NULL);
 
+		if ( status_sdimg == 0 )
+		{
+			if(capture != NULL)cvReleaseCapture( &capture );
+			//pthread_exit(NULL);
+			break;
 		}
 	}
+	close(sock);
 }
