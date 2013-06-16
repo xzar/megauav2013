@@ -1,0 +1,120 @@
+doc communication:
+
+ARCHITECTURE DES COMMUNICATIONS
+
+Nous avons deux cartes, une microkoptère qui est la carte du drone
+et un gumstix sur lequel nos programmes fonctionne.
+
+La communication entre les deux cartes se fait par port séries sur /dev/ttyUSB0
+
+le programme gpsd va analyser et convertir les infos du capteur gps
+en chaine de caractères. 
+les infos GPS sont récupérés directement sur la gumstix via le port série
+/dev/ttyS0.
+
+
+SERIE
+
+-serie inter carte	
+
+-gps
+
+la trame gps sur port série est lisible via cette commande : cat /etc/ttyS0
+En cas de problème avec la trame GPS,tapez cette commande : " killall gpsd; gpsd /dev/ttyS0 "
+
+Notre programme va aller lire dans ce descripteur pour récupérer la trame GPGGA.
+
+détail:
+(mettre image)
+
+Nous gardons la longitude, la latitude, le nombre de satellites , la précision horizontale et l'Altitude.
+exemple d'une trame GPGGA sur le port série:
+GPGGA,11373.00,4902.59765,N,00205.00247,E,1,09,1.07,73.1,M,46.0,M,,*65
+
+RESEAU
+
+Afin d'assurer la communication entre le drone et la tour de controle
+il a été nécéssaire de développer un protocole de communication appelé MUAVCOM
+
+On distingue deux canaux:
+
+-un canal ou la source d'émission est le drone, il envoi, ses informations
+en continue à la tour de controle (battterie, accélérometre, état, position gps, image de la caméra etc ...).
+La tour de controle envoi un acquitement pour certaines infos critiques.
+
+-un canal de pilotage ou la tour de controle va envoyer des ordres, pour changer le comportement
+du drone, passage du mode manuel au mode auto, choix de l'ia à utiliser, envoi des commande de vol, etc ...
+
+
+Le protocole est construit comme ceci:
+
+une entete dans laquelle sera renseigné l'id du drone, l'id de la flotte du drone,
+le type de requete, et un code d'erreur si besoin, ensuite vient les informations 
+de la requete en question.
+
+ci-dessous la liste: des requetes
+
+PILOTE_REQ_MANUAL: on demande au drone de passer en mode manuel
+R_PILOTE_REQ_MANUAL: acquitement du passage au mode manuel
+SEND_INFO: envoi des informations du drone
+R_SEND_INFO: acquitement de reception des infos
+EMERGENCY: (non utilisé) indication que le drone se trouve en situation critique (ex: plus de batterie)
+MISSION: non utilisé, à définir
+PILOTE_MANUAL: envoi des informations de pilotage manuel
+PILOTE_REQ_AUTO: on demande au drone de passer en mode automatique
+R_PILOTE_REQ_AUTO: acquitemment du passage au mode auto
+PILOTE_REQ_OFF: on demande au drone de passer dans l'état inactif
+R_PILOTE_REQ_OFF: acquitement de cette état
+SEND_IMG_SIZE: on envoi la taille de l'image que la caméra capture
+R_SEND_IMG_SIZE: acquitement de la reception de cette taille
+SEND_IMG: envoi d'une partie d'image
+SEND_GPS_INFO: envoi des information GPS
+HELLO: message envoyer à la tour de controle pour indiquer la mise en marche
+R_HELLO: réponse de la tour de controle au hello
+R_SEND_IMG: acquitement de la reception de l'image
+GPS_INFO_START: on demande au drone d'envoyer les infos
+GPS_INFO_STOP: on demande au drone d'arreter d'envoyer les info gps
+IMAGE_SEND_START: on demande l'envoi des images capturés par la caméra
+IMAGE_SEND_STOP: on demande d'areté d'envoyer l'image.
+
+Datagramme MUAVCOM
+
+|IP|UDP|FLOTTE_ID[INT]|DRONE_ID[INT]|TYPE_R[INT]|TIMESTAMP[INT][INT]|ERROR[INT]|DATA|
+
+l'entête muavcom commence à FLOTTE_ID, et se termine à ERROR, elle fait 24 octets
+
+détail:
+
+-image TYPE_R = SEND_IMG
+
+|ID_PART[BYTE]|IMAGE_PART[BYTE]|
+
+A cause du MTU par défaut (maximum taille des packets accepté) à 1500 octets de la plupart des cartes réseaux,
+nous sommes dans l'obligation de découper l'image. Les images capturés font environ 25ko que nous envoyons en 25 parties.
+Dans les données nous avons le numéro de partie de l'image suivi de la partie elle même.
+
+-gps TYPE_R = SEND_GPS_INFO
+
+|latitude:longitude:nombre de satellite:précision:altitude|
+
+Les données GPS sont envoyées sous forme de chaines de caractères.
+On envoi seulement la latitude, la longitude, le nombre de sateleite capté, la précision de la position horizontale et l'altitude.
+
+-info microkoptère TYPE_R = SEND_INFO
+
+les informations de la cartes microkoptère sont sont envoyées dans un tableau de 32 int
+ce tableau, contient de niveau de batterie, l'état du quadri, les erreurs éventuels, etc ...
+
+-pilotage TYPE_R = PILOTE_MANUAL
+
+|NICK[INT]|ROLL[INT]|YAW[INT]|GAS[INT]|
+
+lorsque que l'on pilote le quadri à l'aide du joystik,
+on envoi les infos qui vont indiquer la puissance des moteurs.
+
+
+-ia TYPE_R = PILOTE_REQ_AUTO
+
+|TYPE|
+
+Lorque que l'on passe en mode automatique, l'on indique quelle type d'ia on choisi

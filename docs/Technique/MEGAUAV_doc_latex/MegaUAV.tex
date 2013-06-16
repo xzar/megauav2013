@@ -1,0 +1,276 @@
+\documentclass{article}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[dvips]{graphicx}
+\usepackage{listings}
+\usepackage{verbatim}
+\usepackage{fancyvrb}
+\usepackage{xcolor}
+\usepackage{soul}
+
+\usepackage{amsmath}
+
+\definecolor{Zgris}{rgb}{0.87,0.85,0.85}
+\newcommand{\hlgris}[1]{\sethlcolor{Zgris}\hl{#1}}
+
+\newsavebox{\BBbox}
+\newenvironment{DDbox}[1]{
+\begin{lrbox}{\BBbox}\begin{minipage}{\linewidth}}
+{\end{minipage}\end{lrbox}\noindent\colorbox{Zgris}{\usebox{\BBbox}} \\
+[.5cm]}
+\title{MegaUAV 2013}
+\author{}
+
+\begin{document}
+
+\maketitle
+\newpage
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+BLABLABLA BLABLA
+
+\section{Partie 1}
+\subsection{Sous partie 1}
+\subsection{Sous partie 2}
+
+\section{Communication}
+\subsection{Architecture des communications}
+Nous avons deux cartes : une Microkopter, la Flight-Ctrl, qui est la carte du drone et un Gumstix sur lequel notre programme fonctionne.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{./Schema/Reseau/graph_com.eps}
+\caption{Architecture de la communication}
+\end{center}
+\end{figure}
+La communication entre les deux cartes se fait par port série sur 
+\newline
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+/dev/ttyUSB0
+	\end{Verbatim}
+\end{DDbox}
+Le programme gpsd va analyser et convertir les infos du capteur gps
+en chaine de caractères.\newline
+les infos GPS sont récupérées directement sur la gumstix via le port série:
+
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+/dev/ttyS0
+	\end{Verbatim}
+\end{DDbox}
+
+
+\subsection{Communication série}
+\subsubsection{Série inter carte}	
+
+\subsubsection{GPS}
+la trame gps sur port série est lisible via cette commande : \newline
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+cat /etc/ttyS0
+	\end{Verbatim}
+\end{DDbox}
+
+En cas de problème avec la trame GPS,tapez cette commande : \newline
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+killall gpsd; gpsd /dev/ttyS0
+	\end{Verbatim}
+\end{DDbox}
+
+Notre programme va aller lire dans ce descripteur pour récupérer la trame GPGGA.
+\newline
+Détail:
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/Reseau/gps_gpgga2.eps}
+\caption{Trame GPGGA}
+\end{center}
+\end{figure}
+
+
+Nous gardons la longitude, la latitude, le nombre de satellites , la précision horizontale et l'altitude.
+Exemple d'une trame GPGGA sur le port série:\newline
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+GPGGA,11373.00,4902.59765,N,00205.00247,E,1,09,1.07,73.1,M,46.0,M,,*65
+	\end{Verbatim}
+\end{DDbox}
+
+\subsection{Réseau}
+
+Afin d'assurer la communication entre le drone et la tour de controle
+il a été nécéssaire de développer un protocole de communication appelé MUAVCOM\newline
+On distingue deux canaux:
+\begin{itemize}
+\item un canal où la source d'émission est le drone, il envoie ses informations
+en continu à la tour de contrôle (batterie, accéléromètre, état, position gps, image de la caméra etc ...).\newline
+La tour de controle envoie un acquittement pour certaines infos critiques.
+\item un canal de pilotage dans lequel la tour de contrôle va envoyer des ordres : pour changer le comportement du drone, passer du mode manuel au mode auto, choisir de l'ia à utiliser, envoyer des commande de vol, etc ...
+\end{itemize}
+Le protocole est construit comme ceci:
+\begin{itemize}
+\item une entête dans laquelle sera renseigné l'id du drone, l'id de la flotte du drone
+\item le type de requête et un code d'erreur si besoin, ensuite vient les informations de la requete en question
+\end{itemize}
+Ci-dessous la liste des requetes :
+\begin{itemize}
+\item \hlgris{PILOTE\_REQ\_MANUAL}: on demande au drone de passer en mode manuel
+\item\hlgris{R\_PILOTE\_REQ\_MANUAL}: acquitement du passage au mode manuel
+\item\hlgris{SEND\_INFO}: envoi des informations du drone
+\item\hlgris{R\_SEND\_INFO}: acquitement de reception des infos
+\item\hlgris{EMERGENCY}: (non utilisé) indication que le drone se trouve en situation critique (ex: plus de batterie)
+\item\hlgris{MISSION}: non utilisé, à définir
+\item\hlgris{PILOTE\_MANUAL}: envoi des informations de pilotage manuel
+\item\hlgris{PILOTE\_REQ\_AUTO}: on demande au drone de passer en mode automatique
+\item\hlgris{R\_PILOTE\_REQ\_AUTO}: acquitemment du passage au mode auto
+\item\hlgris{PILOTE\_REQ\_OFF}: on demande au drone de passer dans l'état inactif
+\item\hlgris{R\_PILOTE\_REQ\_OFF}: acquitement de cette état
+\item\hlgris{SEND\_IMG\_SIZE}: on envoi la taille de l'image que la caméra capture
+\item\hlgris{R\_SEND\_IMG\_SIZE}: acquitement de la reception de cette taille
+\item\hlgris{SEND\_IMG}: envoi d'une partie d'image
+\item\hlgris{SEND\_GPS\_INFO}: envoi des information GPS
+\item\hlgris{HELLO}: message envoyer à la tour de controle pour indiquer la mise en marche
+\item\hlgris{R\_HELLO}: réponse de la tour de controle au hello
+\item\hlgris{R\_SEND\_IMG}: acquitement de la reception de l'image
+\item\hlgris{GPS\_INFO\_START}: on demande au drone d'envoyer les infos
+\item\hlgris{GPS\_INFO\_STOP}: on demande au drone d'arreter d'envoyer les info gps
+\item\hlgris{IMAGE\_SEND\_START}: on demande l'envoi des images capturés par la caméra
+\item\hlgris{IMAGE\_SEND\_STOP}: on demande d'areté d'envoyer l'image.
+\end{itemize}
+Datagramme MUAVCOM :\newline
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+|IP|UDP|FLOTTE_ID[INT]|DRONE_ID[INT]|TYPE_R[INT]|TIMESTAMP[INT][INT]|ERROR[INT]|DATA|
+	\end{Verbatim}
+\end{DDbox}
+l'entête muavcom commence à \hlgris{FLOTTE\_ID}, et se termine à ERROR, elle fait 24 octets.\newline
+Détail:\newline
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+-image TYPE\_R = SEND\_IMG
+	\end{Verbatim}
+\end{DDbox}
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+|ID\_PART[BYTE]|IMAGE\_PART[BYTE]|
+	\end{Verbatim}
+\end{DDbox}
+A cause du MTU par défaut (maximum taille des packets accepté) limité à 1500 octets, de la plupart des cartes réseaux,nous sommes dans l'obligation de découper l'image. Les images capturées font environ 25ko que nous envoyons en 25 parties.\newline
+Dans les données nous avons le numéro de partie de l'image suivi de la partie elle même.
+
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+TYPE\_R = SEND\_GPS\_INFO
+	\end{Verbatim}
+\end{DDbox}
+
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+|latitude:longitude:nombre de satellite:précision:altitude|
+	\end{Verbatim}
+\end{DDbox}
+Les données GPS sont envoyées sous forme de chaines de caractères.
+On envoie seulement la latitude, la longitude, le nombre de satellites captés, la précision de la position horizontale et l'altitude.
+
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+-info microkoptère TYPE\_R = SEND\_INFO
+	\end{Verbatim}
+\end{DDbox}
+Les informations de la carte microkopter sont envoyées dans un tableau de 32 int.
+Ce tableau, contient de niveau de batterie, l'état du quadri, les erreurs éventuelles, etc ...
+
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+-pilotage TYPE\_R = PILOTE\_MANUAL
+	\end{Verbatim}
+\end{DDbox}
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+|NICK[INT]|ROLL[INT]|YAW[INT]|GAS[INT]|
+	\end{Verbatim}
+\end{DDbox}
+Lorsque que l'on pilote le quadri à l'aide du joystick,on envoie les infos qui vont indiquer la puissance des moteurs.
+
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+-ia TYPE\_R = PILOTE\_REQ\_AUTO
+	\end{Verbatim}
+\end{DDbox}
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+|TYPE|
+	\end{Verbatim}
+\end{DDbox}
+Lorsque l'on passe en mode automatique, on indique quel type d'IA on a choisi.
+
+\section{Vol Stationnaire}
+Pendant le vol, le quadricoptère est soumis à diverses forces extérieures perturbant la stabilité de ses mouvements, tels que la puissance des moteurs et le poids de l'appareil non homogèneiquement répartis, le retour de force lié au brassage d'air des hélices, etc...\newline
+Nous cherchons donc dans un premier temps à compenser les déplacements non intentionnels de notre appareil afin d'effectuer un vol stationnaire.
+
+\subsection{Algorithme}
+Notre algorithme est basé sur la vision, obtenue grace à une caméra reliée au Gumstix. Un traitement sur l'image servira à extraire des points d'interêt qui serviront de référentiel au sol dont nous suivront les positions les coordonnées par rapport au temps.
+Ces coordonnées serviront à déterminer les mouvements de l'appareil par rapport à ces points au sol, sous forme de vecteurs, qui serviront ensuite à déterminer la compensation à effectuer afin de limiter les déplacements de l'appareil dans l'espace.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/TraitementImage/AlgoVision.eps}
+\caption{Algorithme}
+\end{center}
+\end{figure}
+
+\subsection{Estimation du déplacement}
+Pour estimer la direction de déplacement, l'algorithme se base sur la transformation affine de points d'interêt entre deux images consécutives.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.3]{./Schema/TraitementImage/TraitementImageSimpli.eps}
+\caption{Traitement Image}
+\end{center}
+\end{figure}
+
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/TraitementImage/TraitementImage.eps}
+\caption{Traitement Image}
+\end{center}
+\end{figure}
+
+\subsection{Extraction des points d'interêt}
+\subsubsection{Détection des contours}
+Nous ne cherchons pas à proprement dit à détecter les contours mais nous avons besoin de calculer les gradients horizontal et vertical de l'image pour la détection des points d'interêt.
+$Prewitt H
+\begin{bmatrix} 
+  1 & 0 & -1 \\ 
+  1 & 0 & -1 \\
+  1 & 0 & -1 \\ 
+\end{bmatrix}$
+\newline
+$Prewitt V
+\begin{bmatrix} 
+  1 & 1 & 1 \\ 
+  0 & 0 & 0 \\
+  -1 & -1 & -1 \\ 
+\end{bmatrix}$
+
+\subsubsection{Détection des coins}
+Nous avons choisi une détection de points d'interêts par détections de coins (corner detection). Nous avons choisi d'implémenter 2 méthodes:
+\begin{itemize}
+\item Le détecteur de Harris
+\item L'algorithme FAST
+\end{itemize}
+\subsubsection{Détecteur de Harris}
+
+\subsubsection{FAST}
+
+\subsection{Matching-Tracking}
+
+\subsection{Compensation du mouvement}
+
+
+\section{Conclusion}
+
+
+\end{document} 

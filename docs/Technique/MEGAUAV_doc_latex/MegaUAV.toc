@@ -1,0 +1,21 @@
+\contentsline {section}{\numberline {1}Introduction}{3}
+\contentsline {section}{\numberline {2}Partie 1}{3}
+\contentsline {subsection}{\numberline {2.1}Sous partie 1}{3}
+\contentsline {subsection}{\numberline {2.2}Sous partie 2}{3}
+\contentsline {section}{\numberline {3}Communication}{3}
+\contentsline {subsection}{\numberline {3.1}Architecture des communications}{3}
+\contentsline {subsection}{\numberline {3.2}Communication s\'erie}{3}
+\contentsline {subsubsection}{\numberline {3.2.1}S\'erie inter carte}{3}
+\contentsline {subsubsection}{\numberline {3.2.2}GPS}{3}
+\contentsline {subsection}{\numberline {3.3}R\'eseau}{4}
+\contentsline {section}{\numberline {4}Vol Stationnaire}{7}
+\contentsline {subsection}{\numberline {4.1}Algorithme}{7}
+\contentsline {subsection}{\numberline {4.2}Estimation du d\'eplacement}{7}
+\contentsline {subsection}{\numberline {4.3}Extraction des points d'inter\^et}{8}
+\contentsline {subsubsection}{\numberline {4.3.1}D\'etection des contours}{8}
+\contentsline {subsubsection}{\numberline {4.3.2}D\'etection des coins}{9}
+\contentsline {subsubsection}{\numberline {4.3.3}D\'etecteur de Harris}{9}
+\contentsline {subsubsection}{\numberline {4.3.4}FAST}{9}
+\contentsline {subsection}{\numberline {4.4}Matching-Tracking}{9}
+\contentsline {subsection}{\numberline {4.5}Compensation du mouvement}{9}
+\contentsline {section}{\numberline {5}Conclusion}{9}

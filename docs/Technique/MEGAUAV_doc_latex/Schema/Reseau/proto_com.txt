@@ -1,0 +1,43 @@
+protocole de communication pour MUAV:
+
+control <-> gumstix
+
+SPECIFICATION DU PROTOCOLE MUAVCOM
+basé sur UDP
+
+il se découpe en plusieurs parties :
+
+sur le port X:
+-Récupération des infos de vols par requête du control
+-Envoi d'ordre de vol
+-envoi de modification de paramètre
+
+Une requete du controle engendre systématiquement une réponse de même type.
+
+sur le port Y:
+-Envoi d'information depuis le drone au pc de controle (envoi autonome lors d'un problème détecté ou d'une activation spécial) -> emergency/change
+-envoi du flux video
+
+Definition des TYPE de requete
+
+X:
+-GetInfo
+-Response
+-SetValue
+Y:
+-Emergency
+-Change
+-video
+
+objet type d'info
+
+-GPS actuel (not settable)
+-GPS destination (setttable)
+-BATTERIE % energie restant (not settable)
+-AXE X (not settable)
+-AXE Y (not settable)
+-AXE Z (not settable)
+
+Datagramme MUAVCOM
+
+|IP|UDP|FLOTTE_ID[INT]|DRONE_ID[INT]|TYPE_R[INT]|TIMESTAMP[LONG]|ERROR[INT]|VALUE(IMAGE)[VARIABLE]|
