@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=latex 2013.6.13)  14 JUN 2013 17:41
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=latex 2013.6.13)  17 JUN 2013 11:11
 entering extended mode
 **megauav.tex
-(C:\Users\CHRIS\Desktop\MEGAUAV_doc\megauav.tex
+(c:\Users\CHRIS\Desktop\MEGAUAV_doc_latex\megauav.tex
 LaTeX2e <2011/06/27>
 Babel <v3.8m> and hyphenation patterns for english, afrikaans, ancientgreek, ar
 abic, armenian, assamese, basque, bengali, bokmal, bulgarian, catalan, coptic, 
@@ -199,7 +199,7 @@ LaTeX Info: Redefining \] on input line 2666.
 )
 \BBbox=\box31
 
-(C:\Users\CHRIS\Desktop\MEGAUAV_doc\megauav.aux)
+(c:\Users\CHRIS\Desktop\MEGAUAV_doc_latex\megauav.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 24.
 LaTeX Font Info:    ... okay on input line 24.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 24.
@@ -216,162 +216,229 @@ LaTeX Font Info:    ... okay on input line 24.
  [1
 
 ]
-(C:\Users\CHRIS\Desktop\MEGAUAV_doc\megauav.toc)
+(c:\Users\CHRIS\Desktop\MEGAUAV_doc_latex\megauav.toc)
 \tf@toc=\write4
  [2]
-File: ./Schema/Reseau/graph_com.eps Graphic file (type eps)
-
-<./Schema/Reseau/graph_com.eps>
-Overfull \hbox (27.89311pt too wide) in paragraph at lines 44--45
- [][] 
- []
-
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 51.
-("D:\Program Files\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
-File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
-)
-Overfull \hbox (6.0pt too wide) in paragraph at lines 41--58
-[][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 63--64
-[][][][][][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 63--64
-
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 70--76
-[][][][][][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 70--76
-
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 77--83
-[][][][][][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 77--83
-
- []
-
-[3]
-File: ./Schema/Reseau/gps_gpgga2.eps Graphic file (type eps)
- <./Schema/Reseau/gps_gpgga2.eps>
-Overfull \hbox (6.0pt too wide) in paragraph at lines 95--102
-[][][][][][] 
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 95--102
-
- []
-
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 109.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 45.
 
 ("D:\Program Files\MiKTeX 2.9\tex\latex\base\omscmr.fd"
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 109.
- [4]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 144--164
-[][][][][][] 
- []
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 45.
+ [3] [4]
+File: ./Schema/Intro/helicoset.eps Graphic file (type eps)
 
+<./Schema/Intro/helicoset.eps>
+File: ./Schema/Intro/mikorkopter_carte.eps Graphic file (type eps)
+ <./Schema/Intro/mikorkopter_carte.eps>
+File: ./Schema/Intro/Tab_Gumstix.eps Graphic file (type eps)
 
-Overfull \hbox (6.0pt too wide) in paragraph at lines 144--164
-[][][][][][] 
- []
+<./Schema/Intro/Tab_Gumstix.eps>
 
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 144--164
-[][][][][][] 
- []
+LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 [5]
-Overfull \hbox (6.0pt too wide) in paragraph at lines 169--170
-[][][][][][] 
+File: ./Schema/Intro/archi_quadri.eps Graphic file (type eps)
+ <./Schema/Intro/archi_quadri.eps>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+File: ./Schema/Reseau/graph_com.eps Graphic file (type eps)
+<./Schema/Reseau/graph_com.eps>
+Overfull \hbox (27.89311pt too wide) in paragraph at lines 120--121
+ [][] 
  []
 
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 127.
 
-Underfull \hbox (badness 10000) in paragraph at lines 169--170
-
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 175--178
-[][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 183--186
-[][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 191--198
-[][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 191--198
-[][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 203--210
-[][][][][][] 
- []
-
-
-Overfull \hbox (6.0pt too wide) in paragraph at lines 203--210
+("D:\Program Files\MiKTeX 2.9\tex\latex\base\t1cmtt.fd"
+File: t1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+Overfull \hbox (6.0pt too wide) in paragraph at lines 117--134
 [][][][][][] 
  []
 
 [6]
-File: ./Schema/TraitementImage/AlgoVision.eps Graphic file (type eps)
- <./Schema/TraitementImage/AlgoVision.eps>
-Overfull \hbox (48.46999pt too wide) in paragraph at lines 220--221
- [][] 
- []
-
-File: ./Schema/TraitementImage/TraitementImageSimpli.eps Graphic file (type eps
-)
-<./Schema/TraitementImage/TraitementImageSimpli.eps>
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-File: ./Schema/TraitementImage/TraitementImage.eps Graphic file (type eps)
-<./Schema/TraitementImage/TraitementImage.eps>
-Overfull \hbox (69.79968pt too wide) in paragraph at lines 236--237
- [][] 
+Overfull \hbox (6.0pt too wide) in paragraph at lines 139--140
+[][][][][][] 
  []
 
 
-LaTeX Warning: `!h' float specifier changed to `!ht'.
+Underfull \hbox (badness 10000) in paragraph at lines 139--140
+
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 144--159
+[][][][][][] 
+ []
 
 [7]
-Overfull \vbox (5.50403pt too high) has occurred while \output is active []
+Overfull \hbox (6.0pt too wide) in paragraph at lines 161--167
+[][][][][][] 
+ []
 
 
-[8] [9] (C:\Users\CHRIS\Desktop\MEGAUAV_doc\megauav.aux) ) 
+Underfull \hbox (badness 10000) in paragraph at lines 161--167
+
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 168--174
+[][][][][][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 168--174
+
+ []
+
+[8]
+File: ./Schema/Reseau/gps_gpgga2.eps Graphic file (type eps)
+ <./Schema/Reseau/gps_gpgga2.eps>
+Overfull \hbox (21.56389pt too wide) in paragraph at lines 180--181
+ [][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 186--193
+[][][][][][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 186--193
+
+ []
+
+[9] [10]
+Overfull \hbox (6.0pt too wide) in paragraph at lines 235--255
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 235--255
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 235--255
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 260--261
+[][][][][][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 260--261
+
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 266--269
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 274--277
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 282--289
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 282--289
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 294--301
+[][][][][][] 
+ []
+
+
+Overfull \hbox (6.0pt too wide) in paragraph at lines 294--301
+[][][][][][] 
+ []
+
+[11]
+File: ./Schema/TraitementImage/AlgoVision.eps Graphic file (type eps)
+ <./Schema/TraitementImage/AlgoVision.eps>
+Overfull \hbox (48.46999pt too wide) in paragraph at lines 311--312
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 317--321
+
+ []
+
+[12]
+File: ./Schema/TraitementImage/TraitementImageSimpli.eps Graphic file (type eps
+)
+ <./Schema/TraitementImage/TraitementImageSimpli.eps>
+Underfull \hbox (badness 10000) in paragraph at lines 340--343
+
+ []
+
+[13]
+File: ./Schema/TraitementImage/harris.eps Graphic file (type eps)
+ <./Schema/TraitementImage/harris.eps>
+File: ./Schema/TraitementImage/fast.eps Graphic file (type eps)
+ <./Schema/TraitementImage/fast.eps>
+File: ./Schema/TraitementImage/fast2.eps Graphic file (type eps)
+
+<./Schema/TraitementImage/fast2.eps>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+File: ./Schema/TraitementImage/matching.eps Graphic file (type eps)
+<./Schema/TraitementImage/matching.eps>
+Overfull \hbox (32.40424pt too wide) in paragraph at lines 400--401
+ [][] 
+ []
+
+[14]
+File: ./Schema/TraitementImage/TraitementImage.eps Graphic file (type eps)
+ <./Schema/TraitementImage/TraitementImage.eps>
+Overfull \hbox (69.79968pt too wide) in paragraph at lines 409--410
+ [][] 
+ []
+
+[15]
+File: ./Schema/IHM/Connection.eps Graphic file (type eps)
+ <./Schema/IHM/Connection.eps>
+Overfull \hbox (7.58057pt too wide) in paragraph at lines 429--438
+\T1/cmr/m/n/10 Le drone en-voie péri-odique-ment des in-for-ma-tions de vol afi
+n d'informer l'opérateur
+ []
+
+[16]
+File: ./Schema/IHM/Battery.eps Graphic file (type eps)
+ <./Schema/IHM/Battery.eps>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+File: ./Schema/IHM/Control.eps Graphic file (type eps)
+<./Schema/IHM/Control.eps> [17] [18]
+File: ./Schema/IHM/Carte.eps Graphic file (type eps)
+ <./Schema/IHM/Carte.eps>
+File: ./Schema/IHM/Options.eps Graphic file (type eps)
+
+<./Schema/IHM/Options.eps> [19]
+(c:\Users\CHRIS\Desktop\MEGAUAV_doc_latex\megauav.aux) ) 
 Here is how much of TeX's memory you used:
- 3814 strings out of 493922
- 49434 string characters out of 3147305
- 114561 words of memory out of 3000000
- 7084 multiletter control sequences out of 15000+200000
- 13207 words of font info for 36 fonts, out of 3000000 for 9000
+ 3843 strings out of 493922
+ 50068 string characters out of 3147305
+ 113612 words of memory out of 3000000
+ 7097 multiletter control sequences out of 15000+200000
+ 13520 words of font info for 37 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
- 27i,8n,35p,298b,313s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 27i,8n,35p,477b,313s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on megauav.dvi (9 pages, 28620 bytes).
+Output written on megauav.dvi (19 pages, 59196 bytes).

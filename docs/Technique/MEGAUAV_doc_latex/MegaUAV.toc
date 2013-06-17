@@ -1,21 +1,34 @@
 \contentsline {section}{\numberline {1}Introduction}{3}
-\contentsline {section}{\numberline {2}Partie 1}{3}
-\contentsline {subsection}{\numberline {2.1}Sous partie 1}{3}
-\contentsline {subsection}{\numberline {2.2}Sous partie 2}{3}
-\contentsline {section}{\numberline {3}Communication}{3}
-\contentsline {subsection}{\numberline {3.1}Architecture des communications}{3}
-\contentsline {subsection}{\numberline {3.2}Communication s\'erie}{3}
-\contentsline {subsubsection}{\numberline {3.2.1}S\'erie inter carte}{3}
-\contentsline {subsubsection}{\numberline {3.2.2}GPS}{3}
-\contentsline {subsection}{\numberline {3.3}R\'eseau}{4}
-\contentsline {section}{\numberline {4}Vol Stationnaire}{7}
-\contentsline {subsection}{\numberline {4.1}Algorithme}{7}
-\contentsline {subsection}{\numberline {4.2}Estimation du d\'eplacement}{7}
-\contentsline {subsection}{\numberline {4.3}Extraction des points d'inter\^et}{8}
-\contentsline {subsubsection}{\numberline {4.3.1}D\'etection des contours}{8}
-\contentsline {subsubsection}{\numberline {4.3.2}D\'etection des coins}{9}
-\contentsline {subsubsection}{\numberline {4.3.3}D\'etecteur de Harris}{9}
-\contentsline {subsubsection}{\numberline {4.3.4}FAST}{9}
-\contentsline {subsection}{\numberline {4.4}Matching-Tracking}{9}
-\contentsline {subsection}{\numberline {4.5}Compensation du mouvement}{9}
-\contentsline {section}{\numberline {5}Conclusion}{9}
+\contentsline {section}{\numberline {2}Cadrage du projet}{3}
+\contentsline {subsection}{\numberline {2.1}Besoin du client}{3}
+\contentsline {subsection}{\numberline {2.2}Description fonctionnelle}{4}
+\contentsline {subsection}{\numberline {2.3}Sch\'ema mat\'eriel envisag\'e}{4}
+\contentsline {section}{\numberline {3}Pr\'esentation du mat\'eriel}{4}
+\contentsline {subsection}{\numberline {3.1}Mat\'eriel du Quadricopt\`ere}{4}
+\contentsline {subsection}{\numberline {3.2}Mat\'eriel Embarqu\'e}{5}
+\contentsline {subsection}{\numberline {3.3}Architecture finale}{6}
+\contentsline {section}{\numberline {4}Communication}{7}
+\contentsline {subsection}{\numberline {4.1}Architecture des communications}{7}
+\contentsline {subsection}{\numberline {4.2}Communication s\'erie}{8}
+\contentsline {subsubsection}{\numberline {4.2.1}S\'erie inter carte}{8}
+\contentsline {subsubsection}{\numberline {4.2.2}GPS}{8}
+\contentsline {subsection}{\numberline {4.3}R\'eseau}{9}
+\contentsline {section}{\numberline {5}Vol Stationnaire}{12}
+\contentsline {subsection}{\numberline {5.1}Algorithme}{12}
+\contentsline {subsection}{\numberline {5.2}Estimation du d\'eplacement}{12}
+\contentsline {subsection}{\numberline {5.3}Extraction des points d'inter\^et}{13}
+\contentsline {subsubsection}{\numberline {5.3.1}D\'etection des contours}{13}
+\contentsline {subsubsection}{\numberline {5.3.2}D\'etection des coins}{13}
+\contentsline {subsubsection}{\numberline {5.3.3}D\'etecteur de Harris}{14}
+\contentsline {subsubsection}{\numberline {5.3.4}FAST}{14}
+\contentsline {subsection}{\numberline {5.4}Matching}{15}
+\contentsline {subsection}{\numberline {5.5}Compensation du mouvement}{15}
+\contentsline {section}{\numberline {6}IHM}{16}
+\contentsline {subsection}{\numberline {6.1}Connection}{17}
+\contentsline {subsection}{\numberline {6.2}Etat g\'en\'eral}{17}
+\contentsline {subsubsection}{\numberline {6.2.1}Battery}{17}
+\contentsline {subsubsection}{\numberline {6.2.2}Pitch}{17}
+\contentsline {subsubsection}{\numberline {6.2.3}Roll}{17}
+\contentsline {subsection}{\numberline {6.3}Control}{18}
+\contentsline {subsection}{\numberline {6.4}Carte}{19}
+\contentsline {subsection}{\numberline {6.5}Options}{19}

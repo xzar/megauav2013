@@ -15,11 +15,11 @@
 
 \newsavebox{\BBbox}
 \newenvironment{DDbox}[1]{
-\begin{lrbox}{\BBbox}\begin{minipage}{\linewidth}}
+\begin{lrbox}{\BBbox}\begin{minipage}{\linewidth \fontsize{8}{12}}}
 {\end{minipage}\end{lrbox}\noindent\colorbox{Zgris}{\usebox{\BBbox}} \\
 [.5cm]}
 \title{MegaUAV 2013}
-\author{}
+\author{A.JOURQUIN, A.HULAK, A.MARSOULAUD, C.NGUYEN}
 
 \begin{document}
 
@@ -30,11 +30,87 @@
 \newpage
 
 \section{Introduction}
-BLABLABLA BLABLA
+Philippe GAUSSIER est le responsable du laboratoire ETIS, spécialiste en sciences de l'information et de la communication, il travaille sur la modélisation des mécanismes cognitifs impliqués dans la perception visuelle (vision préattentive et attentionnelle) et sur la modélisation de structures telles que l'hippocampe (pour des problèmes d'intégration d'informations spatio-temporelles).
+Ces modèles servent de base pour imaginer des architectures de contrôle permettant à des robots mobiles d'apprendre à survivre dans un environnement à priori inconnu.
+Ces robots utilisent généralement la vision comme source principale d'information ce qui met en avant l'importance du traitement de l'image.
+Les tâches étudiées sont : l'apprentissage de conditionnements visio-moteurs, la reconnaissance de lieux (retour au nid), la construction et l'utilisation de cartes cognitives et enfin l'apprentissage de la discrimination d'objets et/ou de lieux.
 
-\section{Partie 1}
-\subsection{Sous partie 1}
-\subsection{Sous partie 2}
+\section{Cadrage du projet}
+\subsection{Besoin du client}
+L'objectif du client est de concevoir un drone pouvant effectuer un voyage de façon entièrement autonome en ne connaissant que la position GPS du point de départ et du point d'arrivée. Pour cela, il est mis à notre disposition une plateforme pour effectuer nos tests, à savoir :\newline
+Un modèle réduit de quadricoptère très maniable, simple d'accès et facile à mettre en oeuvre (possibilité de tests en intérieur, en revanche sensible aux intempéries).
+Les cartes de développement, commandées en double, pourront nous permettre de répartir les tâches de développement en deux groupes.\newline
+Les applications possibles du drone peuvent être très diverses :
+\begin{itemize} 
+\item Exploration de zones difficilement accessibles
+\item Entretien matériel et vérifications sur les avions, les buildings, les ponts etc.
+\item Surveillance d'une zone et reconnaissance des lieux et objets
+\item Recherche de personnes disparues (avalanches, naufrages, catastrophes naturelles)
+\item Surveillance de foule lors de manifestation.
+\item Détection d'intrusion, d'incendie de forêt
+\end{itemize}
+Il est essentiel et cela fait partie des objectifs finaux du projet d'avoir un vol autonome lors de la perte du signal avec le drone. Ce dernier devra effectuer sa mission avant de revenir au lieu de départ.\newline
+Le projet est évidemment complexe et présente beaucoup de possibilités.\newline Le client serait très satisfait d'obtenir à la fin du projet une communication robuste et temps réelle avec un tour opérateur pour visualiser l'évolution de la mission et un système en boucle fermée sur l'hélicoptère qui lui permettrait des déplacements en toute autonomie. 
+
+\subsection{Description fonctionnelle}
+Le drone principal est un quadri-rotor qui devra fournir les fonctionnalités suivantes :
+\begin{itemize}
+\item Communiquer avec un tour opérateur afin d'envoyer les paramètres de vol
+\item Maitriser les commandes de vol sans intervention extérieure
+\item Etre capable d'effectuer une mission GPS et de naviguer en autonomie
+\item Etre capable de se repérer dans un environnement quelconque à l'aide de capteurs et d'imagerie
+\item Etre capable de reprendre la main à tout moment avec une radiocommande.
+Le tour opérateur correspond à un PC portable quelconque situé à terre et qui devra fournir les fonctionnalités suivantes :
+\item Afficher les informations de vol dans une interface conviviale et les stocker pour des besoins de debug
+\item Reconfigurer les missions à distance
+\end{itemize}
+
+\subsection{Schéma matériel envisagé}
+L'architecture du système est composée des éléments suivants :
+\begin{itemize}
+\item Un PC portable, sur lequel est installé le logiciel de supervision et qui se charge d'enregistrer les paramètres de vol 
+\item Une maquette de drone en modèle réduit (type hélicoptère, jusqu'à 4 rotors)
+\item Une certaine quantité de matériel embarqué sur le drone (Intelligence) ainsi que les différents capteurs et les moyens de transmission.
+\end{itemize}
+
+\section{Présentation du matériel}
+\subsection{Matériel du Quadricoptère}
+Pour ce projet nous allons utiliser un quadricopter de mikrokopter.\newline 
+Le modèle est : MK Basicset L4-ME.\newline
+Les principales caractéristiques de ce modèle sont les suivantes :\newline
+Ce kit contient la carte Flight-Ctrl V2.1 ME dont les caractéristiques sont les suivantes :\newpage
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.7]{./Schema/Intro/helicoset.eps}
+\caption{Caractéristiques L4-ME}
+\end{center}
+\end{figure}
+Et la carte contrôlant les moteurs : 
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.7]{./Schema/Intro/mikorkopter_carte.eps}
+\caption{Caractéristiques Flight-Ctrl}
+\end{center}
+\end{figure}
+
+\subsection{Matériel Embarqué}
+Le matériel embarqué décrit comme suit sert à exécuter l'intelligence artificielle et donc de contrôler le quadricopter :
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.7]{./Schema/Intro/Tab_Gumstix.eps}
+\caption{Caractéristiques Gumstix}
+\end{center}
+\end{figure}
+\newpage
+
+\subsection{Architecture finale}
+L'architecture finale choisie est donc la suivante :
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.5]{./Schema/Intro/archi_quadri.eps}
+\caption{Architecture de la communication}
+\end{center}
+\end{figure}
 
 \section{Communication}
 \subsection{Architecture des communications}
@@ -65,6 +141,21 @@ les infos GPS sont récupérées directement sur la gumstix via le port série:
 
 \subsection{Communication série}
 \subsubsection{Série inter carte}	
+Afin de pouvoir faire communiquer le gumstix avec la carte Flight Control de Mikrokopter, il a fallu respecter le protocole de liaison série défini pour cette carte de vol.\newline
+Le protocole est basé sur des trames de données organisées de la façon suivante :
+\newline
+\begin{DDbox}{\linewidth}
+	\begin{Verbatim}
+|START BYTE|ADDRESS BYTE|ID-BYTE|DATA BYTES[Base64]|CRC 1|CRC 2|STOP BYTE|
+	\end{Verbatim}
+\end{DDbox}
+L'octet d'adresse permet de spécifier le type de carte, dans notre cas il est égal à 1, correspondant à la Flight Control. L'identifiant définit le type de la requête.
+\newline Dans le cadre de notre projet, nous utilisons l'identifiant "-d" qui permet de récupérer une structure de données contenant toutes les informations de vol.
+\newline
+Le gumstix se charge de demander periodiquement les informations courante de la carte de vol contenues dans cette structure afin de les transmettre au PC de contrôle. Le format de la structure est détaillée en annexe.
+\newline
+Les trames n'étant pas transmises en une fois par la liaison série, le thread de communication du gumstix se charge de détecter chaque début et fin de trame puis de la reconstruire pour pouvoir la décoder. Les données étant codées en base 64 il a fallu réaliser le décodage avant de les interpréter.
+\newline Nous n'avons trouvé que peu d'informations sur le décodage des données au sein de la documentation officielle de Mikrokopter, et la communauté présente autour de ces cartes et s'étant déjà confronté à ce problème, nous a permis de le faire rapidement et de ne pas perdre de temps sur cette partie technique.
 
 \subsubsection{GPS}
 la trame gps sur port série est lisible via cette commande : \newline
@@ -82,11 +173,11 @@ killall gpsd; gpsd /dev/ttyS0
 \end{DDbox}
 
 Notre programme va aller lire dans ce descripteur pour récupérer la trame GPGGA.
-\newline
+\newpage
 Détail:
 \begin{figure}[!h]
 \begin{center}
-\includegraphics[scale=0.25]{./Schema/Reseau/gps_gpgga2.eps}
+\includegraphics[scale=0.40]{./Schema/Reseau/gps_gpgga2.eps}
 \caption{Trame GPGGA}
 \end{center}
 \end{figure}
@@ -223,7 +314,20 @@ Ces coordonnées serviront à déterminer les mouvements de l'appareil par rapport 
 \end{figure}
 
 \subsection{Estimation du déplacement}
-Pour estimer la direction de déplacement, l'algorithme se base sur la transformation affine de points d'interêt entre deux images consécutives.
+Pour estimer la direction de déplacement, l'algorithme se base sur la transformation affine de points d'interêt entre deux images consécutives.\newline
+Le déplacement actuel de l'appareil est modélisé par un vecteur, déterminé par la transformation géométrique entre 2 images. Pour P-1(x,y) et P(X,Y), les coordonnées d'un point d'interêt sur l'image aux instants t-1 et t.
+La transformation T est représentée par :
+\newline
+\begin{center}
+$\begin{bmatrix} 
+  X\\
+  Y\\ 
+\end{bmatrix} = T *
+\begin{bmatrix} 
+  x\\
+  y\\ 
+\end{bmatrix}$
+\end{center}
 \begin{figure}[!h]
 \begin{center}
 \includegraphics[scale=0.3]{./Schema/TraitementImage/TraitementImageSimpli.eps}
@@ -231,6 +335,75 @@ Pour estimer la direction de déplacement, l'algorithme se base sur la transforma
 \end{center}
 \end{figure}
 
+\subsection{Extraction des points d'interêt}
+\subsubsection{Détection des contours}
+Nous ne cherchons pas à proprement dit à détecter les contours mais nous avons besoin de calculer les gradients, horizontal et vertical, de l'image pour la détection des points d'interêt.
+Nous utilisons pour sa fiabilité et sa vitesse d'execution le filtre de Canny.
+\newline
+\begin{center}
+$Canny H
+\begin{bmatrix} 
+  -1 & 0 & 1 \\ 
+\end{bmatrix}$
+\newline
+$Canny V
+\begin{bmatrix} 
+  1\\ 
+  0\\
+  -1\\ 
+\end{bmatrix}$
+\end{center}
+
+\subsubsection{Détection des coins}
+Nous avons choisi une détection de points d'interêts par détections de coins (corner detection).Il existe de nombreuses méthodes de détection de points d'interêt telles que Harris, SIFT ou SURF. Nous avons choisi d'implémenter 2 méthodes par leur vitesse et leur robustesse :
+\begin{itemize}
+\item Le détecteur de Harris
+\item L'algorithme FAST
+\end{itemize}
+
+\subsubsection{Détecteur de Harris}
+Le détecteur de Harris est un détecteur de coins basé sur les gradients orientés, en détectant des croisement de lignes.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/TraitementImage/harris.eps}
+\caption{Harris}
+\end{center}
+\end{figure}
+Le détecteur de Harris est robuste et fiable mais est plus gourmand en ressources et en temps de calcul que l'algorithme FAST.
+
+\subsubsection{FAST}
+Pour chaque pixel p, un cercle de 7 pixels de diamètre centré sur p est extrait de l'image, nous cherchons un arc continu de N pixels (dans notre cas 9) plus clairs ou plus foncé que p (ou p + seuil).\newline
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/TraitementImage/fast.eps}
+\caption{Fast}
+\end{center}
+\end{figure}
+
+Cet algorithme est très rapide car il suffit de tester les points 1-5, 5-9, 9-13 et 13-1 pour déjà savoir si le point peut-être rejeté.\newline
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/TraitementImage/fast2.eps}
+\caption{Fast}
+\end{center}
+\end{figure}
+
+Cet algorithme est très rapide et les points trouvés sont fiables
+mais il est très sensible au bruit et dépend d'un seuil.
+
+\subsection{Matching}
+Une fois les points d'interêt trouvés dans une image, il faut comparer la position qu'ils avaient dans l'image précédente. Pour cela, il faut d'abord matcher les points, c'est à dire faire la corrélation entre les points d'une image à l'autre, savoir si il s'agit du même point sur les 2 images.\newline
+Nous utiliserons les descripteurs des points fournis par les algorithmes de détection des coins que nous avons utilisé pour extraire les coins.\newline
+Si la valeur du descripteur d'un point est proche de celle d'un point sur l'image précédente et que leur différence de position est plausible, on peut considérer que ce point est le même.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.4]{./Schema/TraitementImage/matching.eps}
+\caption{Traitement Image}
+\end{center}
+\end{figure}
+
+\subsection{Compensation du mouvement}
+Notre implémentation de la compensation du mouvement est basé sur une architecture réactive. La valeur inverse du vecteur déplacement est directement envoyée en commande au quadricopter.
 \begin{figure}[!h]
 \begin{center}
 \includegraphics[scale=0.25]{./Schema/TraitementImage/TraitementImage.eps}
@@ -238,39 +411,75 @@ Pour estimer la direction de déplacement, l'algorithme se base sur la transforma
 \end{center}
 \end{figure}
 
-\subsection{Extraction des points d'interêt}
-\subsubsection{Détection des contours}
-Nous ne cherchons pas à proprement dit à détecter les contours mais nous avons besoin de calculer les gradients horizontal et vertical de l'image pour la détection des points d'interêt.
-$Prewitt H
-\begin{bmatrix} 
-  1 & 0 & -1 \\ 
-  1 & 0 & -1 \\
-  1 & 0 & -1 \\ 
-\end{bmatrix}$
-\newline
-$Prewitt V
-\begin{bmatrix} 
-  1 & 1 & 1 \\ 
-  0 & 0 & 0 \\
-  -1 & -1 & -1 \\ 
-\end{bmatrix}$
 
-\subsubsection{Détection des coins}
-Nous avons choisi une détection de points d'interêts par détections de coins (corner detection). Nous avons choisi d'implémenter 2 méthodes:
+\section{IHM}
+L'ordinateur de contrôle permet de visualiser de nombreuses informations en provenance du drone et de lui envoyer des ordres. L'interface est constituée des panneaux suivants:
 \begin{itemize}
-\item Le détecteur de Harris
-\item L'algorithme FAST
+\item Connection
+\item Etat général
+\item Battery
+\item Pitch
+\item Roll
+\item Control
+\item Carte
+\item Options
 \end{itemize}
-\subsubsection{Détecteur de Harris}
 
-\subsubsection{FAST}
+\subsection{Connection}
+Le panneau situé en haut à gauche de l'interface permet d'afficher une liste des drones actuellement connectés et en fonctionnement. Lorsqu'un drone se met en marche, il envoie un message à l'ordinateur de contrôle en lui spécifiant son adresse IP. A sa réception par le PC de contrôle, le drone est ajouté à la liste en lui attribuant un numéro unique et son adresse IP est sauvegardée afin de pouvoir lui envoyer des ordres.
+\newline
+Le drone envoie périodiquement des informations de vol afin d'informer l'opérateur de son état. Un icône de statut verte permet de savoir si le drone sélectionné est toujours actif. Si le drone n'envoie plus d'information pendant un certain temps, l'icône devient rouge pour en informer l'opérateur.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/IHM/Connection.eps}
+\caption{Panneau Connection}
+\end{center}
+\end{figure}
 
-\subsection{Matching-Tracking}
+\subsection{Etat général}
+Le panneau "current action" affiche à l'aide d'une image l'action courante du drone. Par défaut, le drone est immobile et les moteurs sont coupés. L'action suivante est l'allumage des moteurs. Ensuite, les actions varient entre prise d'altitude, vol à hauteur stable et perte d'altitude. Cela permet de rendre compte de l'état du drone en temps réel au cas où l'opérateur perdrait le contact visuel.
 
-\subsection{Compensation du mouvement}
+\subsubsection{Battery}
+Le panneau affiche la charge restante dans la batterie connectée au drone. Lorsque celle-ci approche de la zone rouge, il est préférable par mesure de sécurité de faire atterrir le drone et de remplacer la batterie.
 
+\subsubsection{Pitch}
+Le panneau de pitch donne une information sur l'inclinaison actuelle du drone suivant l'axe avant - arrière.
 
-\section{Conclusion}
+\subsubsection{Roll}
+Le roll permet de connaitre l'inclinaison du drone suivant l'axe gauche - droite.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/IHM/Battery.eps}
+\caption{Panneau Etat Général}
+\end{center}
+\end{figure}
 
+\subsection{Control}
+Le panneau de contrôle affiche les images prises par la caméra embarquée sur le drone. Afin de recevoir les images, l'opérateur doit activer l'option "start image" dans le menu de l'application. Cette option ne peut être activée que lorsque le drone est en pilotage manuel, si ce dernier est contrôlé par l'intelligence embarquée il est impossible de récupérer les images car le Gumstix n'est pas assez performant pour gérer les deux tâches simultanément.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/IHM/Control.eps}
+\caption{Panneau Control}
+\end{center}
+\end{figure}
+\newpage
+
+\subsection{Carte}
+La carte GPS permet de contrôler la position du drone et de lui transmettre les coordonnées d'une destination à atteindre.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/IHM/Carte.eps}
+\caption{Panneau Carte}
+\end{center}
+\end{figure}
+
+\subsection{Options}
+Le menu options de l'application permet de changer l'algorithme d'intelligence artificielle tournant sur le drone, ou de passer en mode manuel afin de diriger le drone à l'aide du joystick. Lorsque le drone est en mode manuel il est possible de démarrer et d'arrêter l'affichage des images prises par la caméra embarquée et de recevoir les données GPS transmises.
+\begin{figure}[!h]
+\begin{center}
+\includegraphics[scale=0.25]{./Schema/IHM/Options.eps}
+\caption{Panneau Options}
+\end{center}
+\end{figure}
 
 \end{document} 
