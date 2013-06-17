@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=latex 2013.6.13)  17 JUN 2013 11:11
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (MiKTeX 2.9) (preloaded format=latex 2013.6.13)  17 JUN 2013 13:28
 entering extended mode
 **megauav.tex
 (c:\Users\CHRIS\Desktop\MEGAUAV_doc_latex\megauav.tex
@@ -431,14 +431,27 @@ File: ./Schema/IHM/Carte.eps Graphic file (type eps)
 File: ./Schema/IHM/Options.eps Graphic file (type eps)
 
 <./Schema/IHM/Options.eps> [19]
-(c:\Users\CHRIS\Desktop\MEGAUAV_doc_latex\megauav.aux) ) 
+File: ./Schema/Diag/diag_classes.eps Graphic file (type eps)
+ <./Schema/Diag/diag_classes.eps>
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+File: ./Schema/Diag/diag_classes_GUI.eps Graphic file (type eps)
+<./Schema/Diag/diag_classes_GUI.eps>
+
+LaTeX Warning: Float too large for page by 35.24667pt on input line 495.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[20] [21] (c:\Users\CHRIS\Desktop\MEGAUAV_doc_latex\megauav.aux) ) 
 Here is how much of TeX's memory you used:
- 3843 strings out of 493922
- 50068 string characters out of 3147305
+ 3848 strings out of 493922
+ 50182 string characters out of 3147305
  113612 words of memory out of 3000000
- 7097 multiletter control sequences out of 15000+200000
+ 7099 multiletter control sequences out of 15000+200000
  13520 words of font info for 37 fonts, out of 3000000 for 9000
  841 hyphenation exceptions out of 8191
  27i,8n,35p,477b,313s stack positions out of 5000i,500n,10000p,200000b,50000s
 
-Output written on megauav.dvi (19 pages, 59196 bytes).
+Output written on megauav.dvi (21 pages, 60372 bytes).
